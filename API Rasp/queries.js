@@ -1,5 +1,4 @@
 var promise = require('bluebird');
-const {google} = require("googleapis");
 var options = {
     // Initialization Options
     promiseLib: promise
