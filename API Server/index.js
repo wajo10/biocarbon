@@ -27,7 +27,7 @@ router.use(function(req, res, next) {
     next();
 });
 
-router.get('/api/biocarbon/test', db.test());
+router.get('/api/biocarbon/test', db.test);
 
 
 
