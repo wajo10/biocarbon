@@ -5,8 +5,6 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:admin@localhost:5432/cosecha_agua';
-var db = pgp(connectionString);
 
 //Queries de Usuarios
 function testConnection(req, res, next) {
