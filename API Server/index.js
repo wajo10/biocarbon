@@ -5,7 +5,6 @@ const port = 3031;
 var db = require('./queries');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-const axios = require('axios');
 
 router.listen(port, () => {
     console.log("El servidor está inicializado en el puerto: ", port);
