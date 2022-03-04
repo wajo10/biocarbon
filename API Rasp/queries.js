@@ -10,13 +10,15 @@ var db = pgp(connectionString);
 
 //Queries de Usuarios
 function testConnection(req, res, next) {
+    console.log("Test Connection");
     res.status(200)
         .json({
             status: 'success',
-            data: "Connection Established",
+            data: "Connection Established, This is RASPBIAN",
             message: 'Data Retrieved Successfully'
         });
 }
+
 
 
 
