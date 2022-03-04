@@ -1,7 +1,7 @@
 const express = require("express");
 
 const router = express();
-const port = 3032;
+const port = 3033;
 var db = require('./queries');
 var path = require('path');
 var cookieParser = require('cookie-parser');
