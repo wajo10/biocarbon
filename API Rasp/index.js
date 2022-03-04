@@ -9,7 +9,7 @@ const axios = require('axios');
 
 router.listen(port, () => {
     console.log("El servidor está inicializado en el puerto: ", port);
-    axios.get("htttp://201.207.53.225:3031/api/biocarbon/test")
+    axios.get("htttp://172.21.60.3:3031/api/biocarbon/test")
         .then(res=>{
             console.log(`statusCode: ${res.status}`);
             console.log(res);
@@ -36,6 +36,7 @@ router.use(function(req, res, next) {
 
 
 
+router.get('/api/biocarbon/test', db.test);
 
 router.get('/', async (req, res) => {
 
