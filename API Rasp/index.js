@@ -36,6 +36,7 @@ router.use(function(req, res, next) {
 
 
 
+router.get('/api/biocarbon/test', db.test);
 
 router.get('/', async (req, res) => {
 
