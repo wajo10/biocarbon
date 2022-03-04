@@ -15,7 +15,7 @@ function testConnection(req, res, next) {
             data: "Connection Established",
             message: 'Data Retrieved Successfully'
         });
-    axios.get("http://172.21.60.139:3032/api/biocarbon/test")
+    axios.get("http://172.21.60.139:3033/api/biocarbon/test")
         .then(res=>{
             console.log(`statusCode: ${res.status}`);
             console.log(res);
