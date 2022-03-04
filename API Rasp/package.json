@@ -1,0 +1,31 @@
+{
+  "name": "api-rasp",
+  "version": "1.0.0",
+  "description": "Raspberry Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wajo10/biocarbon.git"
+  },
+  "keywords": [
+    "biocarbon",
+    "rasp-server"
+  ],
+  "author": "Wajib Zaglul",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wajo10/biocarbon/issues"
+  },
+  "homepage": "https://github.com/wajo10/biocarbon#readme",
+  "dependencies": {
+    "axios": "^0.26.0",
+    "bluebird": "^3.7.2",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.17.3",
+    "jade": "^1.11.0",
+    "pg-promise": "^10.11.1"
+  }
+}
