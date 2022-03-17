@@ -46,7 +46,7 @@ class RFM9X(object):
         self.rfm9x.tx_power = power
 
     def send(self, data, destination, with_ack=False) -> bool:
-        self.rfm9x.destination = destination
+        self.rfm9x.destination = int(destination)
         self.rfm9x.send(bytes(data, 'utf-8'))
         if with_ack:
             return self.rec_ack()
@@ -54,7 +54,7 @@ class RFM9X(object):
     def rec_ack(self) -> bool:
         packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=10.0, keep_listening=True)
         if packet is not None:
-            if packet[4:].decode("UTF-8") == "Ok":
+            if packet[4:].decode("UTF-8") == "ok":
                 return True
             else:
                 return False
@@ -63,12 +63,12 @@ class RFM9X(object):
 
     def send_ack(self, destination):
         self.rfm9x.destination = destination
-        self.send("Ok", destination)
+        self.send("ok", destination)
 
     def receive(self, with_ack=False):
         packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=10.0, keep_listening=True)
         if packet is not None:
-            node = hex(packet[1])
+            node = (str(packet[1]))
             print("Received (raw header):", [hex(x) for x in packet[0:4]])
             print("Received (raw payload): {0}".format(packet[4:]))
             print("RSSI: {0}".format(self.rfm9x.last_rssi))
@@ -77,3 +77,4 @@ class RFM9X(object):
             return packet[4:].decode("UTF-8")
         else:
             return
+
