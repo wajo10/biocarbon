@@ -1,3 +1,9 @@
 
 API Rasp/node_modules/
 API Server/node_modules
+
+RaspGateway/venv/
+
+*.xml
+
+*.iml
