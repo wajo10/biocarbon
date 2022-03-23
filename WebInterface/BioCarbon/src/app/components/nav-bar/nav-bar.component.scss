@@ -1,0 +1,30 @@
+/* Modify the background color */
+.navbar-custom {
+  background-color: #140E39;
+  position: sticky;
+  width: 100%;
+}
+
+nav{
+  position: sticky;
+}
+
+.nav-item-custom {
+  color: black;
+}
+.nav-link{
+  font-size: 0.8em;
+  animation: ease-in;
+  color: #77879C;
+}
+
+//.dropdown-menu {
+//  position: absolute !important;
+//  //overflow: hidden;
+//}
+
+.top-box{
+  z-index: 10001;
+  //position: absolute !important;
+  overflow: visible;
+}

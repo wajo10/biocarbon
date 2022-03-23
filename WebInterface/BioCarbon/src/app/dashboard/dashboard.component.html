@@ -1,0 +1,294 @@
+<app-nav-bar></app-nav-bar>
+<body style="background-color: #192033;">
+<div class="dashboard">
+  <div class="container" style="width: auto;">
+    <mat-form-field appearance="outline" style="background-color: whitesmoke; border-radius: 10px;
+      width: min-content; height: 65px; margin-top: 20px">
+      <mat-label>Tipo de Reporte</mat-label>
+      <mat-select [(value)]="selected">
+        <mat-option (click)="setType()" value="Humedad">Humedad</mat-option>
+        <mat-option (click)="setType()" value="Flujo">Flujo</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="background-color: whitesmoke;
+    border-radius: 10px; width: min-content; height: 65px; margin-left: 20px">
+      <mat-label>Dispositivo</mat-label>
+      <mat-select [(value)]="idBox">
+        <mat-option (click)="lastReport(disp.idbox); updateDevice(disp.idbox)" *ngFor="let disp of devices"
+                    [value]="disp.idbox">
+          {{disp.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div *ngIf="this.selected == 'Humedad'">
+      <div class="main-body" style="margin-top: 25px">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Sensor 1</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge [append]="humidityText"
+                                 [size]="gaugeSize"
+                                 [type]="gaugeType"
+                                 [value]="values.sensorA">
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Sensor 2</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge [append]="humidityText"
+                                 [size]="gaugeSize"
+                                 [type]="gaugeType"
+                                 [value]="values.sensorB">
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Sensor 3</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge [append]="humidityText"
+                                 [size]="gaugeSize"
+                                 [type]="gaugeType"
+                                 [value]="values.sensorC">
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <div style="text-align:center;">
+                        <mat-card-title>Sensor 4</mat-card-title>
+                      </div>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge [append]="humidityText"
+                                 [size]="gaugeSize"
+                                 [type]="gaugeType"
+                                 [value]="values.sensorD">
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Sensor 5</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge [append]="humidityText"
+                                 [size]="gaugeSize"
+                                 [type]="gaugeType"
+                                 [value]="values.sensorE">
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <div style="text-align:center;">
+                      <mat-card-header>
+                        <mat-card-title>
+                          Datos
+                        </mat-card-title>
+                      </mat-card-header>
+                    </div>
+                    <mat-card-content>
+                      <b>Nombre:</b> {{device.name}}<br>
+                      <b>Actualización:</b> {{this.datepipe.transform(values.date, 'dd-MM-yy HH:mm:ss')}}<br>
+                      <b>Ubicación:</b> {{device.location}}<br>
+                      <b>ID:</b> {{device.idbox}}<br>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="this.selected == 'Flujo'">
+      <div class="main-body" style="margin-top: 25px">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Flujo 1</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge [append]="flowText"
+                                 [size]="gaugeSize"
+                                 [type]="gaugeType"
+                                 [value]="values.flow1"
+                                 style="font-size:10px;">
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Flujo 2</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge
+                        [append]="flowText"
+                        [size]="gaugeSize"
+                        [type]="gaugeType"
+                        [value]="values.flow2"
+                      >
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Flujo 3</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge
+                        [append]="flowText"
+                        [size]="gaugeSize"
+                        [type]="gaugeType"
+                        [value]="values.flow3"
+                      >
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Flujo 4</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge
+                        [append]="flowText"
+                        [size]="gaugeSize"
+                        [type]="gaugeType"
+                        [value]="values.flow4"
+                      >
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Flujo 5</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ngx-gauge
+                        [append]="flowText"
+                        [size]="gaugeSize"
+                        [type]="gaugeType"
+                        [value]="values.flow5"
+                      >
+                      </ngx-gauge>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" style="background-color: whitesmoke">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <mat-card>
+                    <mat-card-header>
+                      <div style="text-align:center;">
+                        <mat-card-title>
+                          <div style="text-align: center;">Datos</div>
+                        </mat-card-title>
+                      </div>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <b>Nombre:</b> {{device.name}}<br>
+                      <b>Actualización:</b> {{this.datepipe.transform(values.date, 'dd-MM-yy HH:mm:ss')}}<br>
+                      <b>Ubicación:</b> {{device.location}}<br>
+                      <b>ID:</b> {{device.idbox}}<br>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>

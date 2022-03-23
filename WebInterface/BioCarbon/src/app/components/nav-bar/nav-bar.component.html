@@ -1,0 +1,48 @@
+<router-outlet></router-outlet>
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<nav class="navbar navbar-expand-sm navbar-custom navbar-dark top-box" style="font-size: 25px; color: white; position: -webkit-sticky">
+  <!-- Brand/logo -->
+  <a class="navbar-brand" routerLink="/Dashboard"  style="font-size: 25px; color: white">Biocarbón</a>
+
+  <!-- Links -->
+  <ul class="navbar-nav" >
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/Dashboard" >Dashboard</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/Charts" >Gráficos</a>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true"  aria-expanded="false">
+        Configuración
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <li><a class="dropdown-item" routerLink="/CreateAccount">Crear Cuenta</a></li>
+        <li><a class="dropdown-item" routerLink="/Profile">Mi Perfil</a></li>
+        <li><a class="dropdown-item" routerLink="/Devices">Dispositivos</a></li>
+        <li><a class="dropdown-item" routerLink="/AddDevice">Crear Dispositivo</a></li>
+      </ul>
+    </li>
+    <li class="nav-item" >
+      <a class="nav-link" (click)="signOut()" >Cerrar Sesión</a>
+    </li>
+  </ul>
+  <ul class="navbar-nav ms-auto" >
+    <li class="nav-item">
+      <form class="form-inline ms-auto justify-content-end">
+        <a class="nav-link" routerLink="/Profile" >{{this.storage.getUser().name}} {{this.storage.getUser().firstlastname}} {{this.storage.getUser().secondlastname}}</a>
+      </form>
+    </li>
+  </ul>
+</nav>
+
+
