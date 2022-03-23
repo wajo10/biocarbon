@@ -326,7 +326,7 @@ function modifyHumidityBox(req, res, next) {
 
 function addFlowBox(req, res, next) {
     console.log(req.body);
-    db.any('select addFlowDevice(${idBox}, ${name},${location})', req.body)
+    db.any('select addFlowBox(${idBox}, ${name},${location})', req.body)
         .then(function () {
             res.status(200)
                 .json({
@@ -341,7 +341,7 @@ function addFlowBox(req, res, next) {
 
 function addHumidityBox(req, res, next) {
     console.log(req.body);
-    db.any('select addHumidityDevice(${idBox}, ${name},${location})', req.body)
+    db.any('select addHumidityBox(${idBox}, ${name},${location})', req.body)
         .then(function () {
             res.status(200)
                 .json({

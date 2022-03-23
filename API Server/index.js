@@ -43,8 +43,8 @@ router.get('/api/biocarbon/FlowBox/:idBox', db.getFlowBox);
 router.get('/api/biocarbon/HumidityBox/:idBox', db.getHumidityBox);
 router.put('/api/biocarbon/HumiditySettings/', db.modifyHumidityBox);
 router.put('/api/biocarbon/FlowSettings/', db.modifyFlowBox);
-router.post('/api/cosecha/FlowBox/', db.addFlowBox);
-router.post('/api/cosecha/HumidityBox/', db.addHumidityBox);
+router.post('/api/biocarbon/FlowBox/', db.addFlowBox);
+router.post('/api/biocarbon/HumidityBox/', db.addHumidityBox);
 
 router.get('/', async (req, res) => {
 
