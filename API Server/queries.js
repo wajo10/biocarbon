@@ -250,7 +250,7 @@ function getHumidityBoxes(req, res, next){
 }
 
 function getFlowBox(req, res, next){
-    var Device = req.params.idDevice;
+    var Device = req.params.idBox;
     db.one('select * from getFlowBox ($1)', [Device])
         .then(function (data) {
             console.log(data);
@@ -272,7 +272,7 @@ function getFlowBox(req, res, next){
         });
 }
 function getHumidityBox(req, res, next){
-    var Device = req.params.idDevice;
+    var Device = req.params.idBox;
     db.one('select * from getHumidityBox ($1)', [Device])
         .then(function (data) {
             console.log(data);
