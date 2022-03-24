@@ -34,7 +34,7 @@ router.post('/api/biocarbon/Users/', db.addUser);
 router.get('/api/biocarbon/LastFlow/:idBox', db.getLastFlowReport);
 router.get('/api/biocarbon/LastHumidity/:idBox', db.getLastHumidityReport);
 router.put('/api/biocarbon/FlowReports/', db.getFlowReports);
-router.put('/api/biocarbon/Humidity Reports/', db.getHumidityReports);
+router.put('/api/biocarbon/HumidityReports/', db.getHumidityReports);
 router.post('/api/biocarbon/FlowReport/', db.addFlowReport);
 router.post('/api/biocarbon/HumidityReport/', db.addHumidityReport);
 router.get('/api/biocarbon/FlowBoxes/', db.getFlowBoxes);
