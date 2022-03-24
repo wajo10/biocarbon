@@ -35,7 +35,9 @@ export class DashboardComponent implements OnInit {
   }
 
   lastReport(IdBox: number): void {
-    IdBox = parseInt(this.idBox);
+    if (this.selected === "Flujo"){
+      IdBox = parseInt(this.idBox);
+    }
     if (this.selected === 'Flujo') {
       this.httpService.get_api_id("LastFlow", `${IdBox}`).subscribe((res: any) => {
         this.values = res.data;
@@ -64,11 +66,12 @@ export class DashboardComponent implements OnInit {
         this.idBox = this.devices[0].idbox;
         this.lastReport(this.devices[0].idbox);
         this.device = this.devices[0];
+        console.log(this.device);
       }, _ => alert("Error De conexión"));
     }
   }
 
-  updateDevice(id: number): void{
+  updateDevice(id): void{
     if (this.selected === "Flujo"){
       this.httpService.get_api_id("FlowBox", id).subscribe((res: any) => {
         this.device = res.data;
@@ -77,6 +80,8 @@ export class DashboardComponent implements OnInit {
     else{
       this.httpService.get_api_id("HumidityBox", id).subscribe((res: any) => {
         this.device = res.data;
+        console.log(id);
+        console.log(this.device);
       }, _ => alert("Error De conexión"));
     }
 
