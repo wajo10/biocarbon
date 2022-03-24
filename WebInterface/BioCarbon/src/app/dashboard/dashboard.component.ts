@@ -31,14 +31,13 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.setType();
-    setInterval(() => { this.lastReport(this.devices[0].idbox); }, 30 * 1000);
+    setInterval(() => { this.lastReport(this.device.idbox); }, 30 * 1000);
   }
 
   lastReport(IdBox: number): void {
-    if (this.selected === "Flujo"){
-      IdBox = parseInt(this.idBox);
-    }
+    console.log("Recargando con: " + IdBox);
     if (this.selected === 'Flujo') {
+      IdBox = parseInt(this.idBox);
       this.httpService.get_api_id("LastFlow", `${IdBox}`).subscribe((res: any) => {
         this.values = res.data;
       }, _ => alert("Error De conexión"));

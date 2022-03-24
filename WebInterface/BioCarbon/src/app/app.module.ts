@@ -25,13 +25,17 @@ import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import {SidebarModule} from 'ng-sidebar';
+import { ChartsComponent } from './charts/charts.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     DashboardComponent,
-    NavBarComponent
+    NavBarComponent,
+    ChartsComponent
   ],
   imports: [
     BrowserModule,
@@ -40,6 +44,7 @@ import {SidebarModule} from 'ng-sidebar';
     BrowserAnimationsModule,
     HttpClientModule,
     MatCardModule,
+    MatCheckboxModule,
     ChartModule,
     SidebarModule.forRoot(),
     NgbModule,
