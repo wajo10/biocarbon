@@ -1,0 +1,64 @@
+<app-nav-bar></app-nav-bar>
+<div class="container" style="margin-top:30px; width: auto">
+  <mat-form-field appearance="fill">
+    <mat-label>Tipo de Reporte</mat-label>
+    <mat-select [(value)]="selected">
+      <mat-option value="Humedad" (click)="setType()">Humedad</mat-option>
+      <mat-option value="Flujo" (click)="setType()">Flujo</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Dispositivo</mat-label>
+    <mat-select [(value)]="idBox">
+      <mat-option *ngFor="let disp of devices" [value]="disp.idbox" (click)="updateDevice(disp.idbox)">
+        {{disp.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div class="container" style="width: auto">
+  <div class="main-body">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center text-center">
+              <div class="mt-3" style="color: #2B2D42">
+                <h2>{{this.settings.name}}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <h3 class="mb-0" style="color: #2B2D42">Nombre</h3>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <input type="text" class="form-control" id="name" value="{{this.settings.name}}">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <h3 class="mb-0" style="color: #2B2D42">Ubicación</h3>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <input type="text" class="form-control" id="location" value="{{this.settings.location}}">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3"></div>
+              <div class="col-sm-9 text-secondary">
+                <input type="button" class="btn btn-danger" value="Guardar cambios" (click)="modifyDevice()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
