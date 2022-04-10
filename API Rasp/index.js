@@ -6,7 +6,6 @@ var db = require('./queries');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 const axios = require('axios');
-
 router.listen(port, () => {
     console.log("El servidor está inicializado en el puerto: ", port);
     axios.get("htttp://172.21.60.3:3031/api/biocarbon/test")
@@ -18,6 +17,7 @@ router.listen(port, () => {
             console.error(error);
         });
 });
+
 
 router.set('views', path.join(__dirname, 'views'));
 router.set('view engine', 'jade');

@@ -2,15 +2,44 @@ const express = require("express");
 
 const router = express();
 const port = 3031;
-var db = require('./queries');
+var queries = require('./queries');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+const http = require('http').createServer(router);
 
-
-router.listen(port, () => {
+let server = http.listen(port, () => {
     console.log("El servidor está inicializado en el puerto: ", port);
 
 });
+
+// Sockets
+const io = require('socket.io')(server,{
+    allowEIO3: true
+});
+
+router.get('/', (req, res) => {
+    res.status(200)
+        .json({
+            status: 'success',
+            data: "Connection Established",
+            message: 'Biocarbon Server '
+        });
+});
+
+//Whenever someone connects this gets executed
+io.on('connection', (socket) => {
+    socket.emit('Whatever',"Message");
+    console.log('an user connected');
+
+    // Send Socket to Queries File
+    queries.updateSock(socket);
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+});
+
+
 
 router.set('views', path.join(__dirname, 'views'));
 router.set('view engine', 'jade');
@@ -27,28 +56,29 @@ router.use(function(req, res, next) {
     next();
 });
 
-router.get('/api/biocarbon/test', db.test);
-router.get('/api/biocarbon/login/:User/:Password', db.login);
-router.put('/api/biocarbon/User/', db.modifyUser);
-router.post('/api/biocarbon/Users/', db.addUser);
-router.get('/api/biocarbon/LastFlow/:idBox', db.getLastFlowReport);
-router.get('/api/biocarbon/LastHumidity/:idBox', db.getLastHumidityReport);
-router.put('/api/biocarbon/FlowReports/', db.getFlowReports);
-router.put('/api/biocarbon/HumidityReports/', db.getHumidityReports);
-router.post('/api/biocarbon/FlowReport/', db.addFlowReport);
-router.post('/api/biocarbon/HumidityReport/', db.addHumidityReport);
-router.get('/api/biocarbon/FlowBoxes/', db.getFlowBoxes);
-router.get('/api/biocarbon/HumidityBoxes/', db.getHumidityBoxes);
-router.get('/api/biocarbon/FlowBox/:idBox', db.getFlowBox);
-router.get('/api/biocarbon/HumidityBox/:idBox', db.getHumidityBox);
-router.put('/api/biocarbon/HumiditySettings/', db.modifyHumidityBox);
-router.put('/api/biocarbon/FlowSettings/', db.modifyFlowBox);
-router.post('/api/biocarbon/FlowBox/', db.addFlowBox);
-router.post('/api/biocarbon/HumidityBox/', db.addHumidityBox);
+router.get('/api/biocarbon/test', queries.test);
+router.get('/api/biocarbon/login/:User/:Password', queries.login);
+router.put('/api/biocarbon/User/', queries.modifyUser);
+router.post('/api/biocarbon/Users/', queries.addUser);
+router.get('/api/biocarbon/LastFlow/:idBox', queries.getLastFlowReport);
+router.get('/api/biocarbon/LastHumidity/:idBox', queries.getLastHumidityReport);
+router.put('/api/biocarbon/FlowReports/', queries.getFlowReports);
+router.put('/api/biocarbon/HumidityReports/', queries.getHumidityReports);
+router.post('/api/biocarbon/FlowReport/', queries.addFlowReport);
+router.post('/api/biocarbon/HumidityReport/', queries.addHumidityReport);
+router.get('/api/biocarbon/FlowBoxes/', queries.getFlowBoxes);
+router.get('/api/biocarbon/HumidityBoxes/', queries.getHumidityBoxes);
+router.get('/api/biocarbon/FlowBox/:idBox', queries.getFlowBox);
+router.get('/api/biocarbon/HumidityBox/:idBox', queries.getHumidityBox);
+router.put('/api/biocarbon/HumiditySettings/', queries.modifyHumidityBox);
+router.put('/api/biocarbon/FlowSettings/', queries.modifyFlowBox);
+router.post('/api/biocarbon/FlowBox/', queries.addFlowBox);
+router.post('/api/biocarbon/HumidityBox/', queries.addHumidityBox);
+router.get('/api/biocarbon/Flow/', queries.getFlowValue);
 
 router.get('/', async (req, res) => {
 
     res.render('index', {title: 'BioCarbon Server'}); // load the single view file (angular will handle the page changes on the front-end)
 
 });
-module.exports = router;
+module.exports = {router};
