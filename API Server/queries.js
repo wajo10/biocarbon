@@ -370,6 +370,7 @@ function getFlowValue(req,res,next){
                 status: 'success',
                 data: msg
             });
+        socket.removeAllListeners("Result")
     });
 }
 
