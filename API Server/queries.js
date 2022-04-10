@@ -1,5 +1,7 @@
 const axios = require('axios');
 var promise = require('bluebird');
+var socket = undefined;
+
 var options = {
     // Initialization Options
     promiseLib: promise
@@ -354,6 +356,23 @@ function addHumidityBox(req, res, next) {
         });
 }
 
+function updateSock(sock) {
+    socket = sock;
+}
+
+function getFlowValue(req,res,next){
+    socket.emit('Command',"Flow");
+    // Messaged Received
+    socket.on('Result', function(msg) {
+        console.log(msg);
+        res.status(200)
+            .json({
+                status: 'success',
+                data: msg
+            });
+    });
+}
+
 
 
 module.exports = {
@@ -374,5 +393,8 @@ module.exports = {
     modifyFlowBox: modifyFlowBox,
     modifyHumidityBox: modifyHumidityBox,
     addFlowBox:addFlowBox,
-    addHumidityBox:addHumidityBox
+    addHumidityBox:addHumidityBox,
+    getFlowValue:getFlowValue,
+    updateSock:updateSock
+
 };
