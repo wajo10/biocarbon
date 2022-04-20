@@ -71,6 +71,10 @@ def humidity(identifier):
         return
 
 
-sio.connect('http://201.207.53.225:3031/', transports=['websocket'])
-# sio.connect('http://localhost:3031/', transports=['websocket'])
-sio.wait()
+while True:
+    try:
+        sio.connect('http://201.207.53.225:3031/', transports=['websocket'])
+        sio.wait()
+        break
+    except:
+        print("Connection failed. Retrying...")
