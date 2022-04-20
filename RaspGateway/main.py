@@ -45,6 +45,10 @@ def relays(command, identifier):
     ack = rfm9x.send(message, 0, with_ack=True)  # Send to Node 0
     print("Acknowledge? {}".format(ack))
     rec = rfm9x.receive(with_ack=True)
+    while rec is None:
+        ack = rfm9x.send(message, 0, with_ack=True)  # Send to Node 0
+        print("Acknowledge? {}".format(ack))
+        rec = rfm9x.receive(with_ack=True)
     print(rec)
     return "Comando {} se ha enviado correctamente al relay #{}".format(command, identifier)
 
