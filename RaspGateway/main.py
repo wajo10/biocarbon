@@ -9,8 +9,6 @@ from datetime import datetime
 rfm9x = RFM9X()
 
 sio = socketio.Client()
-dic = {1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J", 11: "K", 12: "L", 13: "M",
-       14: "N", 15: "O"}
 
 
 @sio.event
@@ -26,7 +24,7 @@ def disconnect():
 @sio.on('Command')
 def on_message(data):
     print('Message: ', data)
-    
+
     if data == "Flow":
         sio.emit("Result", "105")
     elif "relay" in data:
@@ -35,7 +33,7 @@ def on_message(data):
         sio.emit("RelayResult", relays(command, id))
     elif "humidity" in data:
         id = data.split(",")[1]
-        humValues = humidity(id)
+        humValues = humidity(int(id))
         if humValues != None:
             sio.emit("HumidityResult", humValues)
         else:
@@ -52,6 +50,8 @@ def relays(command, identifier):
 
 
 def humidity(identifier):
+    dic = {1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J", 11: "K", 12: "L", 13: "M",
+           14: "N", 15: "O"}
     message = "Data!{0}".format(identifier)
     now = datetime.now()
     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")

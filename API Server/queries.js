@@ -394,7 +394,7 @@ function getHumiditySockets(req, res, next){
     let idBox = req.params.idBox;
     let send = `humidity,${idBox}`;
     socket.emit("Command", send);
-    socket.on('RelayResult', function (msg) {
+    socket.on('HumidityResult', function (msg) {
         console.log(msg);
         if (msg !== "Error"){
             res.status(200)
@@ -409,7 +409,7 @@ function getHumiditySockets(req, res, next){
                     status: 'Error, no se pudo comunicar con la caja'
                 })
         }
-        socket.removeAllListeners("RelayResult")
+        socket.removeAllListeners("HumidityResult")
     });
 }
 
