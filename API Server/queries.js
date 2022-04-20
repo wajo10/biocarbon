@@ -390,6 +390,29 @@ function setRelays(req,res,next){
     });
 }
 
+function getHumiditySockets(req, res, next){
+    let idBox = req.params.idBox;
+    let send = `humidity,${idBox}`;
+    socket.emit("Command", send);
+    socket.on('RelayResult', function (msg) {
+        console.log(msg);
+        if (msg !== "Error"){
+            res.status(200)
+                .json({
+                    status: 'success',
+                    data: msg
+                });
+        }
+        else{
+            res.status(504)
+                .json({
+                    status: 'Error, no se pudo comunicar con la caja'
+                })
+        }
+        socket.removeAllListeners("RelayResult")
+    });
+}
+
 
 
 module.exports = {
@@ -413,6 +436,7 @@ module.exports = {
     addHumidityBox:addHumidityBox,
     getFlowValue:getFlowValue,
     updateSock:updateSock,
-    setRelays:setRelays
+    setRelays:setRelays,
+    getHumiditySockets: getHumiditySockets
 
 };
