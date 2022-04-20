@@ -26,6 +26,7 @@ def on_message(data):
     elif "relay" in data:
         command = data.split(",")[1]
         id = data.split(",")[2]
+        sio.emit("RelayResult",relays(command, id))
 
     print('Message: ', data)
 
@@ -36,6 +37,7 @@ def relays(command, identifier):
     print("Acknowledge? {}".format(ack))
     rec = rfm9x.receive(with_ack=True)
     print(rec)
+    return "Comando {} se ha enviado correctamente al relay #{}". format(command, identifier)
 
 
 sio.connect('http://201.207.53.225:3031/', transports=['websocket'])

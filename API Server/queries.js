@@ -377,7 +377,7 @@ function getFlowValue(req,res,next){
 function setRelays(req,res,next){
     let command =  req.params.command;
     let id =  req.params.id;
-    let send = `relay,${command}, ${id}`;
+    let send = `relay,${command},${id}`;
     socket.emit("Command", send);
     socket.on('RelayResult', function (msg) {
         console.log(msg);
