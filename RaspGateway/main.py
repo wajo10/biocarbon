@@ -33,7 +33,7 @@ def on_message(data):
         sio.emit("RelayResult", relays(command, id))
     elif "humidity" in data:
         id = data.split(",")[1]
-        humValues = humidity(id)
+        humValues = humidity(int(id))
         if humValues != None:
             sio.emit("HumidityResult", humValues)
         else:
