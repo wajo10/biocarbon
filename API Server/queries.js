@@ -374,6 +374,22 @@ function getFlowValue(req,res,next){
     });
 }
 
+function setRelays(req,res,next){
+    let command =  req.params.command;
+    let id =  req.params.id;
+    let send = `relay,${command}, ${id}`;
+    socket.emit("Command", send);
+    socket.on('RelayResult', function (msg) {
+        console.log(msg);
+        res.status(200)
+            .json({
+                status: 'success',
+                data: msg
+            });
+        socket.removeAllListeners("RelayResult")
+    });
+}
+
 
 
 module.exports = {
@@ -396,6 +412,7 @@ module.exports = {
     addFlowBox:addFlowBox,
     addHumidityBox:addHumidityBox,
     getFlowValue:getFlowValue,
-    updateSock:updateSock
+    updateSock:updateSock,
+    setRelays:setRelays
 
 };

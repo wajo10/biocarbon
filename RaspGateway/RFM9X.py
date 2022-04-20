@@ -52,7 +52,7 @@ class RFM9X(object):
             return self.rec_ack()
 
     def rec_ack(self) -> bool:
-        packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=10.0, keep_listening=True)
+        packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=2, keep_listening=True)
         if packet is not None:
             if packet[4:].decode("UTF-8") == "ok":
                 return True
@@ -66,7 +66,7 @@ class RFM9X(object):
         self.send("ok", destination)
 
     def receive(self, with_ack=False):
-        packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=10.0, keep_listening=True)
+        packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=2, keep_listening=True)
         if packet is not None:
             node = (str(packet[1]))
             print("Received (raw header):", [hex(x) for x in packet[0:4]])
@@ -77,4 +77,3 @@ class RFM9X(object):
             return packet[4:].decode("UTF-8")
         else:
             return
-

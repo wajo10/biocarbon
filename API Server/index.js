@@ -75,6 +75,7 @@ router.put('/api/biocarbon/FlowSettings/', queries.modifyFlowBox);
 router.post('/api/biocarbon/FlowBox/', queries.addFlowBox);
 router.post('/api/biocarbon/HumidityBox/', queries.addHumidityBox);
 router.get('/api/biocarbon/Flow/', queries.getFlowValue);
+router.post('/api/biocarbon/Relays/:command/:id', queries.setRelays);
 
 router.get('/', async (req, res) => {
 
