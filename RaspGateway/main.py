@@ -1,11 +1,43 @@
+import socketio
+import engineio
 from RFM9X import RFM9X
 import time
+from datetime import datetime
+
 rfm9x = RFM9X()
-nodes = [2]
-for node in nodes:
-    t1 = time.time()
-    message = "Data!{0}".format(node)
-    ack = rfm9x.send(message, node, with_ack=True)
+
+sio = socketio.Client()
+
+
+@sio.event
+def connect():
+    print('connection established')
+
+
+@sio.event
+def disconnect():
+    print('disconnected from server')
+
+
+@sio.on('Command')
+def on_message(data):
+    if data == "Flow":
+        sio.emit("Result", "105")
+    elif "relay" in data:
+        command = data.split(",")[1]
+        id = data.split(",")[2]
+
+    print('Message: ', data)
+
+
+def relays(command, identifier):
+    message = command + identifier
+    ack = rfm9x.send(message, 0, with_ack=True)  # Send to Node 0
     print("Acknowledge? {}".format(ack))
-    print(rfm9x.receive(with_ack=True))
-    print("Tiempo: {}".format(time.time()-t1))
+    rec = rfm9x.receive(with_ack=True)
+    print(rec)
+
+
+sio.connect('http://201.207.53.225:3031/', transports=['websocket'])
+# sio.connect('http://localhost:3031/', transports=['websocket'])
+sio.wait()
