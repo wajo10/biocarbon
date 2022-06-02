@@ -101,6 +101,12 @@ CREATE OR REPLACE FUNCTION lastHumidityReport (idBox_r VARCHAR) RETURNS Humidity
 	$$
 LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION lastTenHumidityReports (idBox_r VARCHAR) RETURNS HumidityReport AS 
+	$$
+	SELECT * FROM HumidityReport WHERE idBox = idBox_r ORDER BY idReport DESC LIMIT 10
+	$$
+LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION addFlowReport(idBox_r INT, Date_r TIMESTAMP, flow1_r FLOAT, flow2_r FLOAT, flow3_r FLOAT, flow4_r FLOAT, 
 										 flow5_r FLOAT, calibration_r BOOL ) RETURNS VOID AS 
 	$$

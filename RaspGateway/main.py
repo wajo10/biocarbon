@@ -45,6 +45,15 @@ def relays(command, identifier):
     ack = rfm9x.send(message, 0, with_ack=True)  # Send to Node 0
     print("Acknowledge? {}".format(ack))
     rec = rfm9x.receive(with_ack=True)
+    cont = 0
+    while rec is None:
+        ack = rfm9x.send(message, 0, with_ack=True)  # Send to Node 0
+        print("Acknowledge? {}".format(ack))
+        rec = rfm9x.receive(with_ack=True)
+        if cont > 5:
+            return "Error de comunicación"
+        cont += 1
+
     print(rec)
     return "Comando {} se ha enviado correctamente al relay #{}".format(command, identifier)
 
@@ -71,6 +80,10 @@ def humidity(identifier):
         return
 
 
-sio.connect('http://201.207.53.225:3031/', transports=['websocket'])
-# sio.connect('http://localhost:3031/', transports=['websocket'])
-sio.wait()
+while True:
+    try:
+        sio.connect('http://201.207.53.225:3031/', transports=['websocket'])
+        sio.wait()
+        break
+    except:
+        print("Connection failed. Retrying...")
