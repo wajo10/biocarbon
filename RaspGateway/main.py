@@ -26,7 +26,7 @@ def on_message(data):
     print('Message: ', data)
 
     if data == "Flow":
-        sio.emit("Result", "105")
+        sio.emit("Result", flow())
     elif "relay" in data:
         command = data.split(",")[1]
         id = data.split(",")[2]
