@@ -39,6 +39,23 @@ def on_message(data):
         else:
             sio.emit("HumidityResult", "Error")
 
+def flow():
+    message = "Flow"
+    ack = rfm9x.send(message, 0, with_ack=True)  # Send to Node 0
+    print("Acknowledge? {}".format(ack))
+    rec = rfm9x.receive(with_ack=True)
+    cont = 0
+    while rec is None:
+        ack = rfm9x.send(message, 0, with_ack=True)  # Send to Node 0
+        print("Acknowledge? {}".format(ack))
+        rec = rfm9x.receive(with_ack=True)
+        if cont > 5:
+            return "Error de comunicación"
+        cont += 1
+
+    print(rec)
+    return rec
+
 
 def relays(command, identifier):
     message = command + identifier
