@@ -116,10 +116,10 @@ CREATE OR REPLACE FUNCTION addFlowReport(idBox_r INT, Date_r TIMESTAMP, flow1_r 
 LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addHumidityReport(idBox_r VARCHAR, Date_r TIMESTAMP, sensorA_r FLOAT, sensorB_r FLOAT,  sensorC_r FLOAT, sensorD_r FLOAT, 
-										 sensorE_r FLOAT, calibration_r BOOL ) RETURNS VOID AS 
+										 sensorE_r FLOAT, calibration_r BOOL, isGood_r VARCHAR ) RETURNS VOID AS 
 	$$
-	INSERT INTO HumidityReport(idBox, Date, sensorA, sensorB, sensorC, sensorD, sensorE, isCalibration )
-	VALUES (idBox_r, Date_r, sensorA_r, sensorB_r, sensorC_r, sensorD_r, sensorE_r, calibration_r)
+	INSERT INTO HumidityReport(idBox, Date, sensorA, sensorB, sensorC, sensorD, sensorE, isCalibration, isGood )
+	VALUES (idBox_r, Date_r, sensorA_r, sensorB_r, sensorC_r, sensorD_r, sensorE_r, calibration_r, isGood_r)
 	$$
 LANGUAGE SQL;
 

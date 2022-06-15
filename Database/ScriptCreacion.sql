@@ -24,6 +24,7 @@ CREATE TABLE FlowBox(
 CREATE TABLE FlowReport(
 	idReport SERIAL NOT NULL,
 	Date TIMESTAMP NOT NULL,
+	vectorTimestamp INT NOT NULL,
 	Flow1 FLOAT,
 	Flow2 FLOAT,
 	Flow3 FLOAT,
@@ -44,14 +45,21 @@ CREATE TABLE HumidityBox(
 CREATE TABLE HumidityReport(
 	idReport SERIAL NOT NULL,
 	Date TIMESTAMP NOT NULL,
+	vectorTimestamp INT, //Agregar Not Null
 	SensorA FLOAT,
 	SensorB FLOAT,
 	SensorC FLOAT,
 	SensorD FLOAT,
 	SensorE FLOAT,
 	isCalibration BOOL NOT NULL,
+	isGood VARCHAR,
 	idBox VARCHAR(2) NOT NULL,
 	CONSTRAINT PK_HumidityReport PRIMARY KEY (idReport)
+);
+
+CREATE TABLE timeVector(
+	idTime SERIAL NOT NULL,
+	DateTime TIMESTAMP NOT NULL
 );
 
 --Foreign Keys
@@ -59,6 +67,14 @@ ALTER TABLE FlowReport ADD CONSTRAINT FK_Device_Flow_Report
 FOREIGN KEY(idBox) REFERENCES FlowBox(idBox)
 ON DELETE RESTRICT ON UPDATE RESTRICT;
 
+ALTER TABLE FlowReport ADD CONSTRAINT FK_Time_Stamp_Flow
+FOREIGN KEY(vectorTimestamp) REFERENCES timeVector(idTime)
+ON DELETE RESTRICT ON UPDATE RESTRICT;
+
 ALTER TABLE HumidityReport ADD CONSTRAINT FK_Device_Humidity_Report
 FOREIGN KEY(idBox) REFERENCES HumidityBox(idBox)
+ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE HumidityReport ADD CONSTRAINT FK_Time_Stamp_Humidity
+FOREIGN KEY(vectorTimestamp) REFERENCES timeVector(idTime)
 ON DELETE RESTRICT ON UPDATE RESTRICT;
