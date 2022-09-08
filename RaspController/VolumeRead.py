@@ -8,13 +8,14 @@ class FlowMeter():
     """Class representing the flow meter sensor which handles input pulses
     and calculates current flow rate (L/min) measurement"""
 
-    def __init__(self, PIN):
+    def __init__(self, PIN, freq=5.425):
         self.old_flow_rate = 0.0
         self.flow_rate = 0.0
         self.volume = 0.0
         self.old_last_time = datetime.now()
         self.last_time = datetime.now()
-
+        self.freq = freq
+        
         GPIO.setmode(GPIO.BCM)
 
         INPUT_PIN = PIN
@@ -35,7 +36,7 @@ class FlowMeter():
         # Calculate current flow rate
         hertz = 1. / diff
         self.old_flow_rate = self.flow_rate
-        self.flow_rate = hertz / 5.425
+        self.flow_rate = hertz / self.freq 
 
         # Reset time of last pulse
         self.old_last_time = self.last_time
