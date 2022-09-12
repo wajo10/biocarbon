@@ -77,3 +77,5 @@ class RFM9X(object):
             return packet[4:].decode("UTF-8")
         else:
             return
+    def reset(self):
+        self.rfm9x.reset()
