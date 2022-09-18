@@ -1,6 +1,6 @@
 --DROP DATABASE IF EXISTS Biocarbon;
 
-CREATE DATABASE  Biocarbon;
+--CREATE DATABASE  Biocarbon;
 CREATE EXTENSION pgcrypto;
 
 CREATE TABLE Users(
@@ -45,21 +45,43 @@ CREATE TABLE HumidityBox(
 CREATE TABLE HumidityReport(
 	idReport SERIAL NOT NULL,
 	Date TIMESTAMP NOT NULL,
-	vectorTimestamp INT, //Agregar Not Null
+	vectorTimestamp INT NOT NULL,
 	SensorA FLOAT,
 	SensorB FLOAT,
 	SensorC FLOAT,
 	SensorD FLOAT,
 	SensorE FLOAT,
 	isCalibration BOOL NOT NULL,
-	isGood VARCHAR,
 	idBox VARCHAR(2) NOT NULL,
 	CONSTRAINT PK_HumidityReport PRIMARY KEY (idReport)
 );
 
 CREATE TABLE timeVector(
-	idTime SERIAL NOT NULL,
+	idTime SERIAL NOT NULL UNIQUE,
 	DateTime TIMESTAMP NOT NULL
+);
+
+CREATE TABLE relaysState(
+	idState SERIAL NOT NULL,
+	DateTime TIMESTAMP NOT NULL,
+	relay1 BOOL NOT NULL,
+	relay2 BOOL NOT NULL,
+	relay3 BOOL NOT NULL,
+	relay4 BOOL NOT NULL,
+	relay5 BOOL NOT NULL,
+	relay6 BOOL NOT NULL,
+	CONSTRAINT PK_relaysState PRIMARY KEY (idState)
+);
+
+CREATE TABLE temperature(
+	idTemperature SERIAL NOT NULL,
+	temperature1 INT NOT NULL,
+	temperature2 INT NOT NULL,
+	temperature3 INT NOT NULL,
+	temperature4 INT NOT NULL,
+	temperature5 INT NOT NULL,
+	CONSTRAINT PK_temperature PRIMARY KEY (idTemperature)
+
 );
 
 --Foreign Keys
