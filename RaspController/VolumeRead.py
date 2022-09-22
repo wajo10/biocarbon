@@ -59,6 +59,11 @@ class FlowMeter():
                         self.last_time - self.old_last_time).total_seconds()
         return self.volume
 
+    def reset(self):
+        self.old_flow_rate = 0.0
+        self.flow_rate = 0.0
+        self.volume = 0.0
+
 
 # def main():
 #     """ Main function for repeatedly collecting flow rate measurements

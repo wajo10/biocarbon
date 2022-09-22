@@ -77,6 +77,7 @@ router.post('/api/biocarbon/HumidityBox/', queries.addHumidityBox);
 router.get('/api/biocarbon/Flow/', queries.getFlowValue);
 router.get('/api/biocarbon/Relays/:command/:id', queries.setRelays);
 router.get('/api/biocarbon/HumidityRT/:idBox', queries.getHumiditySockets); // Humidity Real Time (Sockets)
+router.get('/api/biocarbon/calibration/:box/:sensor/:humidity', queries.testCalibration);
 
 router.get('/', async (req, res) => {
 

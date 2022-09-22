@@ -116,6 +116,7 @@ export class ChartsComponent implements OnInit {
     this.isCalibration = false;
   }
 
+  // tslint:disable-next-line:ban-types
   public primaryXAxis: Object;
   public chartData: {};
   public primaryYAxis: Object;
@@ -151,7 +152,7 @@ export class ChartsComponent implements OnInit {
     this.chartData = {};
     variables.forEach(vari => {
       this.values.forEach(report => {
-        const date = this.datepipe.transform(report.date, 'yyyy-MM-dd HH:mm:ss');
+        const date = this.datepipe.transform(report.datetime, 'yyyy-MM-dd HH:mm:ss');
         const json = {x: date, y: report[vari]};
         data.push(json);
       });
@@ -214,6 +215,7 @@ export class ChartsComponent implements OnInit {
         iscalibration: this.isCalibration
       }).subscribe((res: any) => {
         this.values = res.data;
+        console.log(res.data);
         this.getChartData(this.flowVars);
       }, _ => alert('Error De conexión'));
     }
