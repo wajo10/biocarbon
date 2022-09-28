@@ -119,7 +119,7 @@ function getLastHumidityReport(req, res, next) {
     const Device = req.params.idBox;
     db.one('select * from lastHumidityReport ($1)', [Device])
         .then(function (data) {
-            console.log(data);
+            console.log(Device);
             res.status(200)
                 .json({
                     status: 'success',
@@ -137,6 +137,42 @@ function getLastHumidityReport(req, res, next) {
             return next(err);
         });
 
+}
+
+function filtro(Device, Sensor, Data) {
+    Sensor = Sensor.toLowerCase();
+    let arrayValues = [];
+    let isgood = "";
+    return new Promise(resolve => db.any('select * from lastTenHumidityReports ($1)', [Device])
+        .then(function (data) {
+            console.log(Sensor);
+            let mean = 0;
+            for (let i = 0; i < data.length; i++){
+                let dataJSON = JSON.stringify(data[i]);
+                dataJSON = JSON.parse(dataJSON);
+                let value = dataJSON[Sensor];
+                arrayValues.push(value);
+                mean = value + mean;
+            }
+            arrayValues.sort(function(a, b){return b-a});
+            let median = (arrayValues[4] + arrayValues[5])/2;
+            mean = mean/10;
+            let variance = 0;
+
+            for (let i = 0; i < data.length; i++) variance = variance + Math.pow(arrayValues[i] - mean, 2);
+            variance = variance/10;
+
+            let stDev = Math.sqrt(variance);
+            let zscore = (Data - median)/stDev;
+            if (Math.abs(zscore) < 2)isgood = "1";
+            else isgood ="0";
+
+            let retValue =`Median: ${median}, Standard Deviation: ${stDev}, ZScore: ${zscore} isGood: ${isgood}`;
+            console.log(retValue);
+            console.log(arrayValues);
+
+            resolve(isgood);
+        }))
 }
 
 function getFlowReports(req, res, next) {
@@ -192,9 +228,17 @@ function addFlowReport(req, res, next) {
         });
 }
 
-function addHumidityReport(req, res, next) {
+async function addHumidityReport(req, res, next) {
     console.log(req.body);
-    db.any('select addHumidityReport(${id_box}, ${created_at}, ${sensorA}, ${sensorB}, ${sensorC}, ${sensorD}, ${sensorE}, ${isCalibration})', req.body)
+    let sensors = ["sensorA", "sensorB", "sensorC", "sensorD", "sensorE"];
+    let isGood = "";
+    for (let i = 0; i < sensors.length; i++) {
+        let sensor = sensors[i];
+        let temp = await filtro(req.body.id_box, sensors[i], req.body[sensor]);
+        isGood = temp + isGood;
+    }
+    req.body.isGood = isGood;
+    db.any('select addHumidityReport(${id_box}, ${created_at}, ${sensorA}, ${sensorB}, ${sensorC}, ${sensorD}, ${sensorE}, ${isCalibration}, ${isGood})', req.body)
         .then(function () {
             res.status(200)
                 .json({
