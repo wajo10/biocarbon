@@ -7,8 +7,8 @@ import {HttpClient} from '@angular/common/http';
 export class HttpService {
   url: string;
   constructor(private http: HttpClient) {
-    this.url = 'http://localhost:3031/api/biocarbon/';
-    // this.url = 'http://201.207.53.225:3031/api/biocarbon/';
+    //this.url = 'http://localhost:3031/api/biocarbon/';
+    this.url = 'http://201.207.53.225:3031/api/biocarbon/';
   }
 
   public get_api(term){
