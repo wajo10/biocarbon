@@ -30,6 +30,7 @@ export class ChartsComponent implements OnInit {
 
 
   humidityVars = ['sensora', 'sensorb', 'sensorc', 'sensord', 'sensore'];
+  rawHumidityVars = ['rawsensora', 'rawsensorb', 'rawsensorc', 'rawsensord', 'rawsensore'];
   humidityUnits = {
     sensora: {
       title: 'Sensor 1',
@@ -204,7 +205,12 @@ export class ChartsComponent implements OnInit {
         iscalibration: this.isCalibration
       }).subscribe((res: any) => {
         this.values = res.data;
-        this.getChartData(this.humidityVars);
+        if (this.isCalibration){
+          this.getChartData(this.rawHumidityVars);
+        }
+        else{
+          this.getChartData(this.humidityVars);
+        }
       }, _ => alert('Error De conexión'));
     }
     else{

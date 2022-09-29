@@ -51,6 +51,11 @@ CREATE TABLE HumidityReport(
 	SensorC FLOAT,
 	SensorD FLOAT,
 	SensorE FLOAT,
+    rawSensorA FLOAT,
+    rawSensorB FLOAT,
+    rawSensorC FLOAT,
+    rawSensorD FLOAT,
+    rawSensorE FLOAT,
 	isCalibration BOOL NOT NULL,
 	idBox VARCHAR(2) NOT NULL,
 	CONSTRAINT PK_HumidityReport PRIMARY KEY (idReport)
@@ -100,3 +105,9 @@ ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE HumidityReport ADD CONSTRAINT FK_Time_Stamp_Humidity
 FOREIGN KEY(vectorTimestamp) REFERENCES timeVector(idTime)
 ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE HumidityReport ADD rawSensorA FLOAT;
+ALTER TABLE HumidityReport ADD rawSensorB FLOAT;
+ALTER TABLE HumidityReport ADD rawSensorC FLOAT;
+ALTER TABLE HumidityReport ADD rawSensorD FLOAT;
+ALTER TABLE HumidityReport ADD rawSensorE FLOAT;

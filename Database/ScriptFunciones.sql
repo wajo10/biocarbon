@@ -99,9 +99,7 @@ CREATE OR REPLACE FUNCTION lastFlowReport (idBox_r INT) RETURNS TABLE(idReport I
 	$$
 LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION lastHumidityReport (idBox_r VARCHAR) RETURNS TABLE (idReport INT, date TIMESTAMP,vectorTimestamp INT,  sensora FLOAT, sensorb FLOAT, 
-																	  sensorc FLOAT, sensord FLOAT, sensore FLOAT, isCalibration BOOLEAN,
-																	 idBox VARCHAR, idTime INT, dateTime TIMESTAMP) AS 
+CREATE OR REPLACE FUNCTION lastHumidityReport (idBox_r VARCHAR) RETURNS HUMIDITY AS 
 	$$
 	SELECT * FROM humidityReport  
 	NATURAL JOIN TIMEVECTOR WHERE VECTORTIMESTAMP = IDTIME AND idBox = idBox_r
@@ -109,9 +107,7 @@ CREATE OR REPLACE FUNCTION lastHumidityReport (idBox_r VARCHAR) RETURNS TABLE (i
 	$$
 LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION lastTenHumidityReports (idBox_r VARCHAR) RETURNS TABLE (idReport INT, date TIMESTAMP, vectorTimestamp INT,sensora FLOAT, sensorb FLOAT, 
-																	  sensorc FLOAT, sensord FLOAT, sensore FLOAT, isCalibration BOOLEAN,
-																	 idBox VARCHAR, idTime INT, dateTime TIMESTAMP) AS
+CREATE OR REPLACE FUNCTION lastTenHumidityReports (idBox_r VARCHAR) RETURNS HUMIDITY AS
 	$$
 	SELECT * FROM humidityReport  
 	NATURAL JOIN TIMEVECTOR WHERE VECTORTIMESTAMP = IDTIME AND idBox = idBox_r
@@ -127,22 +123,26 @@ CREATE OR REPLACE FUNCTION addFlowReport(idBox_r INT, Date_r TIMESTAMP, flow1_r 
 	$$
 LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION addHumidityReport(idBox_r VARCHAR, Date_r TIMESTAMP, sensorA_r FLOAT, sensorB_r FLOAT,  sensorC_r FLOAT, sensorD_r FLOAT, 
-										 sensorE_r FLOAT, calibration_r BOOLEAN, idvector_r INT ) RETURNS VOID AS 
+CREATE OR REPLACE FUNCTION addHumidityReport(idBox_r VARCHAR, Date_r TIMESTAMP, sensorA_r FLOAT, rawSensorA_r FLOAT, sensorB_r FLOAT, rawSensorB_r FLOAT, 
+                                             sensorC_r FLOAT, rawSensorC_r FLOAT, sensorD_r FLOAT, rawSensorD_r FLOAT, sensorE_r FLOAT, 
+                                             rawSensorE_r FLOAT,calibration_r BOOLEAN, idvector_r INT ) RETURNS VOID AS 
 	$$
-	INSERT INTO HumidityReport(idBox, Date, sensorA, sensorB, sensorC, sensorD, sensorE, isCalibration, vectorTimestamp )
-	VALUES (idBox_r, Date_r, sensorA_r, sensorB_r, sensorC_r, sensorD_r, sensorE_r, calibration_r, idvector_r)
+	INSERT INTO HumidityReport(idBox, Date, sensorA, rawSensorA, sensorB,rawSensorB, sensorC, rawSensorC, sensorD,rawSensorD, 
+                               sensorE,rawSensorE, isCalibration, vectorTimestamp )
+	VALUES (idBox_r, Date_r, sensorA_r, rawSensorA_r, sensorB_r, rawSensorB_r, sensorC_r, rawSensorC_r, sensorD_r, rawSensorD_r, 
+            sensorE_r,  rawSensorE_r,calibration_r, idvector_r)
 	$$
 LANGUAGE SQL;
 
 --Create Types
-CREATE TYPE flow as (idReport INT, date TIMESTAMP, vectorTimestamp INT, flow1 FLOAT, flow2 FLOAT, 
-																	  flow3 FLOAT, flow4 FLOAT, flow5 FLOAT, isCalibration BOOLEAN,
-																	 idBox INT,  idTime INT, dateTime TIMESTAMP);
+--CREATE TYPE flow as (idReport INT, date TIMESTAMP, vectorTimestamp INT, flow1 FLOAT, flow2 FLOAT, 
+--																	  flow3 FLOAT, flow4 FLOAT, flow5 FLOAT, isCalibration BOOLEAN,
+--																 idBox INT,  idTime INT, dateTime TIMESTAMP);
 																	 
-CREATE TYPE humidity as (idReport INT, date TIMESTAMP,vectorTimestamp INT, sensora FLOAT, sensorb FLOAT, 
-																	  sensorc FLOAT, sensord FLOAT, sensore FLOAT, isCalibration BOOLEAN,
-																	 idBox VARCHAR,  idTime INT, dateTime TIMESTAMP);
+--CREATE TYPE humidity as (idReport INT, date TIMESTAMP,vectorTimestamp INT, sensora FLOAT, rawsensora FLOAT, sensorb FLOAT, rawsensorb FLOAT, 
+--																	  sensorc FLOAT, rawsensorc FLOAT, sensord FLOAT, rawsensord FLOAT,
+--                                                                      sensore FLOAT, rawsensore FLOAT, isCalibration BOOLEAN,
+--																	  idBox VARCHAR,  idTime INT, dateTime TIMESTAMP);
 																	 
 CREATE OR REPLACE FUNCTION getFlowReports(idBox_r int, fromDate TIMESTAMP, toDate TIMESTAMP, calibration_r BOOL) RETURNS SETOF FLOW AS
 	$$
