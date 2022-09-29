@@ -55,9 +55,9 @@ while True:
             print("Solicitud de FLUJO de parte de: {}".format(sender))
             data = ""
             for flow in flowList:
-                data += flow.getVolume()
+                data += str(flow.getVolume())
                 data += ","
-                flow.volume = 0
+                flow.reset()
 
             print("Datos a enviar: {}".format(data))
 
