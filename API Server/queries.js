@@ -447,6 +447,7 @@ function roundDate(date) {
     date = new Date(date);
     dateRounded.setMinutes(Math.round(date.getMinutes() / 5) * 5);
     dateRounded.setSeconds(0);
+    dateRounded = dateRounded.toISOString();
     return dateRounded;
 }
 
