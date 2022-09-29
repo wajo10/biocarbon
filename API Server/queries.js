@@ -490,11 +490,11 @@ async function addHumidityReport(req, res, next) {
     req.body.rawSensorC = req.body.sensorC;
     req.body.rawSensorD = req.body.sensorD;
     req.body.rawSensorE = req.body.sensorE;
-    req.body.sensorA = humidityEquation(req.body.sensorA, req.body.idbox, "sensor1");
-    req.body.sensorB = humidityEquation(req.body.sensorB, req.body.idbox, "sensor2");
-    req.body.sensorC = humidityEquation(req.body.sensorC, req.body.idbox, "sensor3");
-    req.body.sensorD = humidityEquation(req.body.sensorD, req.body.idbox, "sensor4");
-    req.body.sensorE = humidityEquation(req.body.sensorE, req.body.idbox, "sensor5");
+    req.body.sensorA = humidityEquation(req.body.sensorA, req.body.id_box, "sensor1");
+    req.body.sensorB = humidityEquation(req.body.sensorB, req.body.id_box, "sensor2");
+    req.body.sensorC = humidityEquation(req.body.sensorC, req.body.id_box, "sensor3");
+    req.body.sensorD = humidityEquation(req.body.sensorD, req.body.id_box, "sensor4");
+    req.body.sensorE = humidityEquation(req.body.sensorE, req.body.id_box, "sensor5");
     getTimeVector(timestamp).then(function (idVector) {
         req.body.idVector = idVector;
         db.any('select addHumidityReport(${id_box}, ${created_at}, ${sensorA}, ${rawSensorA}, ${sensorB},' +
