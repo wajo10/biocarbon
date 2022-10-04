@@ -3,7 +3,7 @@
 
 --Users table 
 create Table Users (
-	userName varchar (60) not null,
+	userName varchar (30) not null,
 	name varchar (40) not null,
 	firstLastName varchar (20) not null,
 	secondLastName varchar (20) not null,
