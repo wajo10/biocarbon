@@ -74,11 +74,22 @@ create Table HumidityReport(
 create Table HSensor(
 	sensorNumber identity (1,1),
 	idHReport int not null,
-	rawValue decimal(8,5),
-	valueInterp decimal (8,5),
+	rawValue decimal(8,5) not null,
+	valueInterp decimal (8,5) not null,
 	primary key (sensorNumber, idHReport)
 );
 
-create Table 
+create Table TemperatureRegister (
+	idTempRegister identity(1,1),
+	idTimeVector int not null,
+	primary key (idTempRegister)
+);
+
+create Table Temperatures(
+	tempSensNumber int not null,
+	idTempRegister int not null,
+	Temperature decimal (8,5)
+	primary key (tempSensNumber, idTempRegister)
+);
 
 
