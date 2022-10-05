@@ -46,6 +46,7 @@ create Table FSensor (
 create Table RelayState(
 	idRelayState serial not null,
 	idTimeVector int not null,
+	date TIMESTAMP not null,
 	primary key (idRelayState)
 );
 
@@ -53,7 +54,7 @@ create Table Relays (
 	relayNumber int not null,
 	idRelayState int not null,
 	state boolean not null,
-	primary key (relayNumber)
+	primary key (relayNumber,idRelayState)
 );
 
 create Table HumidityBox (
@@ -82,6 +83,7 @@ create Table HSensor(
 create Table TemperatureRegister (
 	idTempRegister serial not null,
 	idTimeVector int not null,
+	date TIMESTAMP not null,
 	primary key (idTempRegister)
 );
 

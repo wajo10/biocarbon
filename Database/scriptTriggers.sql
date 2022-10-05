@@ -1,4 +1,4 @@
---*****Triggers Flow Report*****
+--Function that is activated by triggers to manage the time vector table
 CREATE OR REPLACE Function check_timeVector() returns trigger as $$
     DECLARE
 		--gets the date and time rounded to the nearest 5 minutes
@@ -17,13 +17,47 @@ CREATE OR REPLACE Function check_timeVector() returns trigger as $$
 	END;
 $$ LANGUAGE plpgsql;
 
+--*****Triggers Flow Report*****
 Create or replace Trigger manageTimeVector before insert on FlowReport
 for each row
 execute procedure check_timeVector();
 
---Pruebas
+--*****Triggers Relay State*****
+Create or replace Trigger manageTimeVector before insert on RelayState
+for each row
+execute procedure check_timeVector();
+/*Pruebas
+select createFlowBox ('segunda caja de flujo', 'limon');
+select createFlowReport('Caja de flujo prueba');
+select createFlowReport('segunda caja de flujo');
+
+select addFSensor(6,12345.54321,12355.50000);
+select addFSensor(7,12345.54321,12355.50000);
+select addFSensor(8,12345.54321,12355.50000);
+select addFSensor(9,12345.54321,12355.50000);
+select addFSensor(10,12345.54321,12355.50000)
+
+select createRelayState();
+
+select addRelay(1,TRUE);
+select addRelay(2,FALSE);
+select addRelay(3,TRUE);
+select addRelay(4,FALSE);
+select addRelay(5,TRUE);
 
 
-select 
+;
+
+select * from flowbox;
+select * from flowreport; 
+select * from timeVector;
+select * from FSensor;
+select * from RelayState;
+select * from Relays;
+
+delete from FlowReport where idfreport = 5;
+delete from timeVector where idTime = 26;
+
+*/
 
 
