@@ -9,30 +9,27 @@ $$ LANGUAGE sql;
 
 --*****Flow Box table*****
 CREATE OR REPLACE FUNCTION createFlowBox (box_Name varchar(50), box_location varchar(50)) RETURNS void AS $$
+insert into FlowBox (name, location)
+values (box_Name, box_location);
+$$ LANGUAGE sql;
+
+CREATE OR REPLACE FUNCTION updateFBoxLocation (box_Name varchar(50), box_location varchar(50)) RETURNS void AS $$
 update FlowBox
 set location = box_location
 where name = box_Name
 $$ LANGUAGE sql;
 
-CREATE OR REPLACE FUNCTION updateFBoxLocation (box_Name varchar(50)) RETURNS void AS $$
-insert into FlowBox (name, location)
-values (box_Name, box_location);
-END;
-$$ LANGUAGE sql;
-
 --*****Flow Report table*****
 CREATE OR REPLACE FUNCTION createFlowReport (box_Name varchar(30)) RETURNS void AS $$
 Declare
-	dateNow TIMESTAMP;
 	idFlowBox int;
 Begin
-	dateNow := CURRENT_TIMESTAMP;
-	idFlowBox := (select idFlowBox from FlowBox where name = box_Name);
+	idFlowBox := (select FlowBox.idFlowBox from FlowBox where name = box_Name);
 	insert into FlowReport (idFlowBox,date)
-	values (idFLowBox, current_date);
+	values (idFLowBox, CURRENT_TIMESTAMP);
 END;
-$$ 
-LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
+
 
 
 
