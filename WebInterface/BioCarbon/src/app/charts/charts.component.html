@@ -77,7 +77,7 @@
       </form>
       <div class="row" style="margin-top: 25px">
         <div *ngIf="this.selected == 'Humedad'">
-          <div *ngFor="let vari of humidityVars">
+          <div *ngFor="let vari of selectedVars">
             <ejs-chart [primaryXAxis]='primaryXAxis' [primaryYAxis]='humidityUnits[vari]["yAxis"]'
                        [zoomSettings]='zoom'
                        [title]='humidityUnits[vari]["title"]' [tooltip]="tooltip">
