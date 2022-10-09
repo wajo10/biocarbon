@@ -26,9 +26,20 @@ execute procedure check_timeVector();
 Create or replace Trigger manageTimeVector before insert on RelayState
 for each row
 execute procedure check_timeVector();
+
+--*****Triggers HumidityReport
+Create or replace Trigger manageTimeVector before insert on HumidityReport
+for each row
+execute procedure check_timeVector();
+
+--*****Triggers Temperature Register*****
+Create or replace Trigger manageTimeVector before insert on TemperatureRegister
+for each row
+execute procedure check_timeVector();
+
 /*Pruebas
 select createFlowBox ('segunda caja de flujo', 'limon');
-select createFlowReport('Caja de flujo prueba');
+select createFlowReport('Caja de flujo prueba 2');
 select createFlowReport('segunda caja de flujo');
 
 select addFSensor(6,12345.54321,12355.50000);
@@ -45,6 +56,25 @@ select addRelay(3,TRUE);
 select addRelay(4,FALSE);
 select addRelay(5,TRUE);
 
+select createHumidityBox ('primera caja de flujo', 'Heredia');
+select createHumidityBox ('segunda caja de flujo', 'Guanacaste');
+
+select createHumidityReport('primera caja de flujo');
+select createHumidityReport('segunda caja de flujo');
+
+select addHSensor (1,56.54321,56.50000);
+select addHSensor (2,108.959,109.0);
+select addHSensor (3,12345.54321,12355.50000);
+select addHSensor (4,540.001,450.0);
+select addHSensor (5,1010.9999,1011.000);
+
+select createTemperatureState();
+
+select addTemperature (1, 90.5);
+select addTemperature (2, 35.4);
+select addTemperature (3, 55.7);
+select addTemperature (4, 27.1);
+select addTemperature (5, 19.8);
 
 ;
 
@@ -54,6 +84,14 @@ select * from timeVector;
 select * from FSensor;
 select * from RelayState;
 select * from Relays;
+
+select * from HumidityBox;
+select * from HumidityReport;
+select * from HSensor;
+
+select * from temperatureregister;
+select * from temperatures;
+
 
 delete from FlowReport where idfreport = 5;
 delete from timeVector where idTime = 26;

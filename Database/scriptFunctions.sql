@@ -15,6 +15,7 @@ insert into FlowBox (name, location)
 values (box_Name, box_location);
 $$ LANGUAGE sql;
 
+--Update the location of a flow box
 CREATE OR REPLACE FUNCTION updateFBoxLocation (box_Name varchar(50), box_location varchar(50)) RETURNS void AS $$
 update FlowBox
 set location = box_location
@@ -70,9 +71,69 @@ Begin
 END;
 $$ LANGUAGE plpgsql;
 
+--*****Humidity Box*****
 
+--Create a new Humidity Box
+CREATE OR REPLACE FUNCTION createHumidityBox (box_Name varchar(50), box_location varchar(50)) RETURNS void AS $$
+insert into HumidityBox (name, location)
+values (box_Name, box_location);
+$$ LANGUAGE sql;
 
+--Update the location of a Humidity Box
+CREATE OR REPLACE FUNCTION updateHBoxLocation (box_Name varchar(50), box_location varchar(50)) RETURNS void AS $$
+update HumidityBox
+set location = box_location
+where name = box_Name
+$$ LANGUAGE sql;
 
+--*****Humidity Report*****
+
+--Create a new humidity report
+CREATE OR REPLACE FUNCTION createHumidityReport (box_Name varchar(30)) RETURNS void AS $$
+Declare
+	idHumidityBox int;
+Begin
+	idHumidityBox := (select HumidityBox.idHumidityBox from HumidityBox where name = box_Name);
+	insert into HumidityReport (idHumidityBox,date)
+	values (idHumidityBox, CURRENT_TIMESTAMP);
+END;
+$$ LANGUAGE plpgsql;
+
+--*****Humidity Sensor*****
+
+--adds a new sensor for the last Humidity Report generated
+CREATE OR REPLACE FUNCTION addHSensor (sensor_number int, raw_value decimal(10,5), value_interp decimal(10,5)) RETURNS void AS $$
+Declare
+	idHumidityReport int;
+Begin
+	idHumidityReport := (select idHReport from HumidityReport order by date desc limit 1);
+	insert into Hsensor(sensorNumber,idHReport,rawValue,valueInterp)
+	values (sensor_number,idHumidityReport,raw_value,value_interp);
+END;
+$$ LANGUAGE plpgsql;
+
+--*****Temperature Register*****
+
+--Creates a new temperature register
+CREATE OR REPLACE FUNCTION createTemperatureState() RETURNS void AS $$
+Begin
+	insert into TemperatureRegister (date)
+	values (current_timestamp);
+END;
+$$ LANGUAGE plpgsql;
+
+--*****Temperatures*****
+
+--adds a new temperature entry to the last temperature register created
+CREATE OR REPLACE FUNCTION addTemperature (temp_sens_number int, temp_read decimal(10,5)) RETURNS void AS $$
+Declare
+	idTRegister int;
+Begin
+	idTRegister := (select tr.idTempRegister from TemperatureRegister as tr order by date desc limit 1);
+	insert into Temperatures(tempSensNumber, idTempRegister, temperature)
+	values (temp_sens_number, idTRegister, temp_read);
+END;
+$$ LANGUAGE plpgsql;
 
 
 
