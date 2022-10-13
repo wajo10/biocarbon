@@ -80,6 +80,7 @@ CREATE TABLE relaysState(
 
 CREATE TABLE temperature(
 	idTemperature SERIAL NOT NULL,
+    dateTime TIMESTAMP NOT NULL,
 	temperature1 INT NOT NULL,
 	temperature2 INT NOT NULL,
 	temperature3 INT NOT NULL,

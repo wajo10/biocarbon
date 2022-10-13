@@ -107,6 +107,13 @@ CREATE OR REPLACE FUNCTION lastHumidityReport (idBox_r VARCHAR) RETURNS HUMIDITY
 	$$
 LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION lastTemperatureReport () RETURNS TEMPERATURE AS 
+	$$
+	SELECT * FROM temperature  
+	ORDER BY dateTime DESC LIMIT 1
+	$$
+LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION lastTenHumidityReports (idBox_r VARCHAR) RETURNS HUMIDITY AS
 	$$
 	SELECT * FROM humidityReport  
@@ -131,6 +138,14 @@ CREATE OR REPLACE FUNCTION addHumidityReport(idBox_r VARCHAR, Date_r TIMESTAMP, 
                                sensorE,rawSensorE, isCalibration, vectorTimestamp )
 	VALUES (idBox_r, Date_r, sensorA_r, rawSensorA_r, sensorB_r, rawSensorB_r, sensorC_r, rawSensorC_r, sensorD_r, rawSensorD_r, 
             sensorE_r,  rawSensorE_r,calibration_r, idvector_r)
+	$$
+LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION addTemperatureReport(Date_r TIMESTAMP, temperature1_r FLOAT, temperature2_r FLOAT, temperature3_r FLOAT, temperature4_r FLOAT, 
+										 temperature5_r FLOAT) RETURNS VOID AS 
+	$$
+	INSERT INTO Temperature (Datetime,temperature1, temperature2, temperature3, temperature4, temperature5 )
+	VALUES (Date_r, temperature1_r, temperature2_r, temperature3_r, temperature4_r, temperature5_r)
 	$$
 LANGUAGE SQL;
 

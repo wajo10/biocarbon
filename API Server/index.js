@@ -65,6 +65,8 @@ router.get('/api/biocarbon/LastHumidity/:idBox', queries.getLastHumidityReport);
 router.put('/api/biocarbon/FlowReports/', queries.getFlowReports);
 router.put('/api/biocarbon/HumidityReports/', queries.getHumidityReports);
 router.post('/api/biocarbon/FlowReport/', queries.addFlowReport);
+router.post('/api/biocarbon/TemperatureReport/', queries.addTempReport);
+router.get('/api/biocarbon/LastTemperature/', queries.getLastTemperatureReport);
 router.post('/api/biocarbon/HumidityReport/', queries.addHumidityReport);
 router.get('/api/biocarbon/FlowBoxes/', queries.getFlowBoxes);
 router.get('/api/biocarbon/HumidityBoxes/', queries.getHumidityBoxes);

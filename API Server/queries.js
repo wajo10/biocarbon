@@ -140,6 +140,27 @@ function getLastHumidityReport(req, res, next) {
 
 }
 
+function getLastTemperatureReport(req, res, next) {
+    db.one('select * from lastTemperatureReport()')
+        .then(function (data) {
+            res.status(200)
+                .json({
+                    status: 'success',
+                    data: data,
+                    message: 'Data Retrieved Successfully'
+                });
+
+        })
+        .catch(function (err) {
+            res.status(400)
+                .json({
+                    status: 'failed',
+                    message: 'Error retrieving data'
+                });
+            return next(err);
+        });
+}
+
 function filtro(Device, Sensor, Data) {
     Sensor = Sensor.toLowerCase();
     let arrayValues = [];
@@ -534,6 +555,23 @@ function addFlowReport(req, res, next) {
     });
 }
 
+
+function addTempReport(req, res, next) {
+    console.log(req.body);
+    db.any('select addTemperatureReport(${created_at}, ${temperature1}, ${temperature2}, ${temperature3}, ' +
+        '${temperature4}, ${temperature5})', req.body)
+        .then(function () {
+            res.status(200)
+                .json({
+                    status: 'success',
+                    message: 'Temperature Report Inserted'
+                });
+        })
+        .catch(function (err) {
+            return next(err);
+        });
+}
+
 //Queries de Dispositivos
 function getFlowBoxes(req, res, next) {
     db.any('select * from getFlowBoxes()')
@@ -765,5 +803,7 @@ module.exports = {
     updateSock: updateSock,
     setRelays: setRelays,
     getHumiditySockets: getHumiditySockets,
-    testCalibration: testCalibration
+    testCalibration: testCalibration,
+    addTempReport: addTempReport,
+    getLastTemperatureReport: getLastTemperatureReport
 };
