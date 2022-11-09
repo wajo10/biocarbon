@@ -445,6 +445,17 @@ function getFlowReports(req, res, next) {
 function getHumidityReports(req, res, next) {
     db.any('select * from getHumidityReports(${idbox},${fromdate},${todate}, ${iscalibration})', req.body)
         .then(function (data) {
+            //truncate the data to 2 decimals
+            data.sensora  = Math.round(data.sensora *100)/100;
+            data.rawsensora  = Math.round(data.sensora *100)/100;
+            data.sensorb  = Math.round(data.sensorb *100)/100;
+            data.rawsensorb  = Math.round(data.sensorb *100)/100;
+            data.sensorc  = Math.round(data.sensorc *100)/100;
+            data.rawsensorc  = Math.round(data.sensorc *100)/100;
+            data.sensord  = Math.round(data.sensord *100)/100;
+            data.rawsensord  = Math.round(data.sensord *100)/100;
+            data.sensore  = Math.round(data.sensore *100)/100;
+            data.rawsensore  = Math.round(data.sensore *100)/100;
             res.status(200)
                 .json({
                     status: 'success',
