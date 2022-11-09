@@ -236,10 +236,18 @@ export class ChartsComponent implements OnInit {
     let type = '';
     if (this.selected === 'Humedad') {
       for (const med of this.values) {
-        report.push({
-          timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Sensor1: med.sensora, Sensor2: med.sensorb,
-          Sensor3: med.sensorc, Sensor4: med.sensord, Sensor5: med.sensore
-        });
+        if (this.isCalibration){
+          report.push({
+            timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Sensor1: med.rawsensora, Sensor2: med.rawsensorb,
+            Sensor3: med.rawsensorc, Sensor4: med.rawsensord, Sensor5: med.rawsensore
+          });
+        }
+        else{
+          report.push({
+            timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Sensor1: med.sensora, Sensor2: med.sensorb,
+            Sensor3: med.sensorc, Sensor4: med.sensord, Sensor5: med.sensore
+          });
+        }
       }
       type = 'Humidity';
     } else {
@@ -249,7 +257,7 @@ export class ChartsComponent implements OnInit {
           Flow3: med.flow3, Flow4: med.flow4, Flow5: med.flow5
         });
       }
-      type = 'Atmospheric';
+      type = 'Flow';
     }
     import('xlsx').then(xlsx => {
       const worksheet = xlsx.utils.json_to_sheet(report); // Sale Data
