@@ -34,7 +34,7 @@ export class ConfigureComponent implements OnInit {
         this.updateSettings(this.idBox);
       }, _ => alert('Error De conexión'));
     } else {
-      this.httpService.get_api('FlowBpmoxes').subscribe((res: any) => {
+      this.httpService.get_api('FlowBoxes').subscribe((res: any) => {
         this.devices = res.data;
         this.idBox = this.devices[0].idBox;
         this.device = this.devices[0];

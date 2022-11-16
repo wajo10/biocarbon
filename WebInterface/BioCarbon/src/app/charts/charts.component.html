@@ -1,7 +1,8 @@
 <app-nav-bar></app-nav-bar>
 <div class="charts">
   <div class="container" style="width: auto">
-    <mat-form-field appearance="outline" style="background-color: whitesmoke; border-radius: 10px; width: min-content; height: 50px">
+    <mat-form-field appearance="outline"
+                    style="background-color: whitesmoke; border-radius: 10px; width: min-content; height: 50px">
       <mat-label>Tipo de Reporte</mat-label>
       <mat-select [(value)]="selected">
         <mat-option value="Humedad" (click)="setType()">Humedad</mat-option>
@@ -21,7 +22,9 @@
 
     <button type="button" (click)="exportCSV()" class="btn btn-success" style="margin-left: 20px">Exportar</button>
 
-    <mat-checkbox style="margin-left: 20px; margin-top:15px"  color="primary" (click)="isCalibration =! isCalibration; getReports()">Calibración</mat-checkbox>
+    <mat-checkbox style="margin-left: 20px; margin-top:15px" color="primary"
+                  (click)="isCalibration =! isCalibration; getReports()">Calibración
+    </mat-checkbox>
 
     <div class="main-body" style="margin-top: 25px">
       <form class="form-inline">
@@ -76,17 +79,23 @@
         </div>
       </form>
       <div class="row" style="margin-top: 25px">
-        <div *ngIf="this.selected == 'Humedad'">
-          <div *ngFor="let vari of selectedVars">
-            <ejs-chart [primaryXAxis]='primaryXAxis' [primaryYAxis]='humidityUnits[vari]["yAxis"]'
-                       [zoomSettings]='zoom'
-                       [title]='humidityUnits[vari]["title"]' [tooltip]="tooltip">
-              <e-series-collection>
-                <e-series [dataSource]='chartData[vari]' type='Line' xName='x' yName='y' name='Cantidad'
-                          [marker]="marker"></e-series>
-              </e-series-collection>
-            </ejs-chart>
-          </div>
+        <div *ngIf="this.selected == 'Humedad' && selectedVars.length > 4">
+          <ejs-chart [primaryXAxis]='primaryXAxis' [primaryYAxis]='humidityUnits[selectedVars[0]]["yAxis"]'
+                     [zoomSettings]='zoom'
+                     [title]='"Gráfica de Humedad"' [tooltip]="tooltip">
+            <e-series-collection>
+              <e-series [dataSource]='chartData[selectedVars[0]]' type='Line' xName='x' yName='y' name='Sensor 1'
+                        [marker]="marker"></e-series>
+              <e-series [dataSource]='chartData[selectedVars[1]]' type='Line' xName='x' yName='y' name='Sensor 2'
+                        [marker]="marker"></e-series>
+              <e-series [dataSource]='chartData[selectedVars[2]]' type='Line' xName='x' yName='y' name='Sensor 3'
+                        [marker]="marker"></e-series>
+              <e-series [dataSource]='chartData[selectedVars[3]]' type='Line' xName='x' yName='y' name='Sensor 4'
+                        [marker]="marker"></e-series>
+              <e-series [dataSource]='chartData[selectedVars[4]]' type='Line' xName='x' yName='y' name='Sensor 5'
+                        [marker]="marker"></e-series>
+            </e-series-collection>
+          </ejs-chart>
         </div>
         <div *ngIf="this.selected == 'Flujo'">
           <div *ngFor="let vari of flowVars">
