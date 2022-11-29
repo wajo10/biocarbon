@@ -80,7 +80,6 @@ CREATE TABLE relaysState(
 
 CREATE TABLE temperature(
 	idTemperature SERIAL NOT NULL,
-    dateTime TIMESTAMP NOT NULL,
 	temperature1 INT NOT NULL,
 	temperature2 INT NOT NULL,
 	temperature3 INT NOT NULL,
@@ -106,9 +105,3 @@ ON DELETE RESTRICT ON UPDATE RESTRICT;
 ALTER TABLE HumidityReport ADD CONSTRAINT FK_Time_Stamp_Humidity
 FOREIGN KEY(vectorTimestamp) REFERENCES timeVector(idTime)
 ON DELETE RESTRICT ON UPDATE RESTRICT;
-
-ALTER TABLE HumidityReport ADD rawSensorA FLOAT;
-ALTER TABLE HumidityReport ADD rawSensorB FLOAT;
-ALTER TABLE HumidityReport ADD rawSensorC FLOAT;
-ALTER TABLE HumidityReport ADD rawSensorD FLOAT;
-ALTER TABLE HumidityReport ADD rawSensorE FLOAT;
