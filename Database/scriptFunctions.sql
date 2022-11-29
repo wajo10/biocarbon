@@ -11,6 +11,27 @@ values (user_name, name_user, first_LastName, second_LastName, email_user, Encod
 END;
 $$ LANGUAGE plpgsql;
 
+--validate user
+CREATE OR REPLACE FUNCTION validateUser(UserName_r varchar, Password_r varchar) RETURNS Users AS 
+	$$
+	(SELECT * FROM USERS WHERE UserName_r = UserName and Password = crypt(Password_r, Password))
+	$$
+Language SQL;
+
+--modify user
+CREATE OR REPLACE FUNCTION modifyUser (UserName_r varchar, Name_r varchar, FirstLastName_r varchar, SecondLastName_r varchar, Email_r varchar, PhoneNumber_r varchar,
+										 Password_r varchar) RETURNS void AS $$
+	DECLARE
+		EncodedPassword VARCHAR;
+	BEGIN
+		SELECT crypt(Password_r, gen_salt('bf', 4)) into EncodedPassword;
+	UPDATE users
+	SET UserName = UserName_r, Name = Name_r, FirstLastName = FirstLastName_r, SecondLastName = SecondLastName_r, Email = Email_r, PhoneNumber = PhoneNumber_r, Password = EncodedPassword
+	WHERE UserName = UserName_r;
+	END;
+	$$
+LANGUAGE plpgsql;
+
 --*****Flow Box table*****
 
 --creates a new flow box

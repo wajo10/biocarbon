@@ -1,5 +1,6 @@
 --Drop database if exists BiocarbonV2
 --create database BiocarbonV2
+CREATE EXTENSION pgcrypto;
 
 --Users table 
 create Table Users (
