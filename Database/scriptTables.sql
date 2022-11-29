@@ -24,6 +24,7 @@ create Table FlowBox(
 	idFlowBox serial not null,
 	name varchar (50) not null,
 	location varchar (50),
+	latlong varchar(50),
 	primary key (idFlowBox)
 );
 
@@ -38,8 +39,8 @@ create Table FlowReport (
 create Table FSensor (
 	sensorNumber int not null, --este numero lo pasa
 	idFReport int not null,
-	rawValue decimal (10,5) not null,
-	valueInterp decimal(10,5) not null,
+	rawValue decimal (10,2) not null,
+	valueInterp decimal(10,2) not null,
 	primary key (sensorNumber, idFReport)
 );
 
@@ -61,6 +62,7 @@ create Table HumidityBox (
 	idHumidityBox serial not null,
 	name varchar(50) not null,
 	location varchar(50),
+	latlong varchar(50),
 	primary key (idHumidityBox)	
 );
 
@@ -75,8 +77,8 @@ create Table HumidityReport(
 create Table HSensor(
 	sensorNumber int not null, --este valor se pasa
 	idHReport int not null,
-	rawValue decimal(10,5) not null,
-	valueInterp decimal (10,5) not null,
+	rawValue decimal(10,2) not null,
+	valueInterp decimal (10,2) not null,
 	primary key (sensorNumber, idHReport)
 );
 
@@ -90,7 +92,7 @@ create Table TemperatureRegister (
 create Table Temperatures(
 	tempSensNumber int not null,
 	idTempRegister int not null,
-	Temperature decimal (10,5),
+	Temperature decimal (5,2),
 	primary key (tempSensNumber, idTempRegister)
 );
 
@@ -146,7 +148,7 @@ FOREIGN KEY (idHumidityBox) references HumidityBox(idHumidityBox);
 
 alter table HumidityReport 
 add constraint FK_idTimeVector
-FOREIGN KEY (idTimeVector) references timeVector(idTimeVector);
+FOREIGN KEY (idTimeVector) references timeVector(idTime);
 
 --Humidity Sensor
 alter table HSensor 

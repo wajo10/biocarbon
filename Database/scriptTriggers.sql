@@ -38,15 +38,14 @@ for each row
 execute procedure check_timeVector();
 
 /*Pruebas
-select createFlowBox ('segunda caja de flujo', 'limon');
-select createFlowReport('Caja de flujo prueba 2');
+select createFlowBox ('segunda caja de flujo', 'limon', 'lat prueba, long prueba');
 select createFlowReport('segunda caja de flujo');
 
-select addFSensor(6,12345.54321,12355.50000);
-select addFSensor(7,12345.54321,12355.50000);
-select addFSensor(8,12345.54321,12355.50000);
-select addFSensor(9,12345.54321,12355.50000);
-select addFSensor(10,12345.54321,12355.50000)
+select addFSensor(1,12345.54,12355.00);
+select addFSensor(2,12345.63,12355.01);
+select addFSensor(3,12345.78,12355.02);
+select addFSensor(4,12345.90,12355.03);
+select addFSensor(5,12345.31,12355.04);
 
 select createRelayState();
 
@@ -56,8 +55,8 @@ select addRelay(3,TRUE);
 select addRelay(4,FALSE);
 select addRelay(5,TRUE);
 
-select createHumidityBox ('primera caja de flujo', 'Heredia');
-select createHumidityBox ('segunda caja de flujo', 'Guanacaste');
+select createHumidityBox ('primera caja de flujo', 'Heredia', 'latlong prueba');
+select createHumidityBox ('segunda caja de flujo', 'Guanacaste', 'latlong prueba');
 
 select createHumidityReport('primera caja de flujo');
 select createHumidityReport('segunda caja de flujo');
