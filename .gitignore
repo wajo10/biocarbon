@@ -7,3 +7,5 @@ RaspGateway/venv/
 *.xml
 
 *.iml
+
+Database/ScriptFunciones.sql
