@@ -38,14 +38,16 @@ for each row
 execute procedure check_timeVector();
 
 /*Pruebas
-select createFlowBox ('segunda caja de flujo', 'limon', 'lat prueba, long prueba');
-select createFlowReport('segunda caja de flujo');
-
-select addFSensor(1,12345.54,12355.00);
-select addFSensor(2,12345.63,12355.01);
-select addFSensor(3,12345.78,12355.02);
-select addFSensor(4,12345.90,12355.03);
-select addFSensor(5,12345.31,12355.04);
+select createFlowBox (1,'caja de flujo', 'limon', 'lat prueba, long prueba');
+select createFlowReport(1);
+select * from flowreport;
+select * from fsensor;
+delete from fsensor
+select addFSensor(6,1,12345.54,12355.00);
+select addFSensor(6,2,12345.63,12355.01);
+select addFSensor(6,3,12345.78,12355.02);
+select addFSensor(5,4,12345.90,12355.03);
+select addFSensor(5,5,12345.31,12355.04);
 
 select createRelayState();
 
@@ -55,23 +57,23 @@ select addRelay(3,TRUE);
 select addRelay(4,FALSE);
 select addRelay(5,TRUE);
 
-select createHumidityBox ('A','primera caja de flujo', 'Heredia', 'latlong prueba');
+select createHumidityBox ('B','segunda caja de flujo', 'Heredia', 'latlong prueba');
 
-select createHumidityReport('A');
+select createHumidityReport('B');
 
-delete from humiditybox;
-delete from humidityreport;
+delete from flowBox;
+delete from flowReport;
 
 select addHSensor (8,1,56.54321,56.50000);
-select addHSensor (2,108.959,109.0);
-select addHSensor (3,12345.54321,12355.50000);
-select addHSensor (4,540.001,450.0);
-select addHSensor (5,1010.9999,1011.000);
+select addHSensor (8,2,108.959,109.0);
+select addHSensor (8,3,12345.54321,12355.50000);
+select addHSensor (9,4,540.001,450.0);
+select addHSensor (9,5,1010.9999,1011.000);
 
-select createTemperatureState();
-
-select addTemperature (1, 1, 90.5);
-select addTemperature (2, 35.4);
+select createTemperatureRegister();
+select * from temperatures
+select addTemperature (1, 2, 90.5);
+select addTemperature (2, 2, 35.4);
 select addTemperature (3, 55.7);
 select addTemperature (4, 27.1);
 select addTemperature (5, 19.8);

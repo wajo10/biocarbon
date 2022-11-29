@@ -64,11 +64,8 @@ $$ LANGUAGE plpgsql;
 --*****Flow Sensors*****
 
 --adds a new sensor entry to the last flow report created
-CREATE OR REPLACE FUNCTION addFSensor (sensor_number int, raw_value decimal(10,2), value_interp decimal(10,2)) RETURNS void AS $$
-Declare
-	idFlowReport int;
+CREATE OR REPLACE FUNCTION addFSensor (idFlowReport integer, sensor_number int, raw_value decimal(10,2), value_interp decimal(10,2)) RETURNS void AS $$
 Begin
-	idFlowReport := (select idFReport from FlowReport order by date desc limit 1);
 	insert into FSensor(sensorNumber,idFReport,rawValue,valueInterp)
 	values (sensor_number,idFlowReport,raw_value,value_interp);
 END;
@@ -140,7 +137,7 @@ $$ LANGUAGE plpgsql;
 --*****Temperature Register*****
 
 --Creates a new temperature register
-CREATE OR REPLACE FUNCTION createTemperatureState() RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION createTemperatureRegister() RETURNS integer AS $$
 Declare
 	tempID integer;
 Begin
