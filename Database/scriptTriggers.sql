@@ -18,22 +18,22 @@ CREATE OR REPLACE Function check_timeVector() returns trigger as $$
 $$ LANGUAGE plpgsql;
 
 --*****Triggers Flow Report*****
-Create or replace Trigger manageTimeVector before insert on FlowReport
+Create Trigger manageTimeVector before insert on FlowReport
 for each row
 execute procedure check_timeVector();
 
 --*****Triggers Relay State*****
-Create or replace Trigger manageTimeVector before insert on RelayState
+Create Trigger manageTimeVector before insert on RelayState
 for each row
 execute procedure check_timeVector();
 
 --*****Triggers HumidityReport
-Create or replace Trigger manageTimeVector before insert on HumidityReport
+Create Trigger manageTimeVector before insert on HumidityReport
 for each row
 execute procedure check_timeVector();
 
 --*****Triggers Temperature Register*****
-Create or replace Trigger manageTimeVector before insert on TemperatureRegister
+Create Trigger manageTimeVector before insert on TemperatureRegister
 for each row
 execute procedure check_timeVector();
 
