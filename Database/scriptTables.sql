@@ -22,7 +22,7 @@ create Table timeVector (
 );
 
 create Table FlowBox(
-	idFlowBox serial not null,
+	idFlowBox integer not null,
 	name varchar (50) not null,
 	location varchar (50),
 	latlong varchar(50),
@@ -38,7 +38,7 @@ create Table FlowReport (
 );
 
 create Table FSensor (
-	sensorNumber int not null, --este numero lo pasa
+	sensorNumber int not null,
 	idFReport int not null,
 	rawValue decimal (10,2) not null,
 	valueInterp decimal(10,2) not null,

@@ -35,28 +35,29 @@ LANGUAGE plpgsql;
 --*****Flow Box table*****
 
 --creates a new flow box
-CREATE OR REPLACE FUNCTION createFlowBox (box_Name varchar(50), box_location varchar(50), box_latlong varchar(50)) RETURNS void AS $$
-insert into FlowBox (name, location, latlong)
-values (box_Name, box_location, box_latlong);
+CREATE OR REPLACE FUNCTION createFlowBox (box_id integer, box_Name varchar(50), box_location varchar(50), box_latlong varchar(50)) RETURNS void AS $$
+insert into FlowBox (idFlowBox, name, location, latlong)
+values (box_id, box_Name, box_location, box_latlong);
 $$ LANGUAGE sql;
 
 --Update the location of a flow box
-CREATE OR REPLACE FUNCTION updateFBoxLocation (box_Name varchar(50), box_location varchar(50), box_latlong varchar(50)) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION updateFBoxLocation (box_id integer, box_Name varchar(50), box_location varchar(50), box_latlong varchar(50)) RETURNS void AS $$
 update FlowBox
 set location = box_location, latlong = box_latlong
-where name = box_Name
+where idFlowBox = box_id
 $$ LANGUAGE sql;
 
 --*****Flow Report table*****
 
 --creates a new flow report 
-CREATE OR REPLACE FUNCTION createFlowReport (box_Name varchar(30)) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION createFlowReport (id_FlowBox integer) RETURNS integer AS $$
 Declare
-	idFlowBox int;
+	idReport int;
 Begin
-	idFlowBox := (select FlowBox.idFlowBox from FlowBox where name = box_Name);
 	insert into FlowReport (idFlowBox,date)
-	values (idFLowBox, CURRENT_TIMESTAMP);
+	values (id_FlowBox, CURRENT_TIMESTAMP);
+	select (select idFReport from FlowReport order by date desc limit 1) into idReport;
+	return idReport;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -105,10 +106,10 @@ values (idHumBox, box_Name, box_location, box_latlong);
 $$ LANGUAGE sql;
 
 --Update the location of a Humidity Box
-CREATE OR REPLACE FUNCTION updateHBoxLocation (box_Name varchar(50), box_location varchar(50), box_latlong varchar(50)) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION updateHBoxLocation (box_id varchar(2), box_Name varchar(50), box_location varchar(50), box_latlong varchar(50)) RETURNS void AS $$
 update HumidityBox
-set location = box_location, latlong = box_latlong
-where name = box_Name
+set location = box_location, latlong = box_latlong, name = box_Name
+where idHumidityBox = box_id
 $$ LANGUAGE sql;
 
 --*****Humidity Report*****
@@ -136,27 +137,27 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-
 --*****Temperature Register*****
 
 --Creates a new temperature register
-CREATE OR REPLACE FUNCTION createTemperatureState() RETURNS void AS $$
+CREATE OR REPLACE FUNCTION createTemperatureState() RETURNS integer AS $$
+Declare
+	tempID integer;
 Begin
 	insert into TemperatureRegister (date)
 	values (current_timestamp);
+	select (select idTempRegister from temperatureregister order by date desc limit 1) into tempID;
+	return tempID;
 END;
 $$ LANGUAGE plpgsql;
 
 --*****Temperatures*****
 
 --adds a new temperature entry to the last temperature register created
-CREATE OR REPLACE FUNCTION addTemperature (temp_sens_number int, temp_read decimal(5,2)) RETURNS void AS $$
-Declare
-	idTRegister int;
+CREATE OR REPLACE FUNCTION addTemperature (tempID integer, temp_sens_number int, temp_read decimal(5,2)) RETURNS void AS $$
 Begin
-	idTRegister := (select tr.idTempRegister from TemperatureRegister as tr order by date desc limit 1);
 	insert into Temperatures(tempSensNumber, idTempRegister, temperature)
-	values (temp_sens_number, idTRegister, temp_read);
+	values (temp_sens_number, tempID, temp_read);
 END;
 $$ LANGUAGE plpgsql;
 

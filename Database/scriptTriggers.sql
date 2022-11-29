@@ -70,7 +70,7 @@ select addHSensor (5,1010.9999,1011.000);
 
 select createTemperatureState();
 
-select addTemperature (1, 90.5);
+select addTemperature (1, 1, 90.5);
 select addTemperature (2, 35.4);
 select addTemperature (3, 55.7);
 select addTemperature (4, 27.1);
