@@ -1,5 +1,5 @@
---Drop database if exists asistenciaDB
---create database asistenciaDB
+--Drop database if exists BiocarbonV2
+--create database BiocarbonV2
 
 --Users table 
 create Table Users (
