@@ -62,7 +62,7 @@ select createHumidityReport('A');
 delete from humiditybox;
 delete from humidityreport;
 
-select addHSensor (1,56.54321,56.50000);
+select addHSensor (8,1,56.54321,56.50000);
 select addHSensor (2,108.959,109.0);
 select addHSensor (3,12345.54321,12355.50000);
 select addHSensor (4,540.001,450.0);
@@ -70,7 +70,7 @@ select addHSensor (5,1010.9999,1011.000);
 
 select createTemperatureState();
 
-select addTemperature (1, 90.5);
+select addTemperature (1, 1, 90.5);
 select addTemperature (2, 35.4);
 select addTemperature (3, 55.7);
 select addTemperature (4, 27.1);
