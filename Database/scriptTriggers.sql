@@ -40,8 +40,7 @@ execute procedure check_timeVector();
 /*Pruebas
 select createFlowBox (1,'caja de flujo', 'limon', 'lat prueba, long prueba');
 select createFlowReport(1);
-select * from flowreport;
-select * from fsensor;
+
 delete from fsensor
 select addFSensor(6,1,12345.54,12355.00);
 select addFSensor(6,2,12345.63,12355.01);
@@ -50,9 +49,9 @@ select addFSensor(5,4,12345.90,12355.03);
 select addFSensor(5,5,12345.31,12355.04);
 
 select createRelayState();
-
-select addRelay(1,TRUE);
-select addRelay(2,FALSE);
+select * from relays
+select addRelay(2,1,TRUE);
+select addRelay(2,2,FALSE);
 select addRelay(3,TRUE);
 select addRelay(4,FALSE);
 select addRelay(5,TRUE);
@@ -71,14 +70,11 @@ select addHSensor (9,4,540.001,450.0);
 select addHSensor (9,5,1010.9999,1011.000);
 
 select createTemperatureRegister();
-select * from temperatures
-select addTemperature (1, 2, 90.5);
-select addTemperature (2, 2, 35.4);
-select addTemperature (3, 55.7);
-select addTemperature (4, 27.1);
-select addTemperature (5, 19.8);
 
-;
+select addTemperature (1, 2, 90.5);
+select addTemperature (1, 3, 90.5);
+select addTemperature (2, 2, 35.4);
+
 
 select * from flowbox;
 select * from flowreport; 
@@ -93,10 +89,6 @@ select * from HSensor;
 
 select * from temperatureregister;
 select * from temperatures;
-
-
-delete from FlowReport where idfreport = 5;
-delete from timeVector where idTime = 26;
 
 */
 

@@ -64,7 +64,7 @@ $$ LANGUAGE plpgsql;
 --*****Flow Sensors*****
 
 --adds a new sensor entry to the last flow report created
-CREATE OR REPLACE FUNCTION addFSensor (idFlowReport integer, sensor_number int, raw_value decimal(10,2), value_interp decimal(10,2)) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION addFSensor (sensor_number integer, idFlowReport integer, raw_value decimal(10,2), value_interp decimal(10,2)) RETURNS void AS $$
 Begin
 	insert into FSensor(sensorNumber,idFReport,rawValue,valueInterp)
 	values (sensor_number,idFlowReport,raw_value,value_interp);
@@ -74,23 +74,24 @@ $$ LANGUAGE plpgsql;
 --*****Relays State*****
 
 --creates a new relay state report
-CREATE OR REPLACE FUNCTION createRelayState() RETURNS void AS $$
+CREATE OR REPLACE FUNCTION createRelayState() RETURNS integer AS $$
+Declare
+	idRelay int;
 Begin
 	insert into RelayState (date)
 	values (current_timestamp);
+		select (select idRelayState from RelayState order by date desc limit 1) into idRelay;
+	return idRelay;
 END;
 $$ LANGUAGE plpgsql;
 
 --*****Relays*****
 
 --adds a new relay entry to the last relay state created
-CREATE OR REPLACE FUNCTION addRelay (relay_number int, relay_state boolean) RETURNS void AS $$
-Declare
-	idRState int;
+CREATE OR REPLACE FUNCTION addRelay (idRelay_state integer, relay_number int, relay_state boolean) RETURNS void AS $$
 Begin
-	idRState := (select rs.idRelayState from RelayState as rs order by date desc limit 1);
 	insert into Relays(relayNumber, idRelayState, state)
-	values (relay_number, idRState, relay_state);
+	values (relay_number, idRelay_state, relay_state);
 END;
 $$ LANGUAGE plpgsql;
 
