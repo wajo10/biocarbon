@@ -71,14 +71,11 @@ select addHSensor (9,4,540.001,450.0);
 select addHSensor (9,5,1010.9999,1011.000);
 
 select createTemperatureRegister();
-select * from temperatures
-select addTemperature (1, 2, 90.5);
-select addTemperature (2, 2, 35.4);
-select addTemperature (3, 55.7);
-select addTemperature (4, 27.1);
-select addTemperature (5, 19.8);
 
-;
+select addTemperature (1, 2, 90.5);
+select addTemperature (1, 3, 90.5);
+select addTemperature (2, 2, 35.4);
+
 
 select * from flowbox;
 select * from flowreport; 
@@ -93,10 +90,6 @@ select * from HSensor;
 
 select * from temperatureregister;
 select * from temperatures;
-
-
-delete from FlowReport where idfreport = 5;
-delete from timeVector where idTime = 26;
 
 */
 
