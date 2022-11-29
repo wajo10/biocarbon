@@ -99,9 +99,9 @@ $$ LANGUAGE plpgsql;
 --*****Humidity Box*****
 
 --Create a new Humidity Box
-CREATE OR REPLACE FUNCTION createHumidityBox (box_Name varchar(50), box_location varchar(50), box_latlong varchar (50)) RETURNS void AS $$
-insert into HumidityBox (name, location, latlong)
-values (box_Name, box_location, box_latlong);
+CREATE OR REPLACE FUNCTION createHumidityBox (idHumBox varchar(2), box_Name varchar(50), box_location varchar(50), box_latlong varchar (50)) RETURNS void AS $$
+insert into HumidityBox (idhumiditybox,name, location, latlong)
+values (idHumBox, box_Name, box_location, box_latlong);
 $$ LANGUAGE sql;
 
 --Update the location of a Humidity Box
@@ -114,13 +114,10 @@ $$ LANGUAGE sql;
 --*****Humidity Report*****
 
 --Create a new humidity report
-CREATE OR REPLACE FUNCTION createHumidityReport (box_Name varchar(30)) RETURNS void AS $$
-Declare
-	idHumidityBox int;
+CREATE OR REPLACE FUNCTION createHumidityReport (box_id varchar(2)) RETURNS void AS $$
 Begin
-	idHumidityBox := (select HumidityBox.idHumidityBox from HumidityBox where name = box_Name);
-	insert into HumidityReport (idHumidityBox,date)
-	values (idHumidityBox, CURRENT_TIMESTAMP);
+	insert into HumidityReport (idhumiditybox,date)
+	values (box_id, CURRENT_TIMESTAMP);
 END;
 $$ LANGUAGE plpgsql;
 

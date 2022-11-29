@@ -60,7 +60,7 @@ create Table Relays (
 );
 
 create Table HumidityBox (
-	idHumidityBox serial not null,
+	idHumidityBox varchar(2) not null,
 	name varchar(50) not null,
 	location varchar(50),
 	latlong varchar(50),
@@ -69,7 +69,7 @@ create Table HumidityBox (
 
 create Table HumidityReport(
 	idHReport serial not null,
-	idHumidityBox int not null,
+	idHumidityBox varchar(2) not null,
 	idTimeVector int not null,
 	date TIMESTAMP not null,
 	primary key (idHReport)

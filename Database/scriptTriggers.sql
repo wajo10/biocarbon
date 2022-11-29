@@ -55,11 +55,12 @@ select addRelay(3,TRUE);
 select addRelay(4,FALSE);
 select addRelay(5,TRUE);
 
-select createHumidityBox ('primera caja de flujo', 'Heredia', 'latlong prueba');
-select createHumidityBox ('segunda caja de flujo', 'Guanacaste', 'latlong prueba');
+select createHumidityBox ('A','primera caja de flujo', 'Heredia', 'latlong prueba');
 
-select createHumidityReport('primera caja de flujo');
-select createHumidityReport('segunda caja de flujo');
+select createHumidityReport('A');
+
+delete from humiditybox;
+delete from humidityreport;
 
 select addHSensor (1,56.54321,56.50000);
 select addHSensor (2,108.959,109.0);
