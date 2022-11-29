@@ -114,25 +114,28 @@ $$ LANGUAGE sql;
 --*****Humidity Report*****
 
 --Create a new humidity report
-CREATE OR REPLACE FUNCTION createHumidityReport (box_id varchar(2)) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION createHumidityReport (box_id varchar(2)) RETURNS integer AS $$
+DECLARE
+	idReport integer;
 Begin
 	insert into HumidityReport (idhumiditybox,date)
 	values (box_id, CURRENT_TIMESTAMP);
+	select (select idHReport from HumidityReport order by date desc limit 1) into idReport;
+	return idReport;
 END;
 $$ LANGUAGE plpgsql;
 
 --*****Humidity Sensor*****
 
 --adds a new sensor for the last Humidity Report generated
-CREATE OR REPLACE FUNCTION addHSensor (sensor_number int, raw_value decimal(10,2), value_interp decimal(10,2)) RETURNS void AS $$
-Declare
-	idHumidityReport int;
+CREATE OR REPLACE FUNCTION addHSensor (id_report integer, sensor_number int, raw_value decimal(10,2), value_interp decimal(10,2)) RETURNS void AS $$
 Begin
-	idHumidityReport := (select idHReport from HumidityReport order by date desc limit 1);
 	insert into Hsensor(sensorNumber,idHReport,rawValue,valueInterp)
-	values (sensor_number,idHumidityReport,raw_value,value_interp);
+	values (sensor_number,id_report,raw_value,value_interp);
 END;
 $$ LANGUAGE plpgsql;
+
+
 
 --*****Temperature Register*****
 

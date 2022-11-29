@@ -62,7 +62,7 @@ select createHumidityReport('A');
 delete from humiditybox;
 delete from humidityreport;
 
-select addHSensor (1,56.54321,56.50000);
+select addHSensor (8,1,56.54321,56.50000);
 select addHSensor (2,108.959,109.0);
 select addHSensor (3,12345.54321,12355.50000);
 select addHSensor (4,540.001,450.0);
