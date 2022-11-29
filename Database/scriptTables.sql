@@ -158,7 +158,7 @@ FOREIGN KEY (idHReport) references HumidityReport(idHReport);
 --Temperature Register
 alter table TemperatureRegister
 add constraint FK_idTimeVector
-FOREIGN KEY (idTimeVector) references timeVector(idTimeVector);
+FOREIGN KEY (idTimeVector) references timeVector(idTime);
 
 --Temperatures
 alter table Temperatures 
