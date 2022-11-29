@@ -100,7 +100,7 @@ create Table Temperatures(
 
 --Users
 alter table Users 
-add constraint unique_Name
+add constraint unique_UserName
 unique (name);
 
 alter table Users 
@@ -118,7 +118,7 @@ foreign key (idTimeVector) references timeVector (idTime);
 
 --Flow Box
 alter table FlowBox 
-add constraint unique_name
+add constraint unique_FlowBoxName
 unique (name);
 
 --FSensor
@@ -138,7 +138,7 @@ FOREIGN KEY (idrelaystate) references RelayState(idRelayState);
 
 --Humidity Box
 alter table HumidityBox
-add constraint unique_name
+add constraint unique_HumBoxName
 unique (name);
 
 --Humidity Report
