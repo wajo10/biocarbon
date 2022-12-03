@@ -34,6 +34,7 @@ create Table FlowReport (
 	idFlowBox int not null,
 	idTimeVector int,
 	date TIMESTAMP not null,
+	isCablibrated boolean not null,
 	primary key (idFReport)
 );
 
@@ -72,6 +73,7 @@ create Table HumidityReport(
 	idHumidityBox varchar(2) not null,
 	idTimeVector int not null,
 	date TIMESTAMP not null,
+	isCablibrated boolean not null,
 	primary key (idHReport)
 );
 
@@ -125,7 +127,7 @@ unique (name);
 --FSensor
 alter table FSensor 
 add constraint FK_idFReport
-unique (idFReport);
+Foreign key (idFReport) references FlowReport (idFReport);
 
 --Relay State
 alter table RelayState 

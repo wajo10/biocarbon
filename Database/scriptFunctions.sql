@@ -47,6 +47,21 @@ set location = box_location, latlong = box_latlong
 where idFlowBox = box_id
 $$ LANGUAGE sql;
 
+--Get flow box data by id
+CREATE OR REPLACE FUNCTION getFlowBox(idBox_r INT) RETURNS FlowBox AS
+	$$
+	SELECT * FROM FlowBox WHERE 
+	idFlowBox = idBox_r
+	$$
+LANGUAGE SQL;
+
+--Get all flow boxes data
+CREATE OR REPLACE FUNCTION getFlowBoxes() RETURNS setof FlowBox AS
+	$$
+	SELECT * FROM FlowBox
+	$$
+LANGUAGE SQL;
+
 --*****Flow Report table*****
 
 --creates a new flow report 
@@ -60,6 +75,30 @@ Begin
 	return idReport;
 END;
 $$ LANGUAGE plpgsql;
+
+--get data from a flow report by box id 
+CREATE OR REPLACE FUNCTION lastFlowReport (idBox_r INT) returns table(idFReport int, ActualDate timestamp, vectorDate timestamp, 
+																	  idFBox int, idTime int, calibrated boolean) AS 
+	$$
+	select f.idFReport, f.date, t_v.dateTime, f.idflowbox, t_v.idTime, f.iscalibrated from FlowReport as f
+	inner join timeVector as t_v on F.idtimevector = t_v.idtime
+	inner join FSensor as f_s on f_s.idfreport = F.idfreport
+	inner join FlowBox as f_b on f_b.idFlowBox = f.idflowbox
+	where f_b.idFlowBox = idBox_r
+	order by f.date desc limit 1;
+	$$
+LANGUAGE SQL;
+
+--get sensor data by box id of the last 5 lectures
+CREATE OR REPLACE FUNCTION lastFlowReportSensors (idBox_r INT) returns table(sensorNumber int, raw decimal(10,2), interp decimal(10,2)) AS 
+	$$
+	select fse.sensorNumber, fse.rawValue, fse.ValueInterp from FSensor as fse 
+	inner join FlowReport as fr on fse.idFReport = fr.idFReport
+	inner join FlowBox as fbox on fbox.idFlowBox = fr.idFlowBox
+	where fbox.idFlowBox = idBox_r
+	order by fr.date desc limit 5;
+	$$
+LANGUAGE SQL;
 
 --*****Flow Sensors*****
 
@@ -110,6 +149,22 @@ set location = box_location, latlong = box_latlong, name = box_Name
 where idHumidityBox = box_id
 $$ LANGUAGE sql;
 
+--Get Humidity box data by id
+CREATE OR REPLACE FUNCTION getHumidityBox(idBox_r VARCHAR) RETURNS HumidityBox AS
+	$$
+	SELECT * FROM HumidityBox WHERE 
+	idHumidityBox = idBox_r
+	$$
+LANGUAGE SQL;
+
+--Get all humidity boxes data
+CREATE OR REPLACE FUNCTION getHumidityBoxes() RETURNS setof HumidityBox AS
+	$$
+	SELECT * FROM HumidityBox
+	$$
+LANGUAGE SQL;
+
+
 --*****Humidity Report*****
 
 --Create a new humidity report
@@ -123,6 +178,52 @@ Begin
 	return idReport;
 END;
 $$ LANGUAGE plpgsql;
+
+--get data from a humidity report by box id 
+CREATE OR REPLACE FUNCTION lastHumidityReport (idBox_r varchar(2)) returns table(idHReport int, ActualDate timestamp, vectorDate timestamp, 
+																	  idHBox varchar(2), idTime int, calibrated boolean) AS 
+	$$
+	select hr.idHReport, hr.date, t_v.dateTime, hr.idhumiditybox, t_v.idTime, hr.iscalibrated from HumidityReport as hr
+	inner join timeVector as t_v on hr.idtimevector = t_v.idtime
+	inner join HSensor as h_s on h_s.idhreport = hr.idhreport
+	inner join HumidityBox as h_b on h_b.idHumidityBox = hr.idhumiditybox
+	where h_b.idHumidityBox = idBox_r
+	order by hr.date desc limit 1;
+	$$
+LANGUAGE SQL;
+
+--get data from the last 10 humidity reports by box id *****ARREGLAR ESTAS FUNCIONES QUE LAS FECHAS ESTAN MAL COMO LAS DEVUELVE*****
+CREATE OR REPLACE FUNCTION lastTenHumidityReport (idBox_r varchar(2)) returns table(idHReport int, ActualDate timestamp, vectorDate timestamp, 
+																	  idHBox varchar(2), idTime int, calibrated boolean) AS 
+	$$
+	select hr.idHReport, hr.date, t_v.dateTime, hr.idhumiditybox, t_v.idTime, hr.iscalibrated from HumidityReport as hr
+	inner join timeVector as t_v on hr.idtimevector = t_v.idtime
+	inner join HSensor as h_s on h_s.idhreport = hr.idhreport
+	inner join HumidityBox as h_b on h_b.idHumidityBox = hr.idhumiditybox
+	where h_b.idHumidityBox = idBox_r
+	order by hr.date desc limit 10;
+	$$
+LANGUAGE SQL;
+
+update humidityreport set date = '2022-12-02 22:15:14.932018-06' where idhreport = 23
+select * from humidityreport
+delete from humidityreport where idhreport = 24
+delete from humidityreport where idhreport = 25
+delete from humidityreport where idhreport = 26 
+delete from humidityreport where idhreport = 24 
+delete from humidityreport where idhreport = 24 
+select lastTenHumidityReport('A')
+--get sensor data by box id of the last 5 lectures
+CREATE OR REPLACE FUNCTION lastHumidityReportSensors (idBox_r varchar(2)) returns table(sensorNumber int, raw decimal(10,2), interp decimal(10,2)) AS 
+	$$
+	select hse.sensorNumber, hse.rawValue, hse.ValueInterp from HSensor as hse 
+	inner join HumidityReport as hr on hse.idHReport = hr.idHreport
+	inner join HumidityBox as hbox on hbox.idHumidityBox = hr.idHumidityBox
+	where Hbox.idHumidityBox = idBox_r
+	order by hr.date desc limit 5;
+	$$
+LANGUAGE SQL;
+
 
 --*****Humidity Sensor*****
 
