@@ -68,11 +68,11 @@ delete from humiditybox;
 delete from humidityreport;
 delete from hsensor
 
-select addHSensor (37,1,123.54321,123.50);
-select addHSensor (37,2,123.959,123.0);
-select addHSensor (37,3,123.54,123.50);
-select addHSensor (37,4,123.001,123.41);
-select addHSensor (37,5,123.99,124);
+select addHSensor (51,11,123.54321,123.50);
+select addHSensor (51,12,123.959,123.0);
+select addHSensor (51,13,123.54,123.50);
+select addHSensor (51,14,123.001,123.41);
+select addHSensor (51,15,123.99,124);
 
 select createTemperatureRegister();
 

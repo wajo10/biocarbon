@@ -65,12 +65,12 @@ LANGUAGE SQL;
 --*****Flow Report table*****
 
 --creates a new flow report 
-CREATE OR REPLACE FUNCTION createFlowReport (id_FlowBox integer) RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION createFlowReport (id_FlowBox integer, calibrated boolean) RETURNS integer AS $$
 Declare
 	idReport int;
 Begin
-	insert into FlowReport (idFlowBox,date)
-	values (id_FlowBox, CURRENT_TIMESTAMP);
+	insert into FlowReport (idFlowBox,date, iscalibrated)
+	values (id_FlowBox, CURRENT_TIMESTAMP, calibrated);
 	select (select idFReport from FlowReport order by date desc limit 1) into idReport;
 	return idReport;
 END;
@@ -82,7 +82,6 @@ CREATE OR REPLACE FUNCTION lastFlowReport (idBox_r INT) returns table(idFReport 
 	$$
 	select f.idFReport, f.date, t_v.dateTime, f.idflowbox, t_v.idTime, f.iscalibrated from FlowReport as f
 	inner join timeVector as t_v on F.idtimevector = t_v.idtime
-	inner join FSensor as f_s on f_s.idfreport = F.idfreport
 	inner join FlowBox as f_b on f_b.idFlowBox = f.idflowbox
 	where f_b.idFlowBox = idBox_r
 	order by f.date desc limit 1;
@@ -185,45 +184,62 @@ CREATE OR REPLACE FUNCTION lastHumidityReport (idBox_r varchar(2)) returns table
 	$$
 	select hr.idHReport, hr.date, t_v.dateTime, hr.idhumiditybox, t_v.idTime, hr.iscalibrated from HumidityReport as hr
 	inner join timeVector as t_v on hr.idtimevector = t_v.idtime
-	inner join HSensor as h_s on h_s.idhreport = hr.idhreport
 	inner join HumidityBox as h_b on h_b.idHumidityBox = hr.idhumiditybox
 	where h_b.idHumidityBox = idBox_r
 	order by hr.date desc limit 1;
 	$$
 LANGUAGE SQL;
 
---get data from the last 10 humidity reports by box id *****ARREGLAR ESTAS FUNCIONES QUE LAS FECHAS ESTAN MAL COMO LAS DEVUELVE*****
+--get data from the last 10 humidity reports by box id
 CREATE OR REPLACE FUNCTION lastTenHumidityReport (idBox_r varchar(2)) returns table(idHReport int, ActualDate timestamp, vectorDate timestamp, 
 																	  idHBox varchar(2), idTime int, calibrated boolean) AS 
 	$$
 	select hr.idHReport, hr.date, t_v.dateTime, hr.idhumiditybox, t_v.idTime, hr.iscalibrated from HumidityReport as hr
 	inner join timeVector as t_v on hr.idtimevector = t_v.idtime
-	inner join HSensor as h_s on h_s.idhreport = hr.idhreport
 	inner join HumidityBox as h_b on h_b.idHumidityBox = hr.idhumiditybox
 	where h_b.idHumidityBox = idBox_r
 	order by hr.date desc limit 10;
 	$$
 LANGUAGE SQL;
 
-update humidityreport set date = '2022-12-02 22:15:14.932018-06' where idhreport = 23
-select * from humidityreport
-delete from humidityreport where idhreport = 24
-delete from humidityreport where idhreport = 25
-delete from humidityreport where idhreport = 26 
-delete from humidityreport where idhreport = 24 
-delete from humidityreport where idhreport = 24 
-select lastTenHumidityReport('A')
 --get sensor data by box id of the last 5 lectures
-CREATE OR REPLACE FUNCTION lastHumidityReportSensors (idBox_r varchar(2)) returns table(sensorNumber int, raw decimal(10,2), interp decimal(10,2)) AS 
+CREATE OR REPLACE FUNCTION lastHumidityReportSensors (idBox_r varchar(2)) returns table(sensorNumber int, raw decimal(10,2), interp decimal(10,2), reportID varchar(2)) AS 
 	$$
-	select hse.sensorNumber, hse.rawValue, hse.ValueInterp from HSensor as hse 
+	select hse.sensorNumber, hse.rawValue, hse.ValueInterp, hr.idHReport from HSensor as hse 
 	inner join HumidityReport as hr on hse.idHReport = hr.idHreport
 	inner join HumidityBox as hbox on hbox.idHumidityBox = hr.idHumidityBox
-	where Hbox.idHumidityBox = idBox_r
+	where hbox.idHumidityBox = idBox_r
 	order by hr.date desc limit 5;
 	$$
 LANGUAGE SQL;
 
+--get sensor lecture from a specific report
+CREATE OR REPLACE FUNCTION getHumidityReportSensors (idRep int) returns table(sensorNumber int, raw decimal(10,2), interp decimal(10,2)) AS 
+	$$
+	select hse.sensorNumber, hse.rawValue, hse.ValueInterp from HSensor as hse 
+	inner join HumidityReport as hr on hse.idHReport = hr.idHreport
+	where hr.idHReport = idRep
+	order by hse.sensorNumber;
+	$$
+LANGUAGE SQL;
+
+--get humidity reports within a range of days ************************REVISAR ESTA FUNCION
+CREATE OR REPLACE FUNCTION getHumidityReports(idBox_r VARCHAR(2), fromDate TIMESTAMP, toDate TIMESTAMP, calibration_r BOOL) RETURNS table(idReport int, 
+																																	   reportDate timestamp,
+																																	   vectorDate timestamp,
+																																	   calibrated boolean) AS
+	$$
+	SELECT hr.idHReport, hr.date, tv.dateTime, isCalibrated FROM HumidityReport as hr
+	inner join timeVector as tv on tv.idTime = hr.idTimeVector
+	AND hr.date >= fromDate
+	AND	hr.date <= toDate
+	AND	idHumidityBox = idBox_r
+	AND hr.isCalibrated = calibration_r
+	ORDER BY hr.date
+	$$
+LANGUAGE SQL;
+
+select * from humidityreport
 
 --*****Humidity Sensor*****
 
