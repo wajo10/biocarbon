@@ -167,7 +167,7 @@ LANGUAGE SQL;
 --*****Humidity Report*****
 
 --Create a new humidity report
-CREATE OR REPLACE FUNCTION createHumidityReport (box_id varchar(2)) RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION createHumidityReport (box_id varchar(2)) RETURNS varchar(2) AS $$
 DECLARE
 	idReport integer;
 Begin
@@ -209,7 +209,7 @@ CREATE OR REPLACE FUNCTION lastHumidityReportSensors (idBox_r varchar(2)) return
 	inner join HumidityReport as hr on hse.idHReport = hr.idHreport
 	inner join HumidityBox as hbox on hbox.idHumidityBox = hr.idHumidityBox
 	where hbox.idHumidityBox = idBox_r
-	order by hr.date desc limit 5;
+	order by hse.sensorNumber desc;
 	$$
 LANGUAGE SQL;
 
@@ -222,6 +222,8 @@ CREATE OR REPLACE FUNCTION getHumidityReportSensors (idRep int) returns table(se
 	order by hse.sensorNumber;
 	$$
 LANGUAGE SQL;
+
+
 
 --get humidity reports within a range of days ************************REVISAR ESTA FUNCION
 CREATE OR REPLACE FUNCTION getHumidityReports(idBox_r VARCHAR(2), fromDate TIMESTAMP, toDate TIMESTAMP, calibration_r BOOL) RETURNS table(idReport int, 
@@ -239,7 +241,6 @@ CREATE OR REPLACE FUNCTION getHumidityReports(idBox_r VARCHAR(2), fromDate TIMES
 	$$
 LANGUAGE SQL;
 
-select * from humidityreport
 
 --*****Humidity Sensor*****
 
