@@ -257,7 +257,7 @@ $$ LANGUAGE plpgsql;
 --*****Temperature Register*****
 
 --Creates a new temperature register
-CREATE OR REPLACE FUNCTION createTemperatureRegister() RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION createTemperatureRegister() RETURNS int AS $$
 Declare
 	tempID integer;
 Begin
@@ -277,7 +277,6 @@ CREATE OR REPLACE FUNCTION lastTemperatureRegister () returns table(idTempRegist
 	$$
 LANGUAGE SQL;
 
-
 --get data from a temperature registers in a range of time by box id 
 CREATE OR REPLACE FUNCTION getTemperatureRegisters(fromDate TIMESTAMP, toDate TIMESTAMP) RETURNS table(idTempRegister int, reportDate timestamp,
 																									   vectorDate timestamp, idTimeVector int) AS
@@ -289,9 +288,6 @@ CREATE OR REPLACE FUNCTION getTemperatureRegisters(fromDate TIMESTAMP, toDate TI
 	ORDER BY tr.date
 	$$
 LANGUAGE SQL;
-
-select * from temperatureregister
-select * from temperatures
 
 --*****Temperatures*****
 
@@ -312,8 +308,3 @@ CREATE OR REPLACE FUNCTION getTemperatures (regID int) returns table(sensorNumbe
 	order by tp.tempSensNumber desc limit 5;
 	$$
 LANGUAGE SQL;
-
-
-
-
-
