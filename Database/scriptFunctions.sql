@@ -167,16 +167,17 @@ LANGUAGE SQL;
 --*****Humidity Report*****
 
 --Create a new humidity report
-CREATE OR REPLACE FUNCTION createHumidityReport (box_id varchar(2)) RETURNS varchar(2) AS $$
+CREATE OR REPLACE FUNCTION createHumidityReport (box_id varchar(2), calibrated boolean) RETURNS int AS $$
 DECLARE
 	idReport integer;
 Begin
-	insert into HumidityReport (idhumiditybox,date)
-	values (box_id, CURRENT_TIMESTAMP);
+	insert into HumidityReport (idhumiditybox,date, iscalibrated)
+	values (box_id, CURRENT_TIMESTAMP, calibrated);
 	select (select idHReport from HumidityReport order by date desc limit 1) into idReport;
 	return idReport;
 END;
 $$ LANGUAGE plpgsql;
+
 
 --get data from a humidity report by box id 
 CREATE OR REPLACE FUNCTION lastHumidityReport (idBox_r varchar(2)) returns table(idHReport int, ActualDate timestamp, vectorDate timestamp, 
