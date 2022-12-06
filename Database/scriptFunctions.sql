@@ -1,7 +1,7 @@
 --*****User table*****
 --Create new user
 CREATE OR REPLACE FUNCTION createUser (user_name varchar(30), name_user varchar(40), first_LastName varchar(20), second_LastName varchar (20),
-									   email_user varchar (50), password_user varchar (30), phone_Number varchar (20)) RETURNS void AS $$
+									   email_user varchar (50), password_user varchar, phone_Number varchar (20)) RETURNS void AS $$
 Declare
 EncodedPassword varchar;
 Begin
@@ -203,7 +203,7 @@ CREATE OR REPLACE FUNCTION lastTenHumidityReport (idBox_r varchar(2)) returns ta
 LANGUAGE SQL;
 
 --get sensor data by box id of the last 5 lectures
-CREATE OR REPLACE FUNCTION lastHumidityReportSensors (idBox_r varchar(2)) returns table(sensorNumber int, raw decimal(10,2), interp decimal(10,2), reportID varchar(2)) AS 
+CREATE OR REPLACE FUNCTION lastHumidityReportSensors (idBox_r varchar(2)) returns table(sensorNumber int, raw decimal(10,2), interp decimal(10,2), reportID int) AS 
 	$$
 	select hse.sensorNumber, hse.rawValue, hse.ValueInterp, hr.idHReport from HSensor as hse 
 	inner join HumidityReport as hr on hse.idHReport = hr.idHreport
@@ -225,7 +225,7 @@ LANGUAGE SQL;
 
 
 
---get humidity reports within a range of days ************************REVISAR ESTA FUNCION
+--get humidity reports within a range of days
 CREATE OR REPLACE FUNCTION getHumidityReports(idBox_r VARCHAR(2), fromDate TIMESTAMP, toDate TIMESTAMP, calibration_r BOOL) RETURNS table(idReport int, 
 																																	   reportDate timestamp,
 																																	   vectorDate timestamp,
@@ -267,6 +267,31 @@ Begin
 END;
 $$ LANGUAGE plpgsql;
 
+--Get last temperature register
+CREATE OR REPLACE FUNCTION lastTemperatureRegister () returns table(idTempRegister int, ActualDate timestamp, vectorDate timestamp, idTime int) AS 
+	$$
+	select tr.idTempRegister, tr.date, tv.dateTime, tv.idTime from temperatureRegister as tr
+	inner join timeVector as tv on tv.idtime = tr.idtimevector
+	order by tr.date desc limit 1;
+	$$
+LANGUAGE SQL;
+
+
+--get data from a temperature registers in a range of time by box id 
+CREATE OR REPLACE FUNCTION getTemperatureRegisters(fromDate TIMESTAMP, toDate TIMESTAMP) RETURNS table(idTempRegister int, reportDate timestamp,
+																									   vectorDate timestamp, idTimeVector int) AS
+	$$
+	SELECT tr.idTempRegister, tr.date, tv.dateTime, tv.idTime from temperatureRegister as tr
+	inner join timeVector as tv on tv.idtime = tr.idtimevector
+	AND tr.date >= fromDate
+	AND	tr.date <= toDate
+	ORDER BY tr.date
+	$$
+LANGUAGE SQL;
+
+select * from temperatureregister
+select * from temperatures
+
 --*****Temperatures*****
 
 --adds a new temperature entry to the last temperature register created
@@ -276,6 +301,18 @@ Begin
 	values (temp_sens_number, tempID, temp_read);
 END;
 $$ LANGUAGE plpgsql;
+
+--Get temperatures by register id
+CREATE OR REPLACE FUNCTION getTemperatures (regID int) returns table(sensorNumber int, temperature decimal(5,2)) AS 
+	$$
+	select tp.tempSensNumber, tp.temperature from temperatures as tp
+	inner join temperatureRegister as tr on tr.idTempRegister = tp.idTempRegister
+	where tr.idTempRegister = regID
+	order by tp.tempSensNumber desc limit 5;
+	$$
+LANGUAGE SQL;
+
+
 
 
 
