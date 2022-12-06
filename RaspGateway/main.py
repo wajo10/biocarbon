@@ -6,11 +6,13 @@ from datetime import datetime
 import requests
 from datetime import datetime
 import threading
+
 rfm9x = RFM9X()
 
 sio = socketio.Client()
 
-serverInterrupt = False #Variable that stops mainloop if gateway receives a message from server
+serverInterrupt = False  # Variable that stops mainloop if gateway receives a message from server
+
 
 @sio.event
 def connect():
@@ -42,6 +44,7 @@ def on_message(data):
             sio.emit("HumidityResult", humValues)
         else:
             sio.emit("HumidityResult", "Error")
+
 
 def flow():
     message = "Flow"
@@ -77,7 +80,7 @@ def relays(command, identifier):
         cont += 1
     serverInterrupt = False
     print(rec)
-    
+
     return "Comando {} se ha enviado correctamente al relay #{}. Info ".format(command, identifier, rec)
 
 
@@ -105,15 +108,17 @@ def humidity(identifier):
         serverInterrupt = False
         return
 
+
 def mainLoop():
-    global serverInterrupt,rfm9x
-    nodes = [9,10,11,12] #Cajas a realizar pruebas
-    dic = {1:"A", 2:"B", 3:"C", 4:"D", 5:"E", 6:"F", 7:"G", 8:"H", 9:"I", 10:"J", 11:"K", 12:"L", 13:"M", 14:"N", 15:"O"}
+    global serverInterrupt, rfm9x
+    nodes = [9, 10, 11, 12]  # Cajas a realizar pruebas
+    dic = {1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J", 11: "K", 12: "L", 13: "M",
+           14: "N", 15: "O"}
     url = "http://201.207.53.225:3031/api/biocarbon/HumidityReport"
     while True:
         if not serverInterrupt:
-            now=datetime.now()
-            dt_string=now.strftime("%Y-%m-%d %H:%M:%S")
+            now = datetime.now()
+            dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
             for node in nodes:
                 message = "Data!{0}".format(node)
                 t1 = time.time()
@@ -122,9 +127,10 @@ def mainLoop():
                 try:
                     rec = rfm9x.receive(with_ack=True).split("/")
                     print(rec)
-                    print("tiempo: {}".format(time.time()-t1))
-                    sendurl = {"id_box":dic[node], "created_at":dt_string, "sensorA":rec[0], "sensorB":rec[1], "sensorC":rec[2], "sensorD":rec[3], "sensorE":rec[4], "isCalibration":False}
-                    x=requests.post(url,data=sendurl)
+                    print("tiempo: {}".format(time.time() - t1))
+                    sendurl = {"id_box": dic[node], "created_at": dt_string, "sensorA": rec[0], "sensorB": rec[1],
+                               "sensorC": rec[2], "sensorD": rec[3], "sensorE": rec[4], "isCalibration": False}
+                    x = requests.post(url, data=sendurl)
                     print(x.text)
                     print(sendurl)
                 except Exception as e:
@@ -143,5 +149,3 @@ while True:
         break
     except:
         print("Connection failed. Retrying...")
-
-
