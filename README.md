@@ -1,4 +1,5 @@
 # Proyecto Biocarbón
+Este proyecto está enfocado en un sistema que mide el estado de cambio de la humedad del suelo tratado con biocarbón para la activación/desactivación de líneas de riego por medio de un control ON/OFF. Para esto se utiliza tecnología IoT, sensores de humedad, sensores de flujo y tecnología LoRa, esta última permite comunicar los nodos de medición de humedad, por medio de radiofrecuencia, a un Gateway que se encarga de subir los datos a un servidor. Además, se tiene un concentrador de datos (controller) encargado de la activación/desactivación de las líneas de riego, este también utiliza LoRa para comunicarse con el Gateway.
 
 ## RaspGateway
 
