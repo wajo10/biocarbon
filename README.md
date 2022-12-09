@@ -27,7 +27,7 @@ def mainLoop():
 
 Función del ciclo principal, siempre está pidiendo datos de humedad a los nodos a menos que se realice una interrupción por parte del servidor para ejecutar otra función (flow o relays). Crea tres archivos .txt, uno para guardar los datos de humedad localmente, para cuantificar los errores y para guardar los parámetros de transmisión. La función además se encarga de subir los datos de humedad al servidor.
 
-## **RFM9x.py**
+### **RFM9x.py**
 
 ```python
 class RFM9X (object):
@@ -152,6 +152,50 @@ Función encargada de recibir datos y decodificarlos.
 while True: 
 ```
 Ciclo encargado de esperar paquetes y envíar el dato cuando se lo pide el Gateway. Si no se recibe un paquete durante el Timeout, se retorna None. Verifica si la dirección de destino (byte 1 del Header) del paquete recibido corresponde a este nodo.
+
+## RaspController
+
+### Relays.py 
+
+```python
+def update():
+```
+Función que actualiza los valores de flujo y volumen
+
+```python
+while True:
+```
+Ciclo que se encuentra esperando a un comando a ejecutar, si es de "Flow" envía los datos de flujo al Gateway. Si es un comando para los relés ejecuta según lo que se solicite. 
+
+### VolumeRead.py
+
+```python
+class FlowMeter():
+```
+Esta clase representa el sensor del medidor de flujo que maneja los pulsos de entrada y calcula la medición del caudal actual en L/min
+
+```python
+def __init__(self):
+```
+Se crean las instancias y se inicializan en 0.
+
+```python
+def pulseCallback(self, p):
+```
+Función que es ejecutada con cada pulso recibido por el sensor y es utilizada para calcular diferencia horaria desde el último pulso recibido, la tasa de flujo actual y restablece el tiempo del último pulso.
+
+*Nota: self.flow_rate = hertz / 5.425  el valor de 5.425 es un valor seleccionado de funcionamiento para los sensores de flujo, esta frecuencia depende del sensor. (la sugerida es 5.5 para el sensor en uso)*
+
+```python
+def getFlowRate(self):
+```
+Función que se ejecuta para obtener la medida de flujo actual. Si no se ha recibido un pulso en más de un segundo, supone que el flujo se ha detenido y establece el caudal en 0.0. Retorna medida de caudal actual.
+
+```python
+def getVolume(self):
+```
+Función que se encarga de obtener el valor del volumen a partir del valor de flujo. Retorna el totalizador del volumen en un intervalo de tiempo
+
 
 
 
