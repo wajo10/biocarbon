@@ -4,7 +4,7 @@
 
 ## FeatherHumidity
 
-### FeatherCom.py
+### **FeatherCom.py**
 Este código se encarga de recolectar los datos de humedad del suelo en cada nodo y enviarlos al Gateway mediante LoRa.
 
 ```python
@@ -46,7 +46,7 @@ def datos_humedad():
 
 Función que se encarga de recolectar los datos de los sensores de humedad, se forma un paquete (string) el cual es el que se envía con los datos recolectados.
 
-####Radio built-in Feather M0 RFM95 module configuration
+**Radio built-in Feather M0 RFM95 module configuration**
 
 ```python
 rfm9x.tx_power = 20
