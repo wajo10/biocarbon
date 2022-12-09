@@ -2,6 +2,31 @@
 
 ## RaspGateway
 
+### **main.py**
+
+Este código se encarga de controlar las acciones que realiza el Gateway. Realiza solicitudes de humedad, activación/desactivación de relés y flujo.
+
+```python
+def flow():
+```
+Función que solicita datos de flujo al concentrador de datos, realiza 10 reintentos antes de dar error de comunicación. 
+
+```python
+def relays(command, identifier):
+```
+Función que solicita la activación/desactivación de los relés al concentrador de datos. Recibe un comando y un identificador desde el servidor. Realiza 10 reintentos antes de dar error de comunicación.
+
+```python
+def humidity(identifier):
+```
+Función que solicita datos de humedad a los nodos de medición. Recibe un identificador desde el servidor. 
+
+```python
+def mainLoop():
+```
+
+Función del ciclo principal, siempre está pidiendo datos de humedad a los nodos a menos que se realice una interrupción por parte del servidor para ejecutar otra función (flow o relays). Crea tres archivos .txt, uno para guardar los datos de humedad localmente, para cuantificar los errores y para guardar los parámetros de transmisión. La función además se encarga de subir los datos de humedad al servidor.
+
 ## FeatherHumidity
 
 ### **FeatherCom.py**
