@@ -165,7 +165,7 @@ Función que actualiza los valores de flujo y volumen
 ```python
 while True:
 ```
-Ciclo que se encuentra esperando a un comando a ejecutar, si es de "Flow" envía los datos de flujo al Gateway. Si es un comando para los relés ejecuta según lo que se solicite. 
+Ciclo que se encuentra esperando un comando a ejecutar, si es de "Flow" envía los datos de flujo al Gateway. Si es un comando para los relés ejecuta según lo que se solicite. 
 
 ### VolumeRead.py
 
