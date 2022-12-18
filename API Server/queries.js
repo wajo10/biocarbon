@@ -9,7 +9,7 @@ var options = {
 
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:admin@localhost:5432/Biocarbon';
+var connectionString = 'postgres://postgres:admin@localhost:5432/BiocarbonV2';
 var db = pgp(connectionString);
 
 //Queries de Usuarios
