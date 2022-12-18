@@ -9,7 +9,7 @@ var options = {
 
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:admin@localhost:5432/Biocarbon';
+var connectionString = 'postgres://postgres:admin@localhost:5432/BiocarbonV2';
 var db = pgp(connectionString);
 
 //Queries de Usuarios
@@ -56,7 +56,7 @@ function modifyUser(req, res, next) {
 
 function addUser(req, res, next) {
     console.log(req.body);
-    db.any('select addUser(${username}, ${name}, ${firstlastname}, ${secondlastname}, ${email}, ${phonenumber}, ${password})', req.body)
+    db.any('select createUser(${username}, ${name}, ${firstlastname}, ${secondlastname}, ${email}, ${password}, ${phonenumber})', req.body)
         .then(function () {
             res.status(200)
                 .json({
@@ -97,12 +97,14 @@ function getLastFlowReport(req, res, next) {
     db.one('select * from lastFlowReport ($1)', [Device])
         .then(function (data) {
             console.log(data);
-            res.status(200)
-                .json({
+            db.any('select * from lastFlowReportSensors ($1)', [Device]).then(function (dataSensors) {
+                res.status(200).json({
                     status: 'success',
                     data: data,
+                    dataSensors: dataSensors,
                     message: 'Data Retrieved Successfully'
                 });
+            });
 
         })
         .catch(function (err) {
@@ -120,13 +122,15 @@ function getLastHumidityReport(req, res, next) {
     const Device = req.params.idBox;
     db.one('select * from lastHumidityReport ($1)', [Device])
         .then(function (data) {
-            console.log(Device);
-            res.status(200)
-                .json({
+            db.any('select * from lastHumidityReportSensors ($1)', [Device]).then(function (dataSensors) {
+                res.status(200).json({
                     status: 'success',
                     data: data,
+                    dataSensors: dataSensors,
                     message: 'Data Retrieved Successfully'
                 });
+            });
+            console.log(Device);
 
         })
         .catch(function (err) {
@@ -517,7 +521,6 @@ function getTimeVector(timestamp) {
 
 async function addHumidityReport(req, res, next) {
     console.log(req.body);
-    const timestamp = roundDate(req.body.created_at);
     req.body.rawSensorA = req.body.sensorA;
     req.body.rawSensorB = req.body.sensorB;
     req.body.rawSensorC = req.body.sensorC;
@@ -528,32 +531,56 @@ async function addHumidityReport(req, res, next) {
     req.body.sensorC = humidityEquation(req.body.sensorC, req.body.id_box, "sensor3");
     req.body.sensorD = humidityEquation(req.body.sensorD, req.body.id_box, "sensor4");
     req.body.sensorE = humidityEquation(req.body.sensorE, req.body.id_box, "sensor5");
-    getTimeVector(timestamp).then(function (idVector) {
-        req.body.idVector = idVector;
-        db.any('select addHumidityReport(${id_box}, ${created_at}, ${sensorA}, ${rawSensorA}, ${sensorB},' +
-            '${rawSensorB}, ${sensorC}, ${rawSensorC},${sensorD},${rawSensorD}, ${sensorE}, ${rawSensorE}, ' +
-            '${isCalibration}, ${idVector})', req.body)
-            .then(function () {
-                res.status(200)
-                    .json({
-                        status: 'success',
-                        message: 'Humidity Report Inserted'
-                    });
-            })
-            .catch(function (err) {
-                return next(err);
+
+    const sensorList = ["sensorA", "sensorB", "sensorC", "sensorD", "sensorE"];
+    const rawSensorList = ["rawSensorA", "rawSensorB", "rawSensorC", "rawSensorD", "rawSensorE"];
+
+    db.one('select * from createHumidityReport({id_box}, ${isCalibration})', req.body).then(
+        function (data) {
+            let idReport = data.idHReport;
+            let cont = 1;
+
+            sensorList.forEach(function (sensor) {
+                let sensorData = {
+                    idReport: idReport,
+                    idSensor: cont,
+                    raw: req.body[rawSensorList[cont - 1]],
+                    value: req.body[sensor]
+                };
+                db.none('select * FROM addHSensor(${idReport}, ${idSensor}, ${raw}, ${value})', sensorData).then(
+                    function (data) {
+                        console.log(sensor + " added");
+                    }
+                )
+                cont++;
             });
-    });
+
+        }
+    )
 }
 
 function addFlowReport(req, res, next) {
     console.log(req.body);
-    const timestamp = roundDate(req.body.created_at);
+    const sensorList = ["flow1", "flow2", "flow3", "flow4", "flow5"];
     getTimeVector(timestamp).then(function (idVector) {
         req.body.idVector = idVector;
-        db.any('select addFlowReport(${id_box}, ${created_at}, ${flow1}, ${flow2}, ${flow3}, ${flow4}, ${flow5},' +
-            ' ${isCalibration}, ${idVector})', req.body)
-            .then(function () {
+        db.one('select * FROM createFlowReport(${id_box}, ${isCalibration}', req.body)
+            .then(function (data) {
+                let idReport = data.idFReport;
+                let cont = 1;
+                sensorList.forEach(function (sensor) {
+                    let sensorData = {
+                        idReport: idReport,
+                        idSensor: cont,
+                        value: req.body[sensor]
+                    };
+                    db.none('select * FROM addFSensor(${idSensor}, ${idReport}, ${value}, ${value})', sensorData).then(
+                        function (data) {
+                            console.log(sensor + " added");
+                        }
+                    )
+                    cont++;
+                });
                 res.status(200)
                     .json({
                         status: 'success',
@@ -569,9 +596,24 @@ function addFlowReport(req, res, next) {
 
 function addTempReport(req, res, next) {
     console.log(req.body);
-    db.any('select addTemperatureReport(${created_at}, ${temperature1}, ${temperature2}, ${temperature3}, ' +
-        '${temperature4}, ${temperature5})', req.body)
+    const sensorList = ["temperature1", "temperature2", "temperature3", "temperature4", "temperature5"];
+    db.one('select * FROM createTemperatureRegister()', req.body)
         .then(function () {
+            let idReport = data.tempID;
+            let cont = 1;
+            sensorList.forEach(function (sensor) {
+                let sensorData = {
+                    idReport: idReport,
+                    idSensor: cont,
+                    value: req.body[sensor]
+                };
+                db.none('select * FROM addTemperature(${idReport}, ${idSensor}, ${value}, ${value})', sensorData).then(
+                    function (data) {
+                        console.log(sensor + " added");
+                    }
+                )
+                cont++;
+            });
             res.status(200)
                 .json({
                     status: 'success',
@@ -676,7 +718,7 @@ function getHumidityBox(req, res, next) {
 
 function modifyFlowBox(req, res, next) {
     console.log(req.body);
-    db.any('select modifyFlowBox(${idBox}, ${name},${location})', req.body)
+    db.any('select updateFBoxLocation(${idBox}, ${name},${location}, ${latlong})', req.body)
         .then(function () {
             res.status(200)
                 .json({
@@ -691,7 +733,7 @@ function modifyFlowBox(req, res, next) {
 
 function modifyHumidityBox(req, res, next) {
     console.log(req.body);
-    db.any('select modifyHumidityBox(${idBox}, ${name},${location})', req.body)
+    db.any('select updateHBoxLocation(${idBox}, ${name},${location}, ${latlong})', req.body)
         .then(function () {
             res.status(200)
                 .json({
@@ -706,7 +748,7 @@ function modifyHumidityBox(req, res, next) {
 
 function addFlowBox(req, res, next) {
     console.log(req.body);
-    db.any('select addFlowBox(${idBox}, ${name},${location})', req.body)
+    db.any('select createFlowBox(${idBox}, ${name},${location}, ${latlong})', req.body)
         .then(function () {
             res.status(200)
                 .json({
@@ -721,7 +763,7 @@ function addFlowBox(req, res, next) {
 
 function addHumidityBox(req, res, next) {
     console.log(req.body);
-    db.any('select addHumidityBox(${idBox}, ${name},${location})', req.body)
+    db.any('select createHumidityBox(${idBox}, ${name}, ${location}, ${latlong})', req.body)
         .then(function () {
             res.status(200)
                 .json({

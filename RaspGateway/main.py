@@ -14,6 +14,7 @@ sio = socketio.Client()
 
 serverInterrupt = False #Variable that stops mainloop if gateway receives a message from server
 
+
 @sio.event
 def connect():
     print('connection established')
@@ -44,6 +45,7 @@ def on_message(data):
             sio.emit("HumidityResult", humValues)
         else:
             sio.emit("HumidityResult", "Error")
+
 
 def flow():
     message = "Flow"
@@ -79,7 +81,7 @@ def relays(command, identifier):
         cont += 1
     serverInterrupt = False
     print(rec)
-    
+
     return "Comando {} se ha enviado correctamente al relay #{}. Info ".format(command, identifier, rec)
 
 
@@ -106,6 +108,7 @@ def humidity(identifier):
         print("Error Lectura Caja {}".format(dic[identifier]))
         serverInterrupt = False
         return
+
 
 def mainLoop():
     global serverInterrupt,rfm9x
