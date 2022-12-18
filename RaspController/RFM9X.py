@@ -30,17 +30,21 @@ class RFM9X(object):
         spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
         # Initialize RFM radio
         self.rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, freq)
+        #Define the bandwidth
+        self.rfm9x.signal_bandwidth = 500000
         # Enable CRC checking
         self.rfm9x.enable_crc = True
-        # Reintentos de env�o del paquete antes de reportar un fallo
+        # Reintentos de env o del paquete antes de reportar un fallo
         self.rfm9x.ack_retries = 40
-        # Delay entre el env�o de cada ACK
+        #Define SF (7,8,9,10,11,12)
+        self.rfm9x.spreading_factor = 10
+        # Delay entre el env o de cada ACK
         self.rfm9x.ack_delay = 1
         # Tiempo que espera el hardware para transmitir el paquete
         self.rfm9x.xmit_timeout = 0.2
-        # Tiempo de espera de la funci�n receive() cuando espera por un ack
+        # Tiempo de espera de la funci n receive() cuando espera por un ack
         self.rfm9x.ack_wait = 0.2
-        # Direcci�n del nodo central (Gateway)
+        # Direcci n del nodo central (Gateway)
         # 1 byte (0 a 255)
         self.rfm9x.node = node
         self.rfm9x.tx_power = power
@@ -52,7 +56,7 @@ class RFM9X(object):
             return self.rec_ack()
 
     def rec_ack(self) -> bool:
-        packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=10.0, keep_listening=True)
+        packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=2, keep_listening=True)
         if packet is not None:
             if packet[4:].decode("UTF-8") == "ok":
                 return True
@@ -66,14 +70,17 @@ class RFM9X(object):
         self.send("ok", destination)
 
     def receive(self, with_ack=False):
-        packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=10.0, keep_listening=True)
+        packet = self.rfm9x.receive(with_ack=False, with_header=True, timeout=2, keep_listening=True)
         if packet is not None:
-            self.node = (str(packet[1]))
+            node = (str(packet[1]))
             print("Received (raw header):", [hex(x) for x in packet[0:4]])
             print("Received (raw payload): {0}".format(packet[4:]))
             print("RSSI: {0}".format(self.rfm9x.last_rssi))
+            print("SNR: {0}".format(self.rfm9x.last_snr))
             if with_ack:
-                self.send_ack(self.node)
+                self.send_ack(node)
             return packet[4:].decode("UTF-8")
         else:
             return
+    def reset(self):
+        self.rfm9x.reset()

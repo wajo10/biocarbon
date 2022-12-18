@@ -9,7 +9,7 @@ create Table Users (
 	firstLastName varchar (20) not null,
 	secondLastName varchar (20) not null,
 	email varchar (50) not null,
-	password varchar (30) not null,
+	password varchar not null,
 	phoneNumber varchar (20) not null,
 	PRIMARY key (userName)
 );
@@ -34,7 +34,7 @@ create Table FlowReport (
 	idFlowBox int not null,
 	idTimeVector int,
 	date TIMESTAMP not null,
-	isCablibrated boolean not null,
+	isCalibrated boolean not null,
 	primary key (idFReport)
 );
 
@@ -73,7 +73,7 @@ create Table HumidityReport(
 	idHumidityBox varchar(2) not null,
 	idTimeVector int not null,
 	date TIMESTAMP not null,
-	isCablibrated boolean not null,
+	isCalibrated boolean not null,
 	primary key (idHReport)
 );
 

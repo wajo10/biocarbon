@@ -13,7 +13,7 @@ let server = http.listen(port, () => {
 });
 
 // Sockets
-const io = require('socket.io')(server,{
+const io = require('socket.io')(server, {
     allowEIO3: true
 });
 
@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
 
 //Whenever someone connects this gets executed
 io.on('connection', (socket) => {
-    socket.emit('Whatever',"Message");
+    socket.emit('Whatever', "Message");
     console.log('an user connected');
 
     // Send Socket to Queries File
@@ -40,16 +40,15 @@ io.on('connection', (socket) => {
 });
 
 
-
 router.set('views', path.join(__dirname, 'views'));
 router.set('view engine', 'jade');
 
 router.use(express.json());
-router.use(express.urlencoded({ extended: false }));
+router.use(express.urlencoded({extended: false}));
 router.use(cookieParser());
 router.use(express.static(path.join(__dirname, 'public')));
 
-router.use(function(req, res, next) {
+router.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
@@ -87,3 +86,4 @@ router.get('/', async (req, res) => {
 
 });
 module.exports = {router};
+

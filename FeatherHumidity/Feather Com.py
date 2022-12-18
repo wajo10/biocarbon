@@ -1,6 +1,4 @@
 # Este código se encarga de recolectar los datos de humedad del suelo en cada nodo y enviarlos al Gateway mediante LoRa.
-# Preparado por: Frander Hernández
-# 14/02/2021
 
 ####################################################################################
 # Declaración de librerías
@@ -132,32 +130,33 @@ RADIO_FREQ_MHZ = 915.0  # Frequency of the radio in Mhz. Must match your
 # CircuitPython build:
 CS = digitalio.DigitalInOut(board.RFM9X_CS)
 RESET = digitalio.DigitalInOut(board.RFM9X_RST)
-
 # Initialize SPI bus.
 spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 # Initialze RFM radio
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RADIO_FREQ_MHZ)
-
+#Define bandwidth
+rfm9x.signal_bandwidth = 500000
 # You can however adjust the transmit power (in dB).  The default is 13 dB but
-# high power radios like the RFM95 can go up to 23 dB:
+# high power radios like the RFM95 can go up to 20 dB:
 rfm9x.tx_power = 20
-
+#Define SF (7,8,9,10,11,12)
+rfm9x.spreading_factor = 10
 # Enable CRC checking
 rfm9x.enable_crc = True
-# Reintentos de envío del paquete antes de reportar un fallo
+# Reintentos de envio del paquete antes de reportar un fallo
 rfm9x.ack_retries = 10
-# Delay entre el envío de cada ACK
+# Delay entre el envio de cada ACK
 rfm9x.ack_delay = 0.2
-# Tiempo de espera del ack cuando se envía un mensaje
+# Tiempo de espera del ack cuando se envia un mensaje
 rfm9x.ack_wait = 1
 rfm9x.xmit_timeout = 0.2
-# Dirección del nodo
+# DirecciÃ³n del nodo
 # 1 byte (0 a 255)
-# Cambiar según el número de nodo de la red
-rfm9x.node = 6
-# Dirección del Gateway o destino
+# Cambiar segÃºn el nÃºmero de nodo de la red
+rfm9x.node = 7
+# DirecciÃ³n del Gateway o destino
 # 1 byte (0 a 255)
-rfm9x.destination = 100
+rfm9x.destination = 5
 
 ####################################################################################
 # Ciclo infinito

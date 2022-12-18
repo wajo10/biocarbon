@@ -92,7 +92,7 @@ while True:
                 if cont > retries:
                     break
                 cont += 1
-            if all(item is False for relay in relayList):
+            if all(relay is False for relay in relayList):
                 #Apagar la bomba
                 GPIO.output(20, GPIO.LOW)
         elif packet == "ON1".format(rfm9x.node):
@@ -127,7 +127,7 @@ while True:
                 if cont > retries:
                     break
                 cont += 1
-            if all(item is False for relay in relayList):
+            if all(relay is False for relay in relayList):
                 GPIO.output(20, GPIO.LOW)
 
         elif packet == "ON2".format(rfm9x.node):
@@ -162,7 +162,7 @@ while True:
                 if cont > retries:
                     break
                 cont += 1
-            if all(item is False for relay in relayList):
+            if all(relay is False for relay in relayList):
                 GPIO.output(20, GPIO.LOW)
 
         elif packet == "ON3".format(rfm9x.node):
@@ -197,7 +197,7 @@ while True:
                 if cont > retries:
                     break
                 cont += 1
-            if all(item is False for relay in relayList):
+            if all(relay is False for relay in relayList):
                 GPIO.output(20, GPIO.LOW)
 
         elif packet == "ON4".format(rfm9x.node):
@@ -231,7 +231,7 @@ while True:
                 if cont > retries:
                     break
                 cont += 1
-            if all(item is False for relay in relayList):
+            if all(relay is False for relay in relayList):
                 GPIO.output(20, GPIO.LOW)
 
         elif packet == "ON5".format(rfm9x.node):
