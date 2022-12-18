@@ -562,35 +562,33 @@ async function addHumidityReport(req, res, next) {
 function addFlowReport(req, res, next) {
     console.log(req.body);
     const sensorList = ["flow1", "flow2", "flow3", "flow4", "flow5"];
-    getTimeVector(timestamp).then(function (idVector) {
-        req.body.idVector = idVector;
-        db.one('select * FROM createFlowReport(${id_box}, ${isCalibration}', req.body)
-            .then(function (data) {
-                let idReport = data.idFReport;
-                let cont = 1;
-                sensorList.forEach(function (sensor) {
-                    let sensorData = {
-                        idReport: idReport,
-                        idSensor: cont,
-                        value: req.body[sensor]
-                    };
-                    db.none('select * FROM addFSensor(${idSensor}, ${idReport}, ${value}, ${value})', sensorData).then(
-                        function (data) {
-                            console.log(sensor + " added");
-                        }
-                    )
-                    cont++;
-                });
-                res.status(200)
-                    .json({
-                        status: 'success',
-                        message: 'Flow Report Inserted'
-                    });
-            })
-            .catch(function (err) {
-                return next(err);
+    req.body.idVector = idVector;
+    db.one('select * FROM createFlowReport(${id_box}, ${isCalibration}', req.body)
+        .then(function (data) {
+            let idReport = data.idFReport;
+            let cont = 1;
+            sensorList.forEach(function (sensor) {
+                let sensorData = {
+                    idReport: idReport,
+                    idSensor: cont,
+                    value: req.body[sensor]
+                };
+                db.none('select * FROM addFSensor(${idSensor}, ${idReport}, ${value}, ${value})', sensorData).then(
+                    function (data) {
+                        console.log(sensor + " added");
+                    }
+                )
+                cont++;
             });
-    });
+            res.status(200)
+                .json({
+                    status: 'success',
+                    message: 'Flow Report Inserted'
+                });
+        })
+        .catch(function (err) {
+            return next(err);
+        });
 }
 
 
