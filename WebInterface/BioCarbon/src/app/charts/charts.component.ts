@@ -209,15 +209,22 @@ export class ChartsComponent implements OnInit {
         iscalibration: this.isCalibration
       }).subscribe((res: any) => {
         this.values = res.data;
-        console.log(res);
-        if (this.isCalibration) {
-          this.selectedVars = this.rawHumidityVars;
-          this.updateHumidityUnits();
-          this.getChartData(this.rawHumidityVars);
-        } else {
-          this.selectedVars = this.humidityVars;
-          this.updateHumidityUnits();
-          this.getChartData(this.humidityVars);
+        // tslint:disable-next-line:prefer-for-of
+        for(let i = 0; i < this.values.length; i++){
+          this.httpService.get_api(`HumidityReport/${this.values.idreport}`).subscribe((res2: any) => {
+            this.values[i].rawHumidityVars = res2.data.raw;
+            this.values[i].humidityVars = res2.data.interp;
+          });
+          console.log(this.values);
+          if (this.isCalibration) {
+            this.selectedVars = this.rawHumidityVars;
+            this.updateHumidityUnits();
+            this.getChartData(this.rawHumidityVars);
+          } else {
+            this.selectedVars = this.humidityVars;
+            this.updateHumidityUnits();
+            this.getChartData(this.humidityVars);
+          }
         }
       }, _ => alert('Error De conexión'));
     } else {

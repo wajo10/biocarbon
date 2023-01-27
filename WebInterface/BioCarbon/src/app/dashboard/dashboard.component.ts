@@ -45,6 +45,7 @@ export class DashboardComponent implements OnInit {
     else{
       this.httpService.get_api(`LastHumidity/${IdBox}`).subscribe((res: any) => {
         this.values = res.data;
+        console.log(this.values);
       }, _ => alert("Error De conexión"));
     }
   }
