@@ -169,7 +169,7 @@ export class ChartsComponent implements OnInit {
     if (this.selected === 'Humedad') {
       this.httpService.get_api('HumidityBoxes').subscribe((res: any) => {
         this.devices = res.data;
-        this.idBox = this.devices[0].idbox;
+        this.idBox = this.devices[0].idhumiditybox;
         this.getReports();
         console.log(res);
         this.device = this.devices[0];

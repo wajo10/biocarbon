@@ -475,6 +475,25 @@ function getHumidityReports(req, res, next) {
             return next(err);
         });
 }
+function getHumidityReport(req, res, next) {
+    const report = req.params.report;
+    db.any(' select * from getHumidityReportSensors($1)', req.report)
+        .then(function (data) {
+            res.status(200)
+                .json({
+                    status: 'success',
+                    data: data,
+                    message: 'Info received'
+                });
+        })
+        .catch(function (err) {
+            res.status(400)
+                .json({
+                    status: 'Error'
+                });
+            return next(err);
+        });
+}
 
 
 //Function to round date to nearest 5 minutes
@@ -862,5 +881,6 @@ module.exports = {
     getHumiditySockets: getHumiditySockets,
     testCalibration: testCalibration,
     addTempReport: addTempReport,
-    getLastTemperatureReport: getLastTemperatureReport
+    getLastTemperatureReport: getLastTemperatureReport,
+    getHumidityReport: getHumidityReport
 };

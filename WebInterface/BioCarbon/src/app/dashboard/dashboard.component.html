@@ -14,8 +14,8 @@
     border-radius: 10px; width: min-content; height: 65px; margin-left: 20px">
       <mat-label>Dispositivo</mat-label>
       <mat-select [(value)]="idBox">
-        <mat-option (click)="lastReport(disp.idbox); updateDevice(disp.idbox)" *ngFor="let disp of devices"
-                    [value]="disp.idbox">
+        <mat-option (click)="lastReport(disp.idhumiditybox); updateDevice(disp.idhumiditybox)" *ngFor="let disp of devices"
+                    [value]="disp.idhumiditybox">
           {{disp.name}}
         </mat-option>
       </mat-select>
