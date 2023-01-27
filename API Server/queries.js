@@ -534,10 +534,11 @@ async function addHumidityReport(req, res, next) {
 
     const sensorList = ["sensorA", "sensorB", "sensorC", "sensorD", "sensorE"];
     const rawSensorList = ["rawSensorA", "rawSensorB", "rawSensorC", "rawSensorD", "rawSensorE"];
-
-    db.one('select * from createHumidityReport({id_box}, ${isCalibration})', req.body).then(
+    const idbox = req.body.id_box
+    const isCalibration = req.body.isCalibration
+    db.one('select * from createHumidityReport($1, $2)', [idbox, isCalibration]).then(
         function (data) {
-            let idReport = data.idHReport;
+            let idReport = data.createhumidityreport;
             let cont = 1;
 
             sensorList.forEach(function (sensor) {
@@ -547,14 +548,19 @@ async function addHumidityReport(req, res, next) {
                     raw: req.body[rawSensorList[cont - 1]],
                     value: req.body[sensor]
                 };
-                db.none('select * FROM addHSensor(${idReport}, ${idSensor}, ${raw}, ${value})', sensorData).then(
-                    function (data) {
+                db.any('select * FROM addHSensor(${idReport}, ${idSensor}, ${raw}, ${value})', sensorData).then(
+                    function () {
                         console.log(sensor + " added");
                     }
                 )
                 cont++;
             });
-
+            res.status(200)
+                .json({
+                    status: 'success',
+                    message: 'Flow Report Inserted'
+                });
+            res.send();
         }
     )
 }

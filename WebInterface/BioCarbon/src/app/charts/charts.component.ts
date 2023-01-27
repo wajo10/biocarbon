@@ -184,15 +184,18 @@ export class ChartsComponent implements OnInit {
     }
   }
 
-  updateDevice(id): void {
-    if (this.selected === 'Flujo') {
-      this.httpService.get_api_id('FlowBox', id).subscribe((res: any) => {
+  updateDevice(id): void{
+    if (this.selected === "Flujo"){
+      this.httpService.get_api(`FlowBox/${id}`).subscribe((res: any) => {
         this.device = res.data;
-      }, _ => alert('Error De conexión'));
-    } else {
-      this.httpService.get_api_id('HumidityBox', id).subscribe((res: any) => {
+      }, _ => alert("Error De conexión"));
+    }
+    else{
+      this.httpService.get_api(`HumidityBox/${id}`).subscribe((res: any) => {
         this.device = res.data;
-      }, _ => alert('Error De conexión'));
+        console.log(id);
+        console.log(this.device);
+      }, _ => alert("Error De conexión"));
     }
 
   }

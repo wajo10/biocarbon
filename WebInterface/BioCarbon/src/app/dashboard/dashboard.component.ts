@@ -38,12 +38,12 @@ export class DashboardComponent implements OnInit {
     console.log("Recargando con: " + IdBox);
     if (this.selected === 'Flujo') {
       IdBox = parseInt(this.idBox);
-      this.httpService.get_api_id("LastFlow", `${IdBox}`).subscribe((res: any) => {
+      this.httpService.get_api(`LastFlow/${IdBox}`).subscribe((res: any) => {
         this.values = res.data;
       }, _ => alert("Error De conexión"));
     }
     else{
-      this.httpService.get_api_id("LastHumidity", `${IdBox}`).subscribe((res: any) => {
+      this.httpService.get_api(`LastHumidity/${IdBox}`).subscribe((res: any) => {
         this.values = res.data;
       }, _ => alert("Error De conexión"));
     }
@@ -72,12 +72,12 @@ export class DashboardComponent implements OnInit {
 
   updateDevice(id): void{
     if (this.selected === "Flujo"){
-      this.httpService.get_api_id("FlowBox", id).subscribe((res: any) => {
+      this.httpService.get_api(`FlowBox/${id}`).subscribe((res: any) => {
         this.device = res.data;
       }, _ => alert("Error De conexión"));
     }
     else{
-      this.httpService.get_api_id("HumidityBox", id).subscribe((res: any) => {
+      this.httpService.get_api(`HumidityBox/${id}`).subscribe((res: any) => {
         this.device = res.data;
         console.log(id);
         console.log(this.device);
