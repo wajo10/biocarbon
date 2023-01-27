@@ -477,7 +477,7 @@ function getHumidityReports(req, res, next) {
 }
 function getHumidityReport(req, res, next) {
     const report = req.params.report;
-    db.any(' select * from getHumidityReportSensors($1)', req.report)
+    db.any(' select * from getHumidityReportSensors($1)', [report])
         .then(function (data) {
             res.status(200)
                 .json({
