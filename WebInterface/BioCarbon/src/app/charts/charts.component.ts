@@ -209,8 +209,6 @@ export class ChartsComponent implements OnInit {
         todate: this.formatter.format(this.toDate),
         iscalibration: this.isCalibration
       };
-      console.log(`JSON: ${json}`);
-      console.log(json);
       this.httpService.put_api('HumidityReports', json).subscribe((res: any) => {
         this.values = res.data;
         console.log(this.values);
@@ -219,6 +217,7 @@ export class ChartsComponent implements OnInit {
           for (let i = 0; i < this.values.length; i++){
             this.httpService.get_api(`HumidityReport/${this.values.idreport}`).subscribe((res2: any) => {
               // tslint:disable-next-line:prefer-for-of
+              console.log(res2.data);
               for (let j = 0; j < res2.data.length; j++) {
                 this.values[i].this.rawHumidityVars[j] = res2.data.raw;
                 this.values[i].this.humidityVars = res2.data.interp;

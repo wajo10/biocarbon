@@ -210,7 +210,7 @@ CREATE OR REPLACE FUNCTION lastHumidityReportSensors (idBox_r varchar(2)) return
 	inner join HumidityReport as hr on hse.idHReport = hr.idHreport
 	inner join HumidityBox as hbox on hbox.idHumidityBox = hr.idHumidityBox
 	where hbox.idHumidityBox = idBox_r
-	order by hse.sensorNumber desc;
+	order by hr.idHReport desc limit 5;
 	$$
 LANGUAGE SQL;
 
