@@ -15,7 +15,7 @@ import {MatInputModule} from '@angular/material/input';
 export class ChartsComponent implements OnInit {
   hoveredDate: NgbDate | null = null;
   today: NgbDate = new NgbCalendarGregorian().getToday();
-  fromDate: NgbDate = new NgbDate(this.today.year, this.today.month - 1, this.today.day - 3);
+  fromDate: NgbDate = new NgbDate(this.today.year, this.today.month, this.today.day - 3);
   toDate: NgbDate = new NgbDate(this.today.year, this.today.month, this.today.day + 1);
 
   values: any = {};
@@ -113,7 +113,7 @@ export class ChartsComponent implements OnInit {
   constructor(private calendar: NgbCalendar, public formatter: NgbDateParserFormatter, private httpService: HttpService,
               public datepipe: DatePipe) {
     this.today = new NgbCalendarGregorian().getToday();
-    this.fromDate = new NgbDate(this.today.year, this.today.month - 1, this.today.day - 3);
+    this.fromDate = new NgbDate(this.today.year, this.today.month, this.today.day - 3);
     this.toDate = calendar.getNext(this.today, 'd', 1);
     this.isCalibration = false;
   }
@@ -171,8 +171,9 @@ export class ChartsComponent implements OnInit {
         this.devices = res.data;
         this.idBox = this.devices[0].idhumiditybox;
         this.getReports();
-        console.log(res);
+        console.log(`IDBOX: ${this.idBox}`);
         this.device = this.devices[0];
+        console.log(this.device);
       }, _ => alert('Error De conexión'));
     } else {
       this.httpService.get_api('FlowBoxes').subscribe((res: any) => {
@@ -202,30 +203,40 @@ export class ChartsComponent implements OnInit {
 
   getReports(): void {
     if (this.selected === 'Humedad') {
-      this.httpService.put_api('HumidityReports', {
+      const json = {
         idbox: this.idBox,
         fromdate: this.formatter.format(this.fromDate),
         todate: this.formatter.format(this.toDate),
         iscalibration: this.isCalibration
-      }).subscribe((res: any) => {
+      };
+      console.log(`JSON: ${json}`);
+      console.log(json);
+      this.httpService.put_api('HumidityReports', json).subscribe((res: any) => {
         this.values = res.data;
-        // tslint:disable-next-line:prefer-for-of
-        for(let i = 0; i < this.values.length; i++){
-          this.httpService.get_api(`HumidityReport/${this.values.idreport}`).subscribe((res2: any) => {
-            this.values[i].rawHumidityVars = res2.data.raw;
-            this.values[i].humidityVars = res2.data.interp;
-          });
-          console.log(this.values);
-          if (this.isCalibration) {
-            this.selectedVars = this.rawHumidityVars;
-            this.updateHumidityUnits();
-            this.getChartData(this.rawHumidityVars);
-          } else {
-            this.selectedVars = this.humidityVars;
-            this.updateHumidityUnits();
-            this.getChartData(this.humidityVars);
+        console.log(this.values);
+        if (this.values.length > 0){
+          // tslint:disable-next-line:prefer-for-of
+          for (let i = 0; i < this.values.length; i++){
+            this.httpService.get_api(`HumidityReport/${this.values.idreport}`).subscribe((res2: any) => {
+              // tslint:disable-next-line:prefer-for-of
+              for (let j = 0; j < res2.data.length; j++) {
+                this.values[i].this.rawHumidityVars[j] = res2.data.raw;
+                this.values[i].this.humidityVars = res2.data.interp;
+              }
+            });
+            console.log(this.values);
+            if (this.isCalibration) {
+              this.selectedVars = this.rawHumidityVars;
+              this.updateHumidityUnits();
+              this.getChartData(this.rawHumidityVars);
+            } else {
+              this.selectedVars = this.humidityVars;
+              this.updateHumidityUnits();
+              this.getChartData(this.humidityVars);
+            }
           }
         }
+
       }, _ => alert('Error De conexión'));
     } else {
       this.httpService.put_api('FlowReports', {

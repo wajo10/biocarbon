@@ -13,8 +13,8 @@
     border-radius: 10px; width: min-content; height: 50px; margin-left: 20px">
       <mat-label>Dispositivo</mat-label>
       <mat-select [(value)]="idBox">
-        <mat-option *ngFor="let disp of devices" [value]="disp.idbox"
-                    (click)="updateDevice(disp.idbox); getReports()">
+        <mat-option *ngFor="let disp of devices" [value]="disp.idhumiditybox"
+                    (click)="updateDevice(disp.idhumiditybox); getReports()">
           {{disp.name}}
         </mat-option>
       </mat-select>
@@ -78,38 +78,38 @@
           </div>
         </div>
       </form>
-      <div class="row" style="margin-top: 25px">
-        <div *ngIf="this.selected == 'Humedad' && selectedVars.length > 4">
-          <ejs-chart [primaryXAxis]='primaryXAxis' [primaryYAxis]='humidityUnits[selectedVars[0]]["yAxis"]'
-                     [zoomSettings]='zoom'
-                     [title]='"Gráfica de Humedad"' [tooltip]="tooltip">
-            <e-series-collection>
-              <e-series [dataSource]='chartData[selectedVars[0]]' type='Line' xName='x' yName='y' name='Sensor 1'
-                        [marker]="marker"></e-series>
-              <e-series [dataSource]='chartData[selectedVars[1]]' type='Line' xName='x' yName='y' name='Sensor 2'
-                        [marker]="marker"></e-series>
-              <e-series [dataSource]='chartData[selectedVars[2]]' type='Line' xName='x' yName='y' name='Sensor 3'
-                        [marker]="marker"></e-series>
-              <e-series [dataSource]='chartData[selectedVars[3]]' type='Line' xName='x' yName='y' name='Sensor 4'
-                        [marker]="marker"></e-series>
-              <e-series [dataSource]='chartData[selectedVars[4]]' type='Line' xName='x' yName='y' name='Sensor 5'
-                        [marker]="marker"></e-series>
-            </e-series-collection>
-          </ejs-chart>
-        </div>
-        <div *ngIf="this.selected == 'Flujo'">
-          <div *ngFor="let vari of flowVars">
-            <ejs-chart [primaryXAxis]='primaryXAxis' [primaryYAxis]='flowUnits[vari]["yAxis"]'
-                       [zoomSettings]='zoom'
-                       [title]='flowUnits[vari]["title"]' [tooltip]="tooltip">
-              <e-series-collection>
-                <e-series [dataSource]='chartData[vari]' type='Line' xName='x' yName='y' name='Cantidad'
-                          [marker]="marker"></e-series>
-              </e-series-collection>
-            </ejs-chart>
-          </div>
-        </div>
-      </div>
+<!--      <div class="row" style="margin-top: 25px">-->
+<!--        <div *ngIf="this.selected == 'Humedad' && selectedVars.length > 4">-->
+<!--          <ejs-chart [primaryXAxis]='primaryXAxis' [primaryYAxis]='humidityUnits[selectedVars[0]]["yAxis"]'-->
+<!--                     [zoomSettings]='zoom'-->
+<!--                     [title]='"Gráfica de Humedad"' [tooltip]="tooltip">-->
+<!--            <e-series-collection>-->
+<!--              <e-series [dataSource]='chartData[selectedVars[0]]' type='Line' xName='x' yName='y' name='Sensor 1'-->
+<!--                        [marker]="marker"></e-series>-->
+<!--              <e-series [dataSource]='chartData[selectedVars[1]]' type='Line' xName='x' yName='y' name='Sensor 2'-->
+<!--                        [marker]="marker"></e-series>-->
+<!--              <e-series [dataSource]='chartData[selectedVars[2]]' type='Line' xName='x' yName='y' name='Sensor 3'-->
+<!--                        [marker]="marker"></e-series>-->
+<!--              <e-series [dataSource]='chartData[selectedVars[3]]' type='Line' xName='x' yName='y' name='Sensor 4'-->
+<!--                        [marker]="marker"></e-series>-->
+<!--              <e-series [dataSource]='chartData[selectedVars[4]]' type='Line' xName='x' yName='y' name='Sensor 5'-->
+<!--                        [marker]="marker"></e-series>-->
+<!--            </e-series-collection>-->
+<!--          </ejs-chart>-->
+<!--        </div>-->
+<!--        <div *ngIf="this.selected == 'Flujo'">-->
+<!--          <div *ngFor="let vari of flowVars">-->
+<!--            <ejs-chart [primaryXAxis]='primaryXAxis' [primaryYAxis]='flowUnits[vari]["yAxis"]'-->
+<!--                       [zoomSettings]='zoom'-->
+<!--                       [title]='flowUnits[vari]["title"]' [tooltip]="tooltip">-->
+<!--              <e-series-collection>-->
+<!--                <e-series [dataSource]='chartData[vari]' type='Line' xName='x' yName='y' name='Cantidad'-->
+<!--                          [marker]="marker"></e-series>-->
+<!--              </e-series-collection>-->
+<!--            </ejs-chart>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
   </div>
 </div>

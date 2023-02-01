@@ -120,7 +120,7 @@ function getLastFlowReport(req, res, next) {
 
 function getLastHumidityReport(req, res, next) {
     const Device = req.params.idBox;
-    db.one('select * from lastHumidityReport ($1)', [Device])
+    db.any('select * from lastHumidityReport ($1)', [Device])
         .then(function (data) {
             db.any('select * from lastHumidityReportSensors ($1)', [Device]).then(function (dataSensors) {
                 res.status(200).json({

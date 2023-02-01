@@ -31,10 +31,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.setType();
-    setInterval(() => { this.lastReport(this.device.idbox); }, 30 * 1000);
+    // setInterval(() => { this.lastReport(this.device.idbox); }, 30 * 1000);
   }
 
-  lastReport(IdBox: number): void {
+  lastReport(IdBox: any): void {
     console.log("Recargando con: " + IdBox);
     if (this.selected === 'Flujo') {
       IdBox = parseInt(this.idBox);
@@ -44,7 +44,8 @@ export class DashboardComponent implements OnInit {
     }
     else{
       this.httpService.get_api(`LastHumidity/${IdBox}`).subscribe((res: any) => {
-        this.values = res.data;
+        this.values = res;
+        console.log(`Last Humidity ${this.values}`);
         console.log(this.values);
       }, _ => alert("Error De conexión"));
     }
@@ -63,8 +64,9 @@ export class DashboardComponent implements OnInit {
     else{
       this.httpService.get_api("HumidityBoxes").subscribe((res: any) => {
         this.devices = res.data;
-        this.idBox = this.devices[0].idbox;
-        this.lastReport(this.devices[0].idbox);
+        console.log(this.devices);
+        this.idBox = this.devices[0].idhumiditybox;
+        this.lastReport(this.idBox);
         this.device = this.devices[0];
         console.log(this.device);
       }, _ => alert("Error De conexión"));
