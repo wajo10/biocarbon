@@ -131,11 +131,11 @@ function getLastHumidityReport(req, res, next) {
                     json[sensors[i]] = dataSensors[i].interp;
                     json[rawsensors[i]] = dataSensors[i].raw;
                 }
-                json.date = data.actualdate;
-                json.datetime = data.vectordate;
-                json.idbox = data.idhbox;
-                json.iscalibration = data.calibrated;
-                json.idreport = data.idhreport;
+                json[date] = data.actualdate;
+                json[datetime] = data.vectordate;
+                json[idbox] = data.idhbox;
+                json[iscalibration] = data.calibrated;
+                json[idreport] = data.idhreport;
                 res.status(200).json({
                     status: 'success',
                     data: json,
