@@ -464,18 +464,15 @@ function getHumidityReports(req, res, next) {
     let jsonList = [];
     db.any('select * from getHumidityReports(${idbox},${fromdate},${todate}, ${iscalibration})', req.body)
         .then(async function (data) {
-            console.log(data[0]);
             for (let i = 0; i < data.length; i++) {
                 const report = data[i].idreport;
                 let innerJson = {
-                    "test": "test",
                     "idreport": report,
                     "date": data[i].reportdate,
                     "datetime": data[i].vectordate,
                     "idbox": req.body.idbox,
                     "iscalibration": data[i].calibrated
                 };
-                console.log(`json1: ${innerJson}`);
                 await db.any(' select * from getHumidityReportSensors($1)', [report])
                     .then(function (dataSensors) {
                         for (let j = 0; j < dataSensors.length; j++) {
