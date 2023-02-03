@@ -479,8 +479,8 @@ function getHumidityReports(req, res, next) {
                 db.any(' select * from getHumidityReportSensors($1)', [report])
                     .then(function (dataSensors) {
                         for (let j = 0; j < dataSensors.length; j++) {
-                            innerJson[sensors[j]] = dataSensors.interp;
-                            innerJson[rawsensors[j]] = dataSensors.raw;
+                            innerJson[sensors[j]] = dataSensors[j].interp;
+                            innerJson[rawsensors[j]] = dataSensors[j].raw;
                         }
                         jsonList.push(innerJson);
                         console.log(`InnerJson: ${innerJson}`);
