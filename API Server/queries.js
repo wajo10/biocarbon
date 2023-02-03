@@ -126,11 +126,12 @@ function getLastHumidityReport(req, res, next) {
     let json = {};
     db.any('select * from lastHumidityReport ($1)', [Device])
         .then(function (data) {
-            json["date"] = "TEST";
-            json["datetime"] = data.vectordate;
-            json["idbox"] = data.idhbox;
-            json["iscalibration"] = data.calibrated;
-            json["idreport"] = data.idhreport;
+            json["date"] = data["actualdate"];
+            json["datetime"] = data["vectordate"];
+            json["idbox"] = data["idhbox"];
+            json["iscalibration"] = data["calibrated"];
+            json["idreport"] = data["idhreport"];
+            console.log(data);
             db.any('select * from lastHumidityReportSensors ($1)', [Device]).then(function (dataSensors) {
                 for (let i = 0; i < dataSensors.length; i++) {
                     json[sensors[i]] = dataSensors[i].interp;
