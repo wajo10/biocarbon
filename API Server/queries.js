@@ -1,5 +1,6 @@
 const axios = require('axios');
 var promise = require('bluebird');
+const {json} = require("express");
 var socket = undefined;
 
 var options = {
@@ -122,22 +123,22 @@ function getLastHumidityReport(req, res, next) {
     const Device = req.params.idBox;
     const sensors = ["sensora","sensorb", "sensorc", "sensord", "sensore"];
     const rawsensors = ["rawsensora","rawsensorb", "rawsensorc", "rawsensord", "rawsensore"];
+    let json = {};
     db.any('select * from lastHumidityReport ($1)', [Device])
         .then(function (data) {
             db.any('select * from lastHumidityReportSensors ($1)', [Device]).then(function (dataSensors) {
                 for (let i = 0; i < dataSensors.length; i++) {
-                    data[sensors[i]] = dataSensors[i].interp;
-                    data[rawsensors[i]] = dataSensors[i].raw;
+                    json[sensors[i]] = dataSensors[i].interp;
+                    json[rawsensors[i]] = dataSensors[i].raw;
                 }
-                data.date = data.actualdate;
-                data.datetime = data.vectordate;
-                data.idbox = data.idhbox;
-                data.iscalibration = data.calibrated;
-                data.idreport = data.idhreport;
+                json.date = data.actualdate;
+                json.datetime = data.vectordate;
+                json.idbox = data.idhbox;
+                json.iscalibration = data.calibrated;
+                json.idreport = data.idhreport;
                 res.status(200).json({
                     status: 'success',
-                    data: data,
-                    dataSensors: dataSensors,
+                    data: json,
                     message: 'Data Retrieved Successfully'
                 });
             });
@@ -460,21 +461,24 @@ function getFlowReports(req, res, next) {
 function getHumidityReports(req, res, next) {
     const sensors = ["sensora","sensorb", "sensorc", "sensord", "sensore"];
     const rawsensors = ["rawsensora","rawsensorb", "rawsensorc", "rawsensord", "rawsensore"];
+    let jsonList = [];
     db.any('select * from getHumidityReports(${idbox},${fromdate},${todate}, ${iscalibration})', req.body)
         .then(function (data) {
             for(let i = 0; i < data.length; i++){
                 const report = data.idreport;
+                let innerJson = {};
                 db.any(' select * from getHumidityReportSensors($1)', [report])
                     .then(function (dataSensors) {
-                        data[i].date = data[i].actualdate;
-                        data[i].datetime = data[i].vectordate;
-                        data[i].idbox = data[i].idhbox;
-                        data[i].iscalibration = data[i].calibrated;
-                        data[i].idreport = data[i].idhreport;
+                        innerJson.date = data[i].actualdate;
+                        innerJson.datetime = data[i].vectordate;
+                        innerJson.idbox = data[i].idhbox;
+                        innerJson.iscalibration = data[i].calibrated;
+                        innerJson.idreport = data[i].idhreport;
                         for(let j = 0; j < dataSensors.length; j++){
-                            data[i][sensors[j]] = dataSensors.interp;
-                            data[i][rawsensors[j]] = dataSensors.raw;
+                            innerJson[sensors[j]] = dataSensors.interp;
+                            innerJson[rawsensors[j]] = dataSensors.raw;
                         }
+                        jsonList.push(innerJson);
                     })
                     .catch(function (err) {
                         res.status(400)
@@ -484,21 +488,10 @@ function getHumidityReports(req, res, next) {
                         return next(err);
                     });
             }
-            //truncate the data to 2 decimals
-            data.sensora  = Math.round(data.sensora *100)/100;
-            data.rawsensora  = Math.round(data.sensora *100)/100;
-            data.sensorb  = Math.round(data.sensorb *100)/100;
-            data.rawsensorb  = Math.round(data.sensorb *100)/100;
-            data.sensorc  = Math.round(data.sensorc *100)/100;
-            data.rawsensorc  = Math.round(data.sensorc *100)/100;
-            data.sensord  = Math.round(data.sensord *100)/100;
-            data.rawsensord  = Math.round(data.sensord *100)/100;
-            data.sensore  = Math.round(data.sensore *100)/100;
-            data.rawsensore  = Math.round(data.sensore *100)/100;
             res.status(200)
                 .json({
                     status: 'success',
-                    data: data,
+                    data: jsonList,
                     message: 'Info received'
                 });
         })
@@ -707,14 +700,18 @@ function getFlowBoxes(req, res, next) {
 }
 
 function getHumidityBoxes(req, res, next) {
+    let json = [];
     db.any('select * from getHumidityBoxes()')
         .then(function (data) {
-            data.idbox = data.idhumiditybox;
+            for(let i = 0; i < data.length; i++){
+                json.push(data[i])
+                json[i].idbox = data[i].idhumiditybox;
+            }
             console.log(data);
             res.status(200)
                 .json({
                     status: 'success',
-                    data: data,
+                    data: json,
                     message: 'Humidity Boxes Retrieved Successfully'
                 });
 
@@ -754,9 +751,11 @@ function getFlowBox(req, res, next) {
 
 function getHumidityBox(req, res, next) {
     var Device = req.params.idBox;
+    let json = {};
     db.one('select * from getHumidityBox ($1)', [Device])
         .then(function (data) {
-            data.idbox = data.idhumiditybox;
+            json = data;
+            json.idbox = data.idhumiditybox;
             console.log(data);
             res.status(200)
                 .json({
