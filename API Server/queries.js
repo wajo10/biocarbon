@@ -466,15 +466,14 @@ function getHumidityReports(req, res, next) {
         .then(function (data) {
             console.log(data[0]);
             for(let i = 0; i < data.length; i++){
-                const report = data[i].idhreport;
+                const report = data[i].idreport;
                 let innerJson = {};
                 db.any(' select * from getHumidityReportSensors($1)', [report])
                     .then(function (dataSensors) {
-                        innerJson.date = data[i].actualdate;
+                        innerJson.date = data[i].reportdate;
                         innerJson.datetime = data[i].vectordate;
                         innerJson.idbox = data[i].idhbox;
                         innerJson.iscalibration = data[i].calibrated;
-                        innerJson.idreport = data[i].idhreport;
                         for(let j = 0; j < dataSensors.length; j++){
                             innerJson[sensors[j]] = dataSensors.interp;
                             innerJson[rawsensors[j]] = dataSensors.raw;
