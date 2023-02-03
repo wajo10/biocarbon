@@ -475,7 +475,7 @@ function getHumidityReports(req, res, next) {
                     "idbox": "TEST",
                     "iscalibration": data[i].calibrated
                 };
-                console.log(`length: ${data.length}`);
+                console.log(`json1: ${innerJson}`);
                 db.any(' select * from getHumidityReportSensors($1)', [report])
                     .then(function (dataSensors) {
                         for (let j = 0; j < dataSensors.length; j++) {
