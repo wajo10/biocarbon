@@ -14,9 +14,9 @@
     border-radius: 10px; width: min-content; height: 65px; margin-left: 20px">
       <mat-label>Dispositivo</mat-label>
       <mat-select [(value)]="idBox">
-<!--        <mat-option (click)="lastReport(disp.idhumiditybox); updateDevice(disp.idhumiditybox)" *ngFor="let disp of devices"-->
-        <mat-option (click)="lastReport(disp.idhumiditybox);lastReport(disp.idhumiditybox); updateDevice(disp.idhumiditybox)" *ngFor="let disp of devices"
-                    [value]="disp.idhumiditybox">{{disp.name}}
+        <mat-option (click)="lastReport(disp.idbox); updateDevice(disp.idbox)" *ngFor="let disp of devices"
+                    [value]="disp.idbox">
+          {{disp.name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -35,7 +35,7 @@
                       <ngx-gauge [append]="humidityText"
                                  [size]="gaugeSize"
                                  [type]="gaugeType"
-                                 [value]="values.dataSensors[0].interp">
+                                 [value]="values.sensora">
                       </ngx-gauge>
                     </mat-card-content>
                   </mat-card>
@@ -55,7 +55,7 @@
                       <ngx-gauge [append]="humidityText"
                                  [size]="gaugeSize"
                                  [type]="gaugeType"
-                                 [value]="values.dataSensors[1].interp">
+                                 [value]="values.sensorb">
                       </ngx-gauge>
                     </mat-card-content>
                   </mat-card>
@@ -75,7 +75,7 @@
                       <ngx-gauge [append]="humidityText"
                                  [size]="gaugeSize"
                                  [type]="gaugeType"
-                                 [value]="values.dataSensors[2].interp">
+                                 [value]="values.sensorc">
                       </ngx-gauge>
                     </mat-card-content>
                   </mat-card>
@@ -97,7 +97,7 @@
                       <ngx-gauge [append]="humidityText"
                                  [size]="gaugeSize"
                                  [type]="gaugeType"
-                                 [value]="values.dataSensors[3].interp">
+                                 [value]="values.sensord">
                       </ngx-gauge>
                     </mat-card-content>
                   </mat-card>
@@ -117,7 +117,7 @@
                       <ngx-gauge [append]="humidityText"
                                  [size]="gaugeSize"
                                  [type]="gaugeType"
-                                 [value]="values.dataSensors[4].interp">
+                                 [value]="values.sensore">
                       </ngx-gauge>
                     </mat-card-content>
                   </mat-card>
@@ -139,9 +139,9 @@
                     </div>
                     <mat-card-content>
                       <b>Nombre:</b> {{device.name}}<br>
-                      <b>Actualización:</b> {{this.datepipe.transform(values.data.actualdate, 'dd-MM-yy HH:mm:ss')}}<br>
+                      <b>Actualización:</b> {{this.datepipe.transform(values.date, 'dd-MM-yy HH:mm:ss')}}<br>
                       <b>Ubicación:</b> {{device.location}}<br>
-                      <b>ID:</b> {{idBox}}<br>
+                      <b>ID:</b> {{device.idbox}}<br>
                     </mat-card-content>
                   </mat-card>
                 </div>

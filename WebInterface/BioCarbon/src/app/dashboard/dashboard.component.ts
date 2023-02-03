@@ -31,22 +31,20 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.setType();
-    // setInterval(() => { this.lastReport(this.device.idbox); }, 30 * 1000);
+    setInterval(() => { this.lastReport(this.device.idbox); }, 30 * 1000);
   }
 
-  lastReport(IdBox: any): void {
+  lastReport(IdBox: number): void {
     console.log("Recargando con: " + IdBox);
     if (this.selected === 'Flujo') {
       IdBox = parseInt(this.idBox);
-      this.httpService.get_api(`LastFlow/${IdBox}`).subscribe((res: any) => {
+      this.httpService.get_api_id("LastFlow", `${IdBox}`).subscribe((res: any) => {
         this.values = res.data;
       }, _ => alert("Error De conexión"));
     }
     else{
-      this.httpService.get_api(`LastHumidity/${IdBox}`).subscribe((res: any) => {
-        this.values = res;
-        console.log(`Last Humidity ${this.values}`);
-        console.log(this.values);
+      this.httpService.get_api_id("LastHumidity", `${IdBox}`).subscribe((res: any) => {
+        this.values = res.data;
       }, _ => alert("Error De conexión"));
     }
   }
@@ -64,9 +62,8 @@ export class DashboardComponent implements OnInit {
     else{
       this.httpService.get_api("HumidityBoxes").subscribe((res: any) => {
         this.devices = res.data;
-        console.log(this.devices);
-        this.idBox = this.devices[0].idhumiditybox;
-        this.lastReport(this.idBox);
+        this.idBox = this.devices[0].idbox;
+        this.lastReport(this.devices[0].idbox);
         this.device = this.devices[0];
         console.log(this.device);
       }, _ => alert("Error De conexión"));
@@ -75,12 +72,12 @@ export class DashboardComponent implements OnInit {
 
   updateDevice(id): void{
     if (this.selected === "Flujo"){
-      this.httpService.get_api(`FlowBox/${id}`).subscribe((res: any) => {
+      this.httpService.get_api_id("FlowBox", id).subscribe((res: any) => {
         this.device = res.data;
       }, _ => alert("Error De conexión"));
     }
     else{
-      this.httpService.get_api(`HumidityBox/${id}`).subscribe((res: any) => {
+      this.httpService.get_api_id("HumidityBox", id).subscribe((res: any) => {
         this.device = res.data;
         console.log(id);
         console.log(this.device);
