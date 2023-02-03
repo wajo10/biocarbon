@@ -463,7 +463,7 @@ function getHumidityReports(req, res, next) {
     const rawsensors = ["rawsensora", "rawsensorb", "rawsensorc", "rawsensord", "rawsensore"];
     let jsonList = [];
     db.any('select * from getHumidityReports(${idbox},${fromdate},${todate}, ${iscalibration})', req.body)
-        .then(function (data) {
+        .then(async function (data) {
             console.log(data[0]);
             for (let i = 0; i < data.length; i++) {
                 const report = data[i].idreport;
@@ -472,18 +472,17 @@ function getHumidityReports(req, res, next) {
                     "idreport": report,
                     "date": data[i].reportdate,
                     "datetime": data[i].vectordate,
-                    "idbox": "TEST",
+                    "idbox": req.body.idbox,
                     "iscalibration": data[i].calibrated
                 };
                 console.log(`json1: ${innerJson}`);
-                db.any(' select * from getHumidityReportSensors($1)', [report])
+                await db.any(' select * from getHumidityReportSensors($1)', [report])
                     .then(function (dataSensors) {
                         for (let j = 0; j < dataSensors.length; j++) {
                             innerJson[sensors[j]] = dataSensors[j].interp;
                             innerJson[rawsensors[j]] = dataSensors[j].raw;
                         }
                         jsonList.push(innerJson);
-                        console.log(`InnerJson: ${innerJson}`);
                     })
                     .catch(function (err) {
                         res.status(400)
