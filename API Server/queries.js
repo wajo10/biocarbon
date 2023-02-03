@@ -126,7 +126,7 @@ function getLastHumidityReport(req, res, next) {
     let json = {};
     db.any('select * from lastHumidityReport ($1)', [Device])
         .then(function (data) {
-            json["date"] = data.actualdate;
+            json["date"] = "TEST";
             json["datetime"] = data.vectordate;
             json["idbox"] = data.idhbox;
             json["iscalibration"] = data.calibrated;
