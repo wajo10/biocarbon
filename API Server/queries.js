@@ -473,7 +473,7 @@ function getHumidityReports(req, res, next) {
                     .then(function (dataSensors) {
                         innerJson["date"] = data[i].reportdate;
                         innerJson["datetime"] = data[i].vectordate;
-                        innerJson["idbox"] = report;
+                        innerJson["idbox"] = "TEST";
                         innerJson["iscalibration"] = data[i].calibrated;
                         for(let j = 0; j < dataSensors.length; j++){
                             innerJson[sensors[j]] = dataSensors.interp;
