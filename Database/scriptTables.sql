@@ -1,5 +1,6 @@
 --Drop database if exists BiocarbonV2
 --create database BiocarbonV2
+CREATE EXTENSION pgcrypto;
 
 --Users table 
 create Table Users (
@@ -8,7 +9,7 @@ create Table Users (
 	firstLastName varchar (20) not null,
 	secondLastName varchar (20) not null,
 	email varchar (50) not null,
-	password varchar (30) not null,
+	password varchar not null,
 	phoneNumber varchar (20) not null,
 	PRIMARY key (userName)
 );
@@ -21,7 +22,7 @@ create Table timeVector (
 );
 
 create Table FlowBox(
-	idFlowBox serial not null,
+	idFlowBox integer not null,
 	name varchar (50) not null,
 	location varchar (50),
 	latlong varchar(50),
@@ -33,11 +34,12 @@ create Table FlowReport (
 	idFlowBox int not null,
 	idTimeVector int,
 	date TIMESTAMP not null,
+	isCalibrated boolean not null,
 	primary key (idFReport)
 );
 
 create Table FSensor (
-	sensorNumber int not null, --este numero lo pasa
+	sensorNumber int not null,
 	idFReport int not null,
 	rawValue decimal (10,2) not null,
 	valueInterp decimal(10,2) not null,
@@ -59,7 +61,7 @@ create Table Relays (
 );
 
 create Table HumidityBox (
-	idHumidityBox serial not null,
+	idHumidityBox varchar(2) not null,
 	name varchar(50) not null,
 	location varchar(50),
 	latlong varchar(50),
@@ -68,9 +70,10 @@ create Table HumidityBox (
 
 create Table HumidityReport(
 	idHReport serial not null,
-	idHumidityBox int not null,
+	idHumidityBox varchar(2) not null,
 	idTimeVector int not null,
 	date TIMESTAMP not null,
+	isCalibrated boolean not null,
 	primary key (idHReport)
 );
 
@@ -124,7 +127,7 @@ unique (name);
 --FSensor
 alter table FSensor 
 add constraint FK_idFReport
-unique (idFReport);
+Foreign key (idFReport) references FlowReport (idFReport);
 
 --Relay State
 alter table RelayState 
@@ -158,7 +161,7 @@ FOREIGN KEY (idHReport) references HumidityReport(idHReport);
 --Temperature Register
 alter table TemperatureRegister
 add constraint FK_idTimeVector
-FOREIGN KEY (idTimeVector) references timeVector(idTimeVector);
+FOREIGN KEY (idTimeVector) references timeVector(idTime);
 
 --Temperatures
 alter table Temperatures 

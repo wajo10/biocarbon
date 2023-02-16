@@ -119,6 +119,14 @@ CREATE OR REPLACE FUNCTION lastTenHumidityReports (idBox_r VARCHAR) RETURNS TABL
 	$$
 LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION lastTenHumidityReports (idBox_r VARCHAR) RETURNS HUMIDITY AS
+	$$
+	SELECT * FROM humidityReport  
+	NATURAL JOIN TIMEVECTOR WHERE VECTORTIMESTAMP = IDTIME AND idBox = idBox_r
+	ORDER BY idReport DESC LIMIT 10
+	$$
+LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION addFlowReport(idBox_r INT, Date_r TIMESTAMP, flow1_r FLOAT, flow2_r FLOAT, flow3_r FLOAT, flow4_r FLOAT, 
 										 flow5_r FLOAT, calibration_r BOOL , idVector_r INT) RETURNS VOID AS 
 	$$

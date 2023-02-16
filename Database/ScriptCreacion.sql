@@ -51,6 +51,11 @@ CREATE TABLE HumidityReport(
 	SensorC FLOAT,
 	SensorD FLOAT,
 	SensorE FLOAT,
+    rawSensorA FLOAT,
+    rawSensorB FLOAT,
+    rawSensorC FLOAT,
+    rawSensorD FLOAT,
+    rawSensorE FLOAT,
 	isCalibration BOOL NOT NULL,
 	idBox VARCHAR(2) NOT NULL,
 	CONSTRAINT PK_HumidityReport PRIMARY KEY (idReport)

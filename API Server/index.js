@@ -13,7 +13,7 @@ let server = http.listen(port, () => {
 });
 
 // Sockets
-const io = require('socket.io')(server,{
+const io = require('socket.io')(server, {
     allowEIO3: true
 });
 
@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
 
 //Whenever someone connects this gets executed
 io.on('connection', (socket) => {
-    socket.emit('Whatever',"Message");
+    socket.emit('Whatever', "Message");
     console.log('an user connected');
 
     // Send Socket to Queries File
@@ -40,16 +40,15 @@ io.on('connection', (socket) => {
 });
 
 
-
 router.set('views', path.join(__dirname, 'views'));
 router.set('view engine', 'jade');
 
 router.use(express.json());
-router.use(express.urlencoded({ extended: false }));
+router.use(express.urlencoded({extended: false}));
 router.use(cookieParser());
 router.use(express.static(path.join(__dirname, 'public')));
 
-router.use(function(req, res, next) {
+router.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
@@ -64,7 +63,10 @@ router.get('/api/biocarbon/LastFlow/:idBox', queries.getLastFlowReport);
 router.get('/api/biocarbon/LastHumidity/:idBox', queries.getLastHumidityReport);
 router.put('/api/biocarbon/FlowReports/', queries.getFlowReports);
 router.put('/api/biocarbon/HumidityReports/', queries.getHumidityReports);
+router.get('/api/biocarbon/HumidityReport/:report', queries.getHumidityReport);
 router.post('/api/biocarbon/FlowReport/', queries.addFlowReport);
+router.post('/api/biocarbon/TemperatureReport/', queries.addTempReport);
+router.get('/api/biocarbon/LastTemperature/', queries.getLastTemperatureReport);
 router.post('/api/biocarbon/HumidityReport/', queries.addHumidityReport);
 router.get('/api/biocarbon/FlowBoxes/', queries.getFlowBoxes);
 router.get('/api/biocarbon/HumidityBoxes/', queries.getHumidityBoxes);
@@ -77,6 +79,7 @@ router.post('/api/biocarbon/HumidityBox/', queries.addHumidityBox);
 router.get('/api/biocarbon/Flow/', queries.getFlowValue);
 router.get('/api/biocarbon/Relays/:command/:id', queries.setRelays);
 router.get('/api/biocarbon/HumidityRT/:idBox', queries.getHumiditySockets); // Humidity Real Time (Sockets)
+router.get('/api/biocarbon/calibration/:box/:sensor/:humidity', queries.testCalibration);
 
 router.get('/', async (req, res) => {
 
@@ -84,3 +87,4 @@ router.get('/', async (req, res) => {
 
 });
 module.exports = {router};
+

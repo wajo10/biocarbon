@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {NgbCalendar, NgbCalendarGregorian, NgbDate, NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
 import {HttpService} from '../_services/http.service';
 import {DatePipe} from '@angular/common';
-import { saveAs } from 'file-saver';
+import {saveAs} from 'file-saver';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatInputModule} from '@angular/material/input';
+
 @Component({
   selector: 'app-charts',
   templateUrl: './charts.component.html',
@@ -15,7 +16,7 @@ export class ChartsComponent implements OnInit {
   hoveredDate: NgbDate | null = null;
   today: NgbDate = new NgbCalendarGregorian().getToday();
   fromDate: NgbDate = new NgbDate(this.today.year, this.today.month - 1, this.today.day - 3);
-  toDate: NgbDate = new NgbDate(this.today.year, this.today.month , this.today.day + 1);
+  toDate: NgbDate = new NgbDate(this.today.year, this.today.month, this.today.day + 1);
 
   values: any = {};
 
@@ -30,36 +31,38 @@ export class ChartsComponent implements OnInit {
 
 
   humidityVars = ['sensora', 'sensorb', 'sensorc', 'sensord', 'sensore'];
+  rawHumidityVars = ['rawsensora', 'rawsensorb', 'rawsensorc', 'rawsensord', 'rawsensore'];
+  selectedVars = this.humidityVars;
   humidityUnits = {
-    sensora: {
+    [this.selectedVars[0]]: {
       title: 'Sensor 1',
       yAxis: {
         title: '%',
         crosshairTooltip: {enable: true}
       }
     },
-    sensorb: {
+    [this.selectedVars[1]]: {
       title: 'Sensor 2',
       yAxis: {
         title: '%',
         crosshairTooltip: {enable: true}
       }
     },
-    sensorc: {
+    [this.selectedVars[2]]: {
       title: 'Sensor 3',
       yAxis: {
         title: '%',
         crosshairTooltip: {enable: true}
       }
     },
-    sensord: {
+    [this.selectedVars[3]]: {
       title: 'Sensor 4',
       yAxis: {
         title: '%',
         crosshairTooltip: {enable: true}
       }
     },
-    sensore: {
+    [this.selectedVars[4]]: {
       title: 'Sensor 5',
       yAxis: {
         title: '%',
@@ -107,7 +110,6 @@ export class ChartsComponent implements OnInit {
   };
 
 
-
   constructor(private calendar: NgbCalendar, public formatter: NgbDateParserFormatter, private httpService: HttpService,
               public datepipe: DatePipe) {
     this.today = new NgbCalendarGregorian().getToday();
@@ -116,6 +118,7 @@ export class ChartsComponent implements OnInit {
     this.isCalibration = false;
   }
 
+  // tslint:disable-next-line:ban-types
   public primaryXAxis: Object;
   public chartData: {};
   public primaryYAxis: Object;
@@ -151,8 +154,9 @@ export class ChartsComponent implements OnInit {
     this.chartData = {};
     variables.forEach(vari => {
       this.values.forEach(report => {
-        const date = this.datepipe.transform(report.date, 'yyyy-MM-dd HH:mm:ss');
+        const date = this.datepipe.transform(report.datetime, 'yyyy-MM-dd HH:mm:ss');
         const json = {x: date, y: report[vari]};
+        console.log(json);
         data.push(json);
       });
       this.chartData[vari] = data;
@@ -180,13 +184,12 @@ export class ChartsComponent implements OnInit {
     }
   }
 
-  updateDevice(id): void{
-    if (this.selected === 'Flujo'){
+  updateDevice(id): void {
+    if (this.selected === 'Flujo') {
       this.httpService.get_api_id('FlowBox', id).subscribe((res: any) => {
         this.device = res.data;
       }, _ => alert('Error De conexión'));
-    }
-    else{
+    } else {
       this.httpService.get_api_id('HumidityBox', id).subscribe((res: any) => {
         this.device = res.data;
       }, _ => alert('Error De conexión'));
@@ -203,10 +206,18 @@ export class ChartsComponent implements OnInit {
         iscalibration: this.isCalibration
       }).subscribe((res: any) => {
         this.values = res.data;
-        this.getChartData(this.humidityVars);
+        console.log(res);
+        if (this.isCalibration) {
+          this.selectedVars = this.rawHumidityVars;
+          this.updateHumidityUnits();
+          this.getChartData(this.rawHumidityVars);
+        } else {
+          this.selectedVars = this.humidityVars;
+          this.updateHumidityUnits();
+          this.getChartData(this.humidityVars);
+        }
       }, _ => alert('Error De conexión'));
-    }
-    else{
+    } else {
       this.httpService.put_api('FlowReports', {
         idbox: this.idBox,
         fromdate: this.formatter.format(this.fromDate),
@@ -214,38 +225,51 @@ export class ChartsComponent implements OnInit {
         iscalibration: this.isCalibration
       }).subscribe((res: any) => {
         this.values = res.data;
+        console.log(res.data);
         this.getChartData(this.flowVars);
       }, _ => alert('Error De conexión'));
     }
   }
 
-  exportCSV(): void{
+  exportCSV(): void {
     const report = [];
     let type = '';
-    if (this.selected === 'Humedad'){
-      for (const med of this.values){
-        report.push({timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Sensor1: med.sensora, Sensor2: med.sensorb,
-          Sensor3: med.sensorc, Sensor4: med.sensord, Sensor5: med.sensore});
+    if (this.selected === 'Humedad') {
+      for (const med of this.values) {
+        if (this.isCalibration){
+          report.push({
+            timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Sensor1: med.rawsensora, Sensor2: med.rawsensorb,
+            Sensor3: med.rawsensorc, Sensor4: med.rawsensord, Sensor5: med.rawsensore
+          });
+        }
+        else{
+          report.push({
+            timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Sensor1: med.sensora, Sensor2: med.sensorb,
+            Sensor3: med.sensorc, Sensor4: med.sensord, Sensor5: med.sensore
+          });
+        }
       }
       type = 'Humidity';
-    }
-    else {
-      for (const med of this.values){
-        report.push({timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Flow1: med.flow1, Flow2: med.flow2,
-          Flow3: med.flow3, Flow4: med.flow4, Flow5: med.flow5});
+    } else {
+      for (const med of this.values) {
+        report.push({
+          timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Flow1: med.flow1, Flow2: med.flow2,
+          Flow3: med.flow3, Flow4: med.flow4, Flow5: med.flow5
+        });
       }
-      type = 'Atmospheric';
+      type = 'Flow';
     }
     import('xlsx').then(xlsx => {
       const worksheet = xlsx.utils.json_to_sheet(report); // Sale Data
-      const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-      const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
+      const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
 
       this.saveAsExcelFile(excelBuffer, type + 'Report');
     });
   }
+
   saveAsExcelFile(buffer: any, fileName: string): void {
-    const EXCEL_TYPE   =
+    const EXCEL_TYPE =
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     const EXCEL_EXTENSION = '.xlsx';
     const data: Blob = new Blob([buffer], {
@@ -291,5 +315,44 @@ export class ChartsComponent implements OnInit {
     return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
   }
 
+  updateHumidityUnits(): void {
+    this.humidityUnits = {
+      [this.selectedVars[0]]: {
+        title: 'Sensor 1',
+        yAxis: {
+          title: '%',
+          crosshairTooltip: {enable: true}
+        }
+      },
+      [this.selectedVars[1]]: {
+        title: 'Sensor 2',
+        yAxis: {
+          title: '%',
+          crosshairTooltip: {enable: true}
+        }
+      },
+      [this.selectedVars[2]]: {
+        title: 'Sensor 3',
+        yAxis: {
+          title: '%',
+          crosshairTooltip: {enable: true}
+        }
+      },
+      [this.selectedVars[3]]: {
+        title: 'Sensor 4',
+        yAxis: {
+          title: '%',
+          crosshairTooltip: {enable: true}
+        }
+      },
+      [this.selectedVars[4]]: {
+        title: 'Sensor 5',
+        yAxis: {
+          title: '%',
+          crosshairTooltip: {enable: true}
+        }
+      }
+    };
+  }
 
 }
