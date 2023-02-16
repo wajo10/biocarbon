@@ -59,20 +59,22 @@ select addRelay(5,TRUE);
 
 select createHumidityBox ('A','primera caja de flujo', 'Heredia', 'latlong prueba');
 
-select createHumidityReport('A');
+select createHumidityReport('A',true);
+
+select * from HumidityReport
 
 delete from flowBox;
 delete from flowReport;
 
 delete from humiditybox;
 delete from humidityreport;
-delete from hsensor
+delete from hsensor where idHreport = 7
 
-select addHSensor (51,11,123.54321,123.50);
-select addHSensor (51,12,123.959,123.0);
-select addHSensor (51,13,123.54,123.50);
-select addHSensor (51,14,123.001,123.41);
-select addHSensor (51,15,123.99,124);
+select addHSensor (10,1,1000.54321,123.50);
+select addHSensor (10,2,1000.959,123.0);
+select addHSensor (10,3,1000.54,123.50);
+select addHSensor (10,4,1000.001,123.41);
+select addHSensor (10,5,1000.99,124);
 
 select createTemperatureRegister();
 
@@ -95,6 +97,9 @@ select * from HSensor;
 select * from temperatureregister;
 select * from temperatures;
 
+select * from timeVector
+
+select * from obtenerSensoresReporte('A','2023-02-15 22:28:00','2023-02-15 22:31:00',true)
 */
 
 
