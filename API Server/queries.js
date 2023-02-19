@@ -462,32 +462,40 @@ function getHumidityReports(req, res, next) {
     const sensors = ["sensora", "sensorb", "sensorc", "sensord", "sensore"];
     const rawsensors = ["rawsensora", "rawsensorb", "rawsensorc", "rawsensord", "rawsensore"];
     let jsonList = [];
-    db.any('select * from getHumidityReports(${idbox},${fromdate},${todate}, ${iscalibration})', req.body)
-        .then(async function (data) {
+    let reportsIDList = [];
+    db.any('select * from obtenerSensoresReporte(${idbox},${fromdate},${todate}, ${iscalibration})', req.body)
+        .then(function (data) {
             for (let i = 0; i < data.length; i++) {
                 const report = data[i].idreport;
-                let innerJson = {
-                    "idreport": report,
-                    "date": data[i].reportdate,
-                    "datetime": data[i].vectordate,
-                    "idbox": req.body.idbox,
-                    "iscalibration": data[i].calibrated
-                };
-                await db.any(' select * from getHumidityReportSensors($1)', [report])
-                    .then(function (dataSensors) {
-                        for (let j = 0; j < dataSensors.length; j++) {
-                            innerJson[sensors[j]] = dataSensors[j].interp;
-                            innerJson[rawsensors[j]] = dataSensors[j].raw;
+                if (!reportsIDList.includes(report)) {
+                    reportsIDList.push(report);
+                    const reportJson = {
+                        idreport: report,
+                        date: data[i].reportdate,
+                        datetime: data[i].reportvector,
+                        idbox: req.body.idbox,
+                        iscalibration: req.body.iscalibration,
+                        sensora: 0,
+                        rawsensora: 0,
+                        sensorb: 0,
+                        rawsensorb: 0,
+                        sensorc: 0,
+                        rawsensorc: 0,
+                        sensord: 0,
+                        rawsensord: 0,
+                        sensore: 0,
+                        rawsensore: 0
+                    };
+                    jsonList.push(reportJson);
+                }
+                else{
+                    for (let j = 0; j < jsonList.length; j++) {
+                        if (jsonList[j].idreport === report) {
+                            jsonList[j][sensors[data[i].sensnumber - 1]] = data[i].valinterp;
+                            jsonList[j][rawsensors[data[i].sensnumber - 1]] = data[i].valraw;
                         }
-                        jsonList.push(innerJson);
-                    })
-                    .catch(function (err) {
-                        res.status(400)
-                            .json({
-                                status: 'Error'
-                            });
-                        return next(err);
-                    });
+                    }
+                }
             }
             res.status(200)
                 .json({
