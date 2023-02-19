@@ -242,6 +242,20 @@ CREATE OR REPLACE FUNCTION getHumidityReports(idBox_r VARCHAR(2), fromDate TIMES
 	$$
 LANGUAGE SQL;
 
+--Prueba funcion para sensores de humedad
+CREATE OR REPLACE FUNCTION obtenerSensoresReporte(idBox_h varchar(2), fromDate TIMESTAMP, toDate TIMESTAMP, calibration bool) 
+returns table(ReportVector timestamp, ReportDate timestamp,idReport int,sensNumber int,valRaw decimal(10,2),valInterp decimal(10,2))as
+
+$$
+Select tv.dateTime, hr.date, hr.idHReport, hs.sensorNumber, hs.rawValue, hs.valueInterp from humidityReport as hr
+inner join humidityBox as hb on hb.idHumidityBox = idBox_h
+inner join timeVector as tv on tv.idTime = hr.idTimeVector
+inner join HSensor as hs on hs.idHReport = hr.idHReport
+where hr.date >= fromDate
+and hr.date <= toDate
+Order by hr.date, hs.sensorNumber
+$$
+Language sql;
 
 --*****Humidity Sensor*****
 
