@@ -488,12 +488,8 @@ function getHumidityReports(req, res, next) {
                     };
                     jsonList.push(reportJson);
                 }
-                for (let j = 0; j < jsonList.length; j++) {
-                    if (jsonList[j].idreport === report) {
-                        jsonList[j][sensors[data[i].sensnumber - 1]] = data[i].valinterp;
-                        jsonList[j][rawsensors[data[i].sensnumber - 1]] = data[i].valraw;
-                    }
-                }
+                jsonList[report][sensors[data[i].sensnumber - 1]] = data[i].valinterp;
+                jsonList[report][rawsensors[data[i].sensnumber - 1]] = data[i].valraw;
             }
             res.status(200)
                 .json({
