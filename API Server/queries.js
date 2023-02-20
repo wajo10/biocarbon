@@ -458,56 +458,36 @@ function getFlowReports(req, res, next) {
         });
 }
 
-function getHumidityReports(req, res, next) {
+async function getHumidityReports(req, res, next) {
     const sensors = ["sensora", "sensorb", "sensorc", "sensord", "sensore"];
     const rawsensors = ["rawsensora", "rawsensorb", "rawsensorc", "rawsensord", "rawsensore"];
-    let jsonList = [];
-    let reportsIDList = [];
-    db.any('select * from obtenerSensoresReporte(${idbox},${fromdate},${todate}, ${iscalibration})', req.body)
-        .then(function (data) {
-            for (let i = 0; i < data.length; i++) {
-                const report = data[i].idreport;
-                if (!reportsIDList.includes(report)) {
-                    reportsIDList.push(report);
-                    const reportJson = {
-                        idreport: report,
-                        date: data[i].reportdate,
-                        datetime: data[i].reportvector,
-                        idbox: req.body.idbox,
-                        iscalibration: req.body.iscalibration,
-                        sensora: 0,
-                        rawsensora: 0,
-                        sensorb: 0,
-                        rawsensorb: 0,
-                        sensorc: 0,
-                        rawsensorc: 0,
-                        sensord: 0,
-                        rawsensord: 0,
-                        sensore: 0,
-                        rawsensore: 0
-                    };
-                    jsonList.push(reportJson);
-                }
-                //Get index of report
-                const index = reportsIDList.indexOf(report);
-                jsonList[index][sensors[data[i].sensnumber - 1]] = data[i].valinterp;
-                jsonList[index][rawsensors[data[i].sensnumber - 1]] = data[i].valraw;
+    let reportsMap = new Map();
+
+    try {
+        const data = await db.any('select * from obtenerSensoresReporte(${idbox},${fromdate},${todate}, ${iscalibration})', req.body);
+
+        for (let i = 0; i < data.length; i++) {
+            const reportID = data[i].idreport;
+            let report = reportsMap.get(reportID);
+
+            if (!report) {
+                const { idreport, reportdate, reportvector, idbox, iscalibration } = data[i];
+                report = { idreport, date: reportdate, datetime: reportvector, idbox, iscalibration };
+                reportsMap.set(reportID, report);
             }
-            res.status(200)
-                .json({
-                    status: 'success',
-                    data: jsonList,
-                    message: 'Info received'
-                });
-        })
-        .catch(function (err) {
-            res.status(400)
-                .json({
-                    status: 'Error'
-                });
-            return next(err);
-        });
+
+            report[sensors[data[i].sensnumber - 1]] = data[i].valinterp;
+            report[rawsensors[data[i].sensnumber - 1]] = data[i].valraw;
+        }
+
+        const jsonList = [...reportsMap.values()];
+        res.status(200).json({ status: 'success', data: jsonList, message: 'Info received' });
+    } catch (err) {
+        res.status(400).json({ status: 'Error' });
+        return next(err);
+    }
 }
+
 
 function getHumidityReport(req, res, next) {
     const report = req.params.report;
