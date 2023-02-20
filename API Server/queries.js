@@ -488,8 +488,10 @@ function getHumidityReports(req, res, next) {
                     };
                     jsonList.push(reportJson);
                 }
-                jsonList[report][sensors[data[i].sensnumber - 1]] = data[i].valinterp;
-                jsonList[report][rawsensors[data[i].sensnumber - 1]] = data[i].valraw;
+                //Get index of report
+                const index = reportsIDList.indexOf(report);
+                jsonList[index][sensors[data[i].sensnumber - 1]] = data[i].valinterp;
+                jsonList[index][rawsensors[data[i].sensnumber - 1]] = data[i].valraw;
             }
             res.status(200)
                 .json({
