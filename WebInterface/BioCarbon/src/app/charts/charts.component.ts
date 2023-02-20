@@ -15,7 +15,7 @@ import {MatInputModule} from '@angular/material/input';
 export class ChartsComponent implements OnInit {
   hoveredDate: NgbDate | null = null;
   today: NgbDate = new NgbCalendarGregorian().getToday();
-  fromDate: NgbDate = new NgbDate(this.today.year, this.today.month - 1, this.today.day - 3);
+  fromDate: NgbDate = new NgbDate(this.today.year, this.today.month, this.today.day);
   toDate: NgbDate = new NgbDate(this.today.year, this.today.month, this.today.day + 1);
 
   values: any = {};
@@ -113,7 +113,7 @@ export class ChartsComponent implements OnInit {
   constructor(private calendar: NgbCalendar, public formatter: NgbDateParserFormatter, private httpService: HttpService,
               public datepipe: DatePipe) {
     this.today = new NgbCalendarGregorian().getToday();
-    this.fromDate = new NgbDate(this.today.year, this.today.month - 1, this.today.day - 3);
+    this.fromDate = new NgbDate(this.today.year, this.today.month, this.today.day);
     this.toDate = calendar.getNext(this.today, 'd', 1);
     this.isCalibration = false;
   }

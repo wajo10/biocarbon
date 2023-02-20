@@ -472,7 +472,7 @@ async function getHumidityReports(req, res, next) {
 
             if (!report) {
                 const { idreport, reportdate, reportvector, idbox, iscalibration } = data[i];
-                report = { idreport, date: reportdate, datetime: reportvector, idbox, iscalibration };
+                report = { idreport, date: reportdate, datetime: reportvector, idbox: req.body.idbox, iscalibration:req.body.iscalibration };
                 reportsMap.set(reportID, report);
             }
 
