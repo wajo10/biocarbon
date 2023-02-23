@@ -115,7 +115,7 @@ export class ChartsComponent implements OnInit {
     this.today = new NgbCalendarGregorian().getToday();
     this.fromDate = new NgbDate(this.today.year, this.today.month, this.today.day);
     this.toDate = calendar.getNext(this.today, 'd', 1);
-    this.isCalibration = true;
+    this.isCalibration = false;
   }
 
   // tslint:disable-next-line:ban-types
