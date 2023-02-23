@@ -115,7 +115,7 @@ export class ChartsComponent implements OnInit {
     this.today = new NgbCalendarGregorian().getToday();
     this.fromDate = new NgbDate(this.today.year, this.today.month, this.today.day);
     this.toDate = calendar.getNext(this.today, 'd', 1);
-    this.isCalibration = false;
+    this.isCalibration = true;
   }
 
   // tslint:disable-next-line:ban-types
@@ -152,8 +152,10 @@ export class ChartsComponent implements OnInit {
   getChartData(variables: string[]): void {
     let data: any = [];
     this.chartData = {};
+    // get only last 1000 values
+    const varDisp = this.values.slice(Math.max(this.values.length - 100, 0));
     variables.forEach(vari => {
-      this.values.forEach(report => {
+      varDisp.forEach(report => {
         const date = this.datepipe.transform(report.datetime, 'yyyy-MM-dd HH:mm:ss');
         const json = {x: date, y: report[vari]};
         console.log(json);

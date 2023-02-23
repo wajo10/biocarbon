@@ -159,12 +159,15 @@ function getLastHumidityReport(req, res, next) {
 function getLastTemperatureReport(req, res, next) {
     db.one('select * from lastTemperatureRegister()')
         .then(function (data) {
-            res.status(200)
-                .json({
-                    status: 'success',
-                    data: data,
-                    message: 'Data Retrieved Successfully'
-                });
+            db.any('select * from getTemperatures($1)',[data.idtempregister]).then(function (dataSensors) {
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        data: dataSensors,
+                        message: 'Data Retrieved Successfully'
+                    });
+            });
+
 
         })
         .catch(function (err) {
