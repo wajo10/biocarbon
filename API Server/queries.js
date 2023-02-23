@@ -157,7 +157,7 @@ function getLastHumidityReport(req, res, next) {
 }
 
 function getLastTemperatureReport(req, res, next) {
-    db.one('select * from lastTemperatureReport()')
+    db.one('select * from lastTemperatureRegister()')
         .then(function (data) {
             res.status(200)
                 .json({
@@ -644,7 +644,7 @@ function addTempReport(req, res, next) {
                     idSensor: cont,
                     value: req.body[sensor]
                 };
-                db.none('select * FROM addTemperature(${idReport}, ${idSensor}, ${value}, ${value})', sensorData).then(
+                db.none('select * FROM addTemperature(${idReport}, ${idSensor}, ${value})', sensorData).then(
                     function (data) {
                         console.log(sensor + " added");
                     }
