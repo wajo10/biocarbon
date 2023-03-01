@@ -244,7 +244,7 @@ export class ChartsComponent implements OnInit {
           RAWSensor3: med.rawsensorc, RAWSensor4: med.rawsensord, RAWSensor5: med.rawsensore
         });
       }
-      type = 'Humidity';
+      type =  `Humidity`;
     } else {
       for (const med of this.values) {
         report.push({
@@ -259,7 +259,7 @@ export class ChartsComponent implements OnInit {
       const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
       const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
 
-      this.saveAsExcelFile(excelBuffer, type + 'Report');
+      this.saveAsExcelFile(excelBuffer, type + 'Report' + this.idBox);
     });
   }
 
