@@ -238,18 +238,11 @@ export class ChartsComponent implements OnInit {
     let type = '';
     if (this.selected === 'Humedad') {
       for (const med of this.values) {
-        if (this.isCalibration){
-          report.push({
-            timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Sensor1: med.rawsensora, Sensor2: med.rawsensorb,
-            Sensor3: med.rawsensorc, Sensor4: med.rawsensord, Sensor5: med.rawsensore
-          });
-        }
-        else{
-          report.push({
-            timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Sensor1: med.sensora, Sensor2: med.sensorb,
-            Sensor3: med.sensorc, Sensor4: med.sensord, Sensor5: med.sensore
-          });
-        }
+        report.push({
+          timestamp: this.datepipe.transform(med.date, 'yyyy-MM-dd HH:mm:ss'), Sensor1: med.sensora, Sensor2: med.sensorb,
+          Sensor3: med.sensorc, Sensor4: med.sensord, Sensor5: med.sensore, RAWSensor1: med.rawsensora, RAWSensor2: med.rawsensorb,
+          RAWSensor3: med.rawsensorc, RAWSensor4: med.rawsensord, RAWSensor5: med.rawsensore
+        });
       }
       type = 'Humidity';
     } else {
