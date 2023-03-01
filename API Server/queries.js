@@ -639,7 +639,7 @@ function addTempReport(req, res, next) {
     const sensorList = ["temperature1", "temperature2", "temperature3", "temperature4", "temperature5"];
     db.one('select * FROM createTemperatureRegister()', req.body)
         .then(function (data) {
-            let idReport = data.createTemperatureRegister;
+            let idReport = data.createtemperatureregister;
             let cont = 1;
             sensorList.forEach(function (sensor) {
                 let sensorData = {
