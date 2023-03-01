@@ -78,9 +78,11 @@ select addHSensor (10,5,1000.99,124);
 
 select createTemperatureRegister();
 
-select addTemperature (1, 2, 90.5);
-select addTemperature (1, 3, 90.5);
-select addTemperature (2, 2, 35.4);
+select addTemperature (2, 1, 12.5);
+select addTemperature (2, 2, 22.5);
+select addTemperature (2, 3, 32.4);
+
+select getTemperatures(2)
 
 
 select * from flowbox;

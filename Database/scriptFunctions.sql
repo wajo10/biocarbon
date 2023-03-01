@@ -253,6 +253,8 @@ inner join timeVector as tv on tv.idTime = hr.idTimeVector
 inner join HSensor as hs on hs.idHReport = hr.idHReport
 where hr.date >= fromDate
 and hr.date <= toDate
+and hb.idHumidityBox  = idBox_h
+and hr.isCalibrated = calibration
 Order by hr.date, hs.sensorNumber
 $$
 Language sql;
@@ -314,11 +316,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 --Get temperatures by register id
-CREATE OR REPLACE FUNCTION getTemperatures (regID int) returns table(sensorNumber int, temperature decimal(5,2)) AS 
+CREATE OR REPLACE FUNCTION getTemperatures (regID int) returns table(sensorNumber int, temperature decimal(5,2), timeRead TIMESTAMP) AS 
 	$$
-	select tp.tempSensNumber, tp.temperature from temperatures as tp
+	select tp.tempSensNumber, tp.temperature, tr.date from temperatures as tp
 	inner join temperatureRegister as tr on tr.idTempRegister = tp.idTempRegister
 	where tr.idTempRegister = regID
-	order by tp.tempSensNumber desc limit 5;
+	order by tp.tempSensNumber asc limit 5;
 	$$
 LANGUAGE SQL;
