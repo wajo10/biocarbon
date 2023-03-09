@@ -242,7 +242,7 @@ CREATE OR REPLACE FUNCTION getHumidityReports(idBox_r VARCHAR(2), fromDate TIMES
 	$$
 LANGUAGE SQL;
 
---Prueba funcion para sensores de humedad
+--Funcion que regresa los valores leidos por los sensores en un lapso de tiempo
 CREATE OR REPLACE FUNCTION obtenerSensoresReporte(idBox_h varchar(2), fromDate TIMESTAMP, toDate TIMESTAMP, calibration bool) 
 returns table(ReportVector timestamp, ReportDate timestamp,idReport int,sensNumber int,valRaw decimal(10,2),valInterp decimal(10,2))as
 
@@ -253,9 +253,24 @@ inner join timeVector as tv on tv.idTime = hr.idTimeVector
 inner join HSensor as hs on hs.idHReport = hr.idHReport
 where hr.date >= fromDate
 and hr.date <= toDate
+and hb.idHumidityBox  = idBox_h
+and hr.isCalibrated = calibration
 Order by hr.date, hs.sensorNumber
 $$
 Language sql;
+
+--Prueba para grafico de humedad ******TODAVIA NO SIRVE*******
+CREATE OR REPLACE FUNCTION getHumidityGraphData(idBox varchar(2), fromDate TIMESTAMP, toDate TIMESTAMP)
+returns table (sensNumb int, idRep int, rawVal decimal(10,2), dateRead TIMESTAMP)as $$
+
+select hs.sensornumber, hs.idhreport, hs.rawValue, hr.date from hsensor as hs
+inner join HumidityReport as hr on hs.idHReport = hr.idHReport
+where hr.idHumidityBox = idBox
+and hr.date >= fromDate
+and hr.date <= toDate
+order by hs.sensornumber, hr.date
+$$
+language sql;
 
 --*****Humidity Sensor*****
 
@@ -314,11 +329,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 --Get temperatures by register id
-CREATE OR REPLACE FUNCTION getTemperatures (regID int) returns table(sensorNumber int, temperature decimal(5,2)) AS 
+CREATE OR REPLACE FUNCTION getTemperatures (regID int) returns table(sensorNumber int, temperature decimal(5,2), timeRead TIMESTAMP) AS 
 	$$
-	select tp.tempSensNumber, tp.temperature from temperatures as tp
+	select tp.tempSensNumber, tp.temperature, tr.date from temperatures as tp
 	inner join temperatureRegister as tr on tr.idTempRegister = tp.idTempRegister
 	where tr.idTempRegister = regID
-	order by tp.tempSensNumber desc limit 5;
+	order by tp.tempSensNumber asc limit 5;
 	$$
 LANGUAGE SQL;
