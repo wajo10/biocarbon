@@ -429,6 +429,18 @@ function humidityEquation(humidity, box, sensor) {
                 case "sensor5":
                     return (humidity * -1.10 * 10 ** -5 + 0.578774467) * 100
             }
+            break;
+            //Estas no tienen calibración todavía
+        case "P":
+            return humidity;
+        case "Q":
+            return humidity;
+        case "R":
+            return humidity;
+        case "S":
+            return humidity;
+        case "T":
+            return humidity;
 
     }
 }
@@ -594,7 +606,7 @@ async function addHumidityReport(req, res, next) {
             res.status(200)
                 .json({
                     status: 'success',
-                    message: 'Flow Report Inserted'
+                    message: 'Humidity Report Inserted'
                 });
             res.send();
         }
