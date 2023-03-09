@@ -83,6 +83,7 @@ select addTemperature (2, 2, 22.5);
 select addTemperature (2, 3, 32.4);
 
 select getTemperatures(2)
+select * from lastTemperatureRegister()
 
 
 select * from flowbox;
@@ -102,6 +103,10 @@ select * from temperatures;
 select * from timeVector
 
 select * from obtenerSensoresReporte('A','2023-02-15 22:28:00','2023-02-15 22:31:00',true)
+
+select * from humidityreport
+select * from hsensor
+select * from getHumidityGraphData('A','2023-02-15 22:30:11.538499','2023-02-15 22:37:01.066163')
 */
 
 

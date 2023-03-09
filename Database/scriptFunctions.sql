@@ -242,7 +242,7 @@ CREATE OR REPLACE FUNCTION getHumidityReports(idBox_r VARCHAR(2), fromDate TIMES
 	$$
 LANGUAGE SQL;
 
---Prueba funcion para sensores de humedad
+--Funcion que regresa los valores leidos por los sensores en un lapso de tiempo
 CREATE OR REPLACE FUNCTION obtenerSensoresReporte(idBox_h varchar(2), fromDate TIMESTAMP, toDate TIMESTAMP, calibration bool) 
 returns table(ReportVector timestamp, ReportDate timestamp,idReport int,sensNumber int,valRaw decimal(10,2),valInterp decimal(10,2))as
 
@@ -258,6 +258,19 @@ and hr.isCalibrated = calibration
 Order by hr.date, hs.sensorNumber
 $$
 Language sql;
+
+--Prueba para grafico de humedad ******TODAVIA NO SIRVE*******
+CREATE OR REPLACE FUNCTION getHumidityGraphData(idBox varchar(2), fromDate TIMESTAMP, toDate TIMESTAMP)
+returns table (sensNumb int, idRep int, rawVal decimal(10,2), dateRead TIMESTAMP)as $$
+
+select hs.sensornumber, hs.idhreport, hs.rawValue, hr.date from hsensor as hs
+inner join HumidityReport as hr on hs.idHReport = hr.idHReport
+where hr.idHumidityBox = idBox
+and hr.date >= fromDate
+and hr.date <= toDate
+order by hs.sensornumber, hr.date
+$$
+language sql;
 
 --*****Humidity Sensor*****
 
