@@ -36,7 +36,7 @@ relay3 = False
 relay4 = False
 relay5 = False
 
-relayList = [relay1, relay2, relay3, relay4 relay5]
+relayList = [relay1, relay2, relay3, relay4, relay5]
 
 
 def update():
@@ -51,7 +51,7 @@ t1.start()
 retries = 10
 while True:
     print("Esperando mensajes...")
-    # Espera por un nuevo packet: solo acepta si estÃ¡ dirigido a este Nodo
+    # Espera por un nuevo packet: solo acepta si está dirigido a este Nodo
     packet = rfm9x.receive(with_ack=True)
     # Si no se recibe un packet durante el Timeout, se retorna None.
     if packet is not None:
@@ -80,10 +80,10 @@ while True:
         elif packet == "OFF1":
             print("Solicitud de APAGAR Relay 1 de parte de: {}".format(sender))
             GPIO.output(27, GPIO.LOW)
-            relay1 = False
+            relayList[0] = False
             data = "Relay1 Inactivo"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -99,10 +99,10 @@ while True:
             print("Solicitud de ENCENDER Relay 1 de parte de: {}".format(sender))
             GPIO.output(27, GPIO.HIGH)
             GPIO.output(20, GPIO.HIGH)
-            relay1 = True
+            relayList[0] = True
             data = "Relay1 Activo"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -115,10 +115,10 @@ while True:
         elif packet == "OFF2".format(rfm9x.node):
             print("Solicitud de APAGAR Relay 2 de parte de: {}".format(sender))
             GPIO.output(22, GPIO.LOW)
-            relay2 = False
+            relayList[1] = False
             data = "Relay2 Inactivo"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -134,10 +134,10 @@ while True:
             print("Solicitud de ENCENDER Relay 2 de parte de: {}".format(sender))
             GPIO.output(22, GPIO.HIGH)
             GPIO.output(20, GPIO.HIGH)
-            relay2 = True
+            relayList[1] = True
             data = "Relay2 Activo"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -150,10 +150,10 @@ while True:
         elif packet == "OFF3".format(rfm9x.node):
             print("Solicitud de APAGAR Relay 3 de parte de: {}".format(sender))
             GPIO.output(24, GPIO.LOW)
-            relay3 = False
+            relayList[2] = False
             data = "Relay3 Inactivo"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -170,9 +170,9 @@ while True:
             GPIO.output(24, GPIO.HIGH)
             GPIO.output(20, GPIO.HIGH)
             data = "Relay3 Activo"
-            relay3 = True
+            relayList[2] = True
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -186,9 +186,9 @@ while True:
             print("Solicitud de APAGAR Relay 4 de parte de: {}".format(sender))
             GPIO.output(23, GPIO.LOW)
             data = "Relay4 Inactivo"
-            relay4 = False
+            relayList[3] = False
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -204,10 +204,10 @@ while True:
             print("Solicitud de ENCENDER Relay 4 de parte de: {}".format(sender))
             GPIO.output(23, GPIO.HIGH)
             GPIO.output(20, GPIO.HIGH)
-            relay4 = True
+            relayList[3] = True
             data = "Relay4 Activo"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -220,9 +220,9 @@ while True:
             print("Solicitud de APAGAR Relay 5 de parte de: {}".format(sender))
             GPIO.output(26, GPIO.LOW)
             data = "Relay5 Inactivo"
-            relay5 = False
+            rrelayList[4] = False
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -239,9 +239,9 @@ while True:
             GPIO.output(26, GPIO.HIGH)
             GPIO.output(20, GPIO.HIGH)
             data = "Relay5 Activo"
-            relay5 = True
+            relayList[4] = True
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -255,7 +255,7 @@ while True:
             GPIO.output(20, GPIO.LOW)
             data = "Relay6 Inactivo"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -270,7 +270,7 @@ while True:
             GPIO.output(20, GPIO.HIGH)
             data = "Relay6 Activo"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -287,14 +287,10 @@ while True:
             GPIO.output(24, GPIO.HIGH)
             GPIO.output(26, GPIO.HIGH)
             GPIO.output(20, GPIO.HIGH)
-            relay1 = True
-            relay2 = True
-            relay3 = True
-            relay4 = True
-            relay5 = True
+            relayList = [True, True,True, True, True]
             data = "Relays Activos"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -311,14 +307,10 @@ while True:
             GPIO.output(24, GPIO.LOW)
             GPIO.output(26, GPIO.LOW)
             GPIO.output(20, GPIO.LOW)
-            relay1 = False
-            relay2 = False
-            relay3 = False
-            relay4 = False
-            relay5 = False
+            relayList = [False,False,False,False,False]
             data = "Relays Inactivos"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
@@ -330,7 +322,7 @@ while True:
         else:
             data = "Comando No Reconocido"
             print("Datos a enviar: {}".format(data))
-            # Se envÃ­a el packet de datos al Gateway
+            # Se envía el packet de datos al Gateway
             ack = rfm9x.send(data, sender, with_ack=True)
             cont = 0
             while not ack:
