@@ -596,7 +596,7 @@ async function addHumidityReport(req, res, next) {
                     raw: req.body[rawSensorList[cont - 1]],
                     value: req.body[sensor]
                 };
-                db.any('select * FROM addHSensor(${idReport}, ${idSensor}, ${raw}, ${value})', sensorData).then(
+                db.oneOrNone('select * FROM addHSensor(${idReport}, ${idSensor}, ${raw}, ${value})', sensorData).then(
                     function () {
                         console.log(sensor + " added");
                     }
@@ -659,7 +659,7 @@ function addTempReport(req, res, next) {
                     idSensor: cont,
                     value: req.body[sensor]
                 };
-                db.none('select * FROM addTemperature(${idReport}, ${idSensor}, ${value})', sensorData).then(
+                db.oneOrNone('select * FROM addTemperature(${idReport}, ${idSensor}, ${value})', sensorData).then(
                     function (data) {
                         console.log(sensor + " added");
                     }
