@@ -584,7 +584,7 @@ async function addHumidityReport(req, res, next) {
     const rawSensorList = ["rawSensorA", "rawSensorB", "rawSensorC", "rawSensorD", "rawSensorE"];
     const idbox = req.body.id_box
     const isCalibration = req.body.isCalibration
-    db.one('select * from createHumidityReport($1, $2)', [idbox, isCalibration]).then(
+    db.oneOrNone('select * from createHumidityReport($1, $2)', [idbox, isCalibration]).then(
         function (data) {
             let idReport = data.createhumidityreport;
             let cont = 1;
@@ -617,7 +617,7 @@ function addFlowReport(req, res, next) {
     console.log(req.body);
     const sensorList = ["flow1", "flow2", "flow3", "flow4", "flow5"];
     req.body.idVector = idVector;
-    db.one('select * FROM createFlowReport(${id_box}, ${isCalibration}', req.body)
+    db.oneOrNone('select * FROM createFlowReport(${id_box}, ${isCalibration}', req.body)
         .then(function (data) {
             let idReport = data.idFReport;
             let cont = 1;
@@ -649,7 +649,7 @@ function addFlowReport(req, res, next) {
 function addTempReport(req, res, next) {
     console.log(req.body);
     const sensorList = ["temperature1", "temperature2", "temperature3", "temperature4", "temperature5"];
-    db.one('select * FROM createTemperatureRegister()', req.body)
+    db.oneOrNone('select * FROM createTemperatureRegister()', req.body)
         .then(function (data) {
             let idReport = data.createtemperatureregister;
             let cont = 1;
