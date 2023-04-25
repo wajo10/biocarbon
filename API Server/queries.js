@@ -166,10 +166,12 @@ function latestHumReport(){
             let date = new Date(data.date);
             let now = new Date();
             let diff = now - date;
+            console.log("Diff: " + diff + " Date: " + date + " Now: " + now);
             if (diff < 18000000) {
                 //Send telegram message to channel fetching url
-                let message = "ALERTA\n El último reporte de humedad fue hace " + Math.floor(diff / 60000) + " minutos por la Caja: " + data['idhumiditybox'];
-                axios.get("https://api.telegram.org/bot" + process.env.TELEGRAM_TOKEN + "/sendMessage?chat_id=" + process.env.TELEGRAM_CHANNEL + "&text=" + message)                    .then(function (response) {
+                let message = "ALERTA El último reporte de humedad fue hace " + Math.floor(diff / 60000) + " minutos por la Caja: " + data['idhumiditybox'];
+                axios.get("https://api.telegram.org/bot" + process.env.TELEGRAM_TOKEN + "/sendMessage?chat_id=" + process.env.TELEGRAM_CHANNEL + "&text=" + message)
+                    .then(function (response) {
                     console.log(response);
                 })
                     .catch(function (error) {
