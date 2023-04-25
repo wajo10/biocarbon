@@ -13,6 +13,9 @@ var pgp = require('pg-promise')(options);
 var connectionString = 'postgres://postgres:admin@localhost:5432/BiocarbonV2';
 var db = pgp(connectionString);
 
+process.env.TELEGRAM_TOKEN = "6125458886:AAFe6vpSlr5QAqO3z2LKWKe0RLht9TKd6cI"
+process.env.TELEGRAM_CHANNEL = "-1001827446396"
+
 //Queries de Usuarios
 function login(req, res, next) {
     var User = req.params.User;
@@ -154,6 +157,25 @@ function getLastHumidityReport(req, res, next) {
             return next(err);
         });
 
+}
+
+function latestHumReport(){
+    db.one('select * from latestHumReport()')
+        .then(function (data) {
+            //Check if date is in the last 5 hours
+            let date = new Date(data.date);
+            let now = new Date();
+            let diff = now - date;
+            if (diff < 18000000) {
+                //Send telegram message to channel fetching url
+                let message = "ALERTA\n El último reporte de humedad fue hace " + Math.floor(diff / 60000) + " minutos por la Caja: " + data['idhumiditybox'];
+                axios.get("https://api.telegram.org/bot" + process.env.TELEGRAM_TOKEN + "/sendMessage?chat_id=" + process.env.TELEGRAM_CHANNEL + "&text=" + message)
+            }
+            else{
+                let message = "El último reporte de humedad fue hace " + Math.floor(diff / 60000) + " minutos por la Caja: " + data['idhumiditybox'];
+                axios.get("https://api.telegram.org/bot" + process.env.TELEGRAM_TOKEN + "/sendMessage?chat_id=" + process.env.TELEGRAM_CHANNEL + "&text=" + message)
+            }
+        })
 }
 
 function getLastTemperatureReport(req, res, next) {
@@ -891,6 +913,9 @@ function getHumiditySockets(req, res, next) {
         socket.removeAllListeners("HumidityResult")
     });
 }
+//Call function every hour
+//setInterval(latestHumReport, 3600000);
+setInterval(latestHumReport, 10000);
 
 
 module.exports = {

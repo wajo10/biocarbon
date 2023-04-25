@@ -191,6 +191,13 @@ CREATE OR REPLACE FUNCTION lastHumidityReport (idBox_r varchar(2)) returns table
 	$$
 LANGUAGE SQL;
 
+--GET LAST REPORT
+CREATE OR REPLACE FUNCTION latestHumReport() returns HumidityReport AS
+	$$
+	select * from humidityreport where iscalibrated = false order by date desc limit 1
+	$$
+LANGUAGE SQL;
+
 --get data from the last 10 humidity reports by box id
 CREATE OR REPLACE FUNCTION lastTenHumidityReport (idBox_r varchar(2)) returns table(idHReport int, ActualDate timestamp, vectorDate timestamp, 
 																	  idHBox varchar(2), idTime int, calibrated boolean) AS 
