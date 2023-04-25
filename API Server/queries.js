@@ -173,7 +173,8 @@ function latestHumReport(){
             }
             else{
                 let message = "El último reporte de humedad fue hace " + Math.floor(diff / 60000) + " minutos por la Caja: " + data['idhumiditybox'];
-                axios.get("https://api.telegram.org/bot" + process.env.TELEGRAM_TOKEN + "/sendMessage?chat_id=" + process.env.TELEGRAM_CHANNEL + "&text=" + message)
+                axios.get("https://api.telegram.org/bot" + process.env.TELEGRAM_TOKEN + "/sendMessage?chat_id=" + process.env.TELEGRAM_CHANNEL + "&text=" + message);
+                console.log("https://api.telegram.org/bot" + process.env.TELEGRAM_TOKEN + "/sendMessage?chat_id=" + process.env.TELEGRAM_CHANNEL + "&text=" + message)
             }
         })
 }
