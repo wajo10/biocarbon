@@ -2,7 +2,6 @@ const express = require("express");
 
 const router = express();
 const port = 3031;
-var queries = require('./queries');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 const http = require('http').createServer(router);
@@ -11,6 +10,10 @@ let server = http.listen(port, () => {
     console.log("El servidor está inicializado en el puerto: ", port);
 
 });
+
+let devices = {};
+
+const queries = require('./queries')(devices);
 
 // Sockets
 const io = require('socket.io')(server, {
@@ -28,14 +31,23 @@ router.get('/', (req, res) => {
 
 //Whenever someone connects this gets executed
 io.on('connection', (socket) => {
-    socket.emit('Whatever', "Message");
-    console.log('an user connected');
+    console.log('An user conectado');
 
-    // Send Socket to Queries File
-    queries.updateSock(socket);
+    socket.on('register', (data) => {
+        const deviceId = data.deviceId;
+        devices[deviceId] = socket;
+        socket.deviceId = deviceId; // Almacena el deviceId en el socket
+        console.log(`Dispositivo ${deviceId} registrado`);
+    });
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        if (socket.deviceId) {
+            delete devices[socket.deviceId];
+            console.log(`Dispositivo ${socket.deviceId} desconectado y eliminado`);
+        }
+        socket.removeAllListeners("RelayResult");
+        socket.removeAllListeners("Result");
+        socket.removeAllListeners("HumidityResult");
     });
 });
 
@@ -76,9 +88,9 @@ router.put('/api/biocarbon/HumiditySettings/', queries.modifyHumidityBox);
 router.put('/api/biocarbon/FlowSettings/', queries.modifyFlowBox);
 router.post('/api/biocarbon/FlowBox/', queries.addFlowBox);
 router.post('/api/biocarbon/HumidityBox/', queries.addHumidityBox);
-router.get('/api/biocarbon/Flow/', queries.getFlowValue);
-router.get('/api/biocarbon/Relays/:command/:id', queries.setRelays);
-router.get('/api/biocarbon/HumidityRT/:idBox', queries.getHumiditySockets); // Humidity Real Time (Sockets)
+router.get('/api/biocarbon/Flow/:idDevice', queries.getFlowValue);
+router.get('/api/biocarbon/Relays/:idDevice/:command/:id', queries.setRelays);
+router.get('/api/biocarbon/HumidityRT/:idDevice/:idBox', queries.getHumiditySockets); // Humidity Real Time (Sockets)
 router.get('/api/biocarbon/calibration/:box/:sensor/:humidity', queries.testCalibration);
 
 router.get('/', async (req, res) => {

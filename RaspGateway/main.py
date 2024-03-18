@@ -6,17 +6,21 @@ from datetime import datetime
 import requests
 from datetime import datetime
 import threading
+from dotenv import load_dotenv
 import os
+load_dotenv()
+
 rfm9x = RFM9X()
 
 sio = socketio.Client()
 
-
-serverInterrupt = False #Variable that stops mainloop if gateway receives a message from server
+serverInterrupt = False  # Variable that stops mainloop if gateway receives a message from server
 
 
 @sio.event
 def connect():
+    device_id = os.getenv("DEVICE_ID")
+    sio.emit('register', {'deviceId': device_id})
     print('connection established')
 
 
@@ -111,38 +115,39 @@ def humidity(identifier):
 
 
 def mainLoop():
-    global serverInterrupt,rfm9x
-    nodes = [6,7,9,10,11,12,13,14,15] #Cajas a realizar pruebas
-    dic = {1:"A", 2:"B", 3:"C", 4:"D", 5:"E", 6:"F", 7:"G", 8:"H", 9:"I", 10:"J", 11:"K", 12:"L", 13:"M", 14:"N", 15:"O"}
-    
+    global serverInterrupt, rfm9x
+    nodes = [6, 7, 9, 10, 11, 12, 13, 14, 15]  # Cajas a realizar pruebas
+    dic = {1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J", 11: "K", 12: "L", 13: "M",
+           14: "N", 15: "O"}
+
     errors = {}
     for i in range(len(nodes)):
         errors[dic[nodes[i]]] = 0
-        
+
     Good = 0
     Bad = 0
-    
-    if(not os.path.exists("/home/pi/Documents/Biocarbon/biocarbon/RaspGateway/pruebaRSSI.txt")):
+
+    if (not os.path.exists("/home/pi/Documents/Biocarbon/biocarbon/RaspGateway/pruebaRSSI.txt")):
         file = open("/home/pi/Documents/Biocarbon/biocarbon/RaspGateway/pruebaRSSI.txt", "w")
         file.write("Caja,RSSI,SNR,Time,Ultima actualizacion\n")
         file.close()
-        
-    if(not os.path.exists("/home/pi/Documents/Biocarbon/biocarbon/RaspGateway/DatosHumedad.txt")):
+
+    if (not os.path.exists("/home/pi/Documents/Biocarbon/biocarbon/RaspGateway/DatosHumedad.txt")):
         file = open("/home/pi/Documents/Biocarbon/biocarbon/RaspGateway/DatosHumedad.txt", "w")
         file.write("TimeStamp,Caja,Sensor1,Sensor2,Sensor3, Sensor4, Sensor5\n")
         file.close()
-    
+
     url = "http://201.207.53.225:3031/api/biocarbon/HumidityReport"
     while True:
         if not serverInterrupt:
-            now=datetime.now()
-            dt_string=now.strftime("%Y-%m-%d %H:%M:%S")
+            now = datetime.now()
+            dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
             fp = open("/home/pi/Documents/Biocarbon/biocarbon/RaspGateway/pruebaRSSI.txt", 'a')
             fp2 = open("/home/pi/Documents/Biocarbon/biocarbon/RaspGateway/DatosHumedad.txt", 'a')
             fp_ = open("/home/pi/Documents/Biocarbon/biocarbon/RaspGateway/Mediciones.txt", 'w')
             fp_.write("Lecturas totales,Error de lectura,Lectura hecha")
             for i in range(len(nodes)):
-                fp_.write(",Errores caja "+dic[nodes[i]])
+                fp_.write(",Errores caja " + dic[nodes[i]])
             fp_.write("\n")
             for node in nodes:
                 message = "Data!{0}".format(node)
@@ -153,14 +158,16 @@ def mainLoop():
                     rec = rfm9x.receive(with_ack=True).split("/")
                     print(rec)
                     t2 = time.time()
-                    print("tiempo: {}".format(time.time()-t1))
-                    sendurl = {"id_box":dic[node], "created_at":dt_string, "sensorA":rec[0], "sensorB":rec[1], "sensorC":rec[2], "sensorD":rec[3], "sensorE":rec[4], "isCalibration":False}
+                    print("tiempo: {}".format(time.time() - t1))
+                    sendurl = {"id_box": dic[node], "created_at": dt_string, "sensorA": rec[0], "sensorB": rec[1],
+                               "sensorC": rec[2], "sensorD": rec[3], "sensorE": rec[4], "isCalibration": False}
                     fp.write(str(node) + "," + str(rfm9x.rfm9x.last_rssi) + "," + str(rfm9x.rfm9x.last_snr) +
-                     "," + str(t2-t1) + ","
-                        + str(dt_string) + "\n")
-                    fp2.write(str(now) + "," + str(node) + "," + str(rec[0]) + "," + str(rec[1]) + "," + str(rec[2]) + "," + str(rec[3]) + "," + str(rec[4])+ "\n")
+                             "," + str(t2 - t1) + ","
+                             + str(dt_string) + "\n")
+                    fp2.write(str(now) + "," + str(node) + "," + str(rec[0]) + "," + str(rec[1]) + "," + str(
+                        rec[2]) + "," + str(rec[3]) + "," + str(rec[4]) + "\n")
                     Good += 1
-                    x=requests.post(url,data=sendurl)
+                    x = requests.post(url, data=sendurl)
                     print(x.text)
                     print(sendurl)
                 except Exception as e:
@@ -170,9 +177,9 @@ def mainLoop():
                 time.sleep(1)
             fp.close()
             fp2.close()
-            fp_.write(str(Good+Bad)+","+str(Bad)+","+str(Good))
+            fp_.write(str(Good + Bad) + "," + str(Bad) + "," + str(Good))
             for i in range(len(nodes)):
-                fp_.write(","+str(errors[dic[nodes[i]]]))
+                fp_.write("," + str(errors[dic[nodes[i]]]))
             fp_.write("\n")
             fp_.close()
         print("Ultima actualizacion: " + str(dt_string))
@@ -185,6 +192,7 @@ while True:
         x = threading.Thread(target=mainLoop)
         x.start()
         sio.connect('http://201.207.53.225:3031/', transports=['websocket'])
+        #sio.connect('http://127.0.0.1:3031/', transports=['websocket'])
         sio.wait()
         break
     except:
