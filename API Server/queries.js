@@ -216,6 +216,39 @@ module.exports = function(devices) {
             });
     }
 
+    function getTemperatureReports(req, res, next) {
+        console.log(req.body);
+        db.any('select * from getTemperaturesByDateRange(${fromdate},${todate})', req.body)
+            .then(function (data) {
+                // Agrupar por fecha
+                let groupedData = data.reduce((acc, item) => {
+                    // Convertir al formato yyyy-mm-dd para usarla como clave
+                    let dateKey = item.timeRead.toISOString().split('T')[0];
+                    // Inicializar si la fecha no existe
+                    if (!acc[dateKey]) {
+                        acc[dateKey] = {};
+                    }
+                    // Agrergar la temperatura de cada sensor a la fecha
+                    acc[dateKey][`sensor${item.sensorNumber}`] = item.temperature;
+                    return acc;
+                }, {});
+
+                res.status(200).json({
+                    status: 'success',
+                    data: groupedData,
+                    message: 'Info received'
+                });
+            })
+            .catch(function (err) {
+                res.status(400).json({
+                    status: 'Error',
+                    error: err.message
+                });
+                return next(err);
+            });
+    }
+
+
     function filtro(Device, Sensor, Data) {
         Sensor = Sensor.toLowerCase();
         let arrayValues = [];
@@ -917,7 +950,8 @@ function humidityEquation(humidity, box, sensor) {
         testCalibration: testCalibration,
         addTempReport: addTempReport,
         getLastTemperatureReport: getLastTemperatureReport,
-        getHumidityReport: getHumidityReport
+        getHumidityReport: getHumidityReport,
+        getTemperatureReports: getTemperatureReports
     }
 
 }

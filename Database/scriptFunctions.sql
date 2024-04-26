@@ -344,3 +344,17 @@ CREATE OR REPLACE FUNCTION getTemperatures (regID int) returns table(sensorNumbe
 	order by tp.tempSensNumber asc limit 5;
 	$$
 LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getTemperaturesByDateRange(fromDate TIMESTAMP, toDate TIMESTAMP) 
+RETURNS TABLE(sensorNumber int, temperature decimal(5,2), timeRead TIMESTAMP) AS
+$$
+BEGIN
+    RETURN QUERY 
+    SELECT tp.tempSensNumber, tp.temperature, tr.date
+    FROM temperatures AS tp
+    INNER JOIN temperatureRegister AS tr ON tr.idTempRegister = tp.idTempRegister
+    WHERE tr.date >= fromDate AND tr.date <= toDate
+    ORDER BY tr.date ASC, tp.tempSensNumber ASC;
+END;
+$$ LANGUAGE plpgsql;
+
