@@ -219,16 +219,16 @@ module.exports = function(devices) {
     function getTemperatureReports(req, res, next) {
         db.any('select * from getTemperaturesByDateRange(${fromdate},${todate})', req.body)
             .then(function (data) {
-                // Agrupar por fecha
+                // Agrupar por fecha y hora
                 let groupedData = data.reduce((acc, item) => {
-                    // Convertir al formato yyyy-mm-dd para usarla como clave
-                    let dateKey = new Date(item.timeread).toISOString().split('T')[0];
+                    // Convertir a formato yyyy-mm-dd HH:MM:SS para usar como clave
+                    let dateTimeKey = new Date(item.timeread).toISOString().replace('T', ' ').slice(0, 19);
                     // Inicializar si la fecha no existe
-                    if (!acc[dateKey]) {
-                        acc[dateKey] = {};
+                    if (!acc[dateTimeKey]) {
+                        acc[dateTimeKey] = {};
                     }
-                    // Agrergar la temperatura de cada sensor a la fecha
-                    acc[dateKey][`sensor${item.sensornumber}`] = item.temperature;
+                    // Agregar la temperatura de cada sensor a la fecha y hora
+                    acc[dateTimeKey][`sensor${item.sensornumber}`] = item.temperature;
                     return acc;
                 }, {});
 
@@ -246,6 +246,7 @@ module.exports = function(devices) {
                 return next(err);
             });
     }
+
 
 
     function filtro(Device, Sensor, Data) {
