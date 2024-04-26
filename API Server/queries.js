@@ -411,7 +411,7 @@ function humidityEquation(humidity, box, sensor) {
                 case "sensor3":
                     return (851.78 * Math.E ** (-0.0001 * humidity))
                 case "sensor4":
-                    return (2 * 10 ** 17 * humidity ** -3.555)
+                    return (191.24 * Math.E ** (-0.00009 * humidity))
                 case "sensor5":
                     return (humidity ** 2 * 4 * 10 ** -8 + humidity * -0.0046 + 138.6)
             }
@@ -477,9 +477,9 @@ function humidityEquation(humidity, box, sensor) {
                 case "sensor1":
                     return (humidity ** 2 * 5 * 10 ** -8 + humidity * -0.0051 + 137.56)
                 case "sensor2":
-                    return (humidity ** 2 * 5 * 10 ** -8 + humidity * -0.0041 + 93.144)
+                    return (355.33 * Math.E ** (-0.0001 * humidity))
                 case "sensor3":
-                    return (390.4 * Math.E ** (-0.00009 * humidity))
+                    return (303.79 * Math.E ** (-0.0001 * humidity))
                 case "sensor4":
                     return (humidity ** 2 * 6 * 10 ** -8 + humidity * -0.006 + 156.77)
                 case "sensor5":
@@ -493,9 +493,9 @@ function humidityEquation(humidity, box, sensor) {
                 case "sensor2":
                     return (humidity ** 2 * 3 * 10 ** -8 + humidity * -0.0041 + 125.45)
                 case "sensor3":
-                    return (humidity ** 2 * 3 * 10 ** -8 + humidity * -0.0036 + 118.34)
+                    return (218.3 * Math.E ** (-0.0001 * humidity))
                 case "sensor4":
-                    return (humidity ** 2 * 5 * 10 ** -8 + humidity * -0.0053 + 142.78)
+                    return (420.11 * Math.E ** (-0.0001 * humidity))
                 case "sensor5":
                     return (humidity ** 2 * 7 * 10 ** -8 + humidity * -0.0056 + 114.68)
             }
