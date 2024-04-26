@@ -217,9 +217,9 @@ module.exports = function(devices) {
     }
 
     function getTemperatureReports(req, res, next) {
-        console.log(req.body);
         db.any('select * from getTemperaturesByDateRange(${fromdate},${todate})', req.body)
             .then(function (data) {
+                console.log(data);
                 // Agrupar por fecha
                 let groupedData = data.reduce((acc, item) => {
                     // Convertir al formato yyyy-mm-dd para usarla como clave
