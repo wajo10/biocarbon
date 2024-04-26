@@ -223,7 +223,7 @@ module.exports = function(devices) {
                 // Agrupar por fecha
                 let groupedData = data.reduce((acc, item) => {
                     // Convertir al formato yyyy-mm-dd para usarla como clave
-                    let dateKey = item.timeRead.toISOString().split('T')[0];
+                    let dateKey = new Date(item.timeRead).toISOString().split('T')[0];
                     // Inicializar si la fecha no existe
                     if (!acc[dateKey]) {
                         acc[dateKey] = {};
