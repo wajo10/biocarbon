@@ -1,9 +1,10 @@
+const fs = require("fs");
 module.exports = function(devices) {
     const axios = require('axios');
     const https = require('https');
     const promise = require('bluebird');
     const {json} = require("express");
-    var socket = undefined;
+    var fs = require('fs');
 
     const options = {
         // Initialization Options
@@ -18,14 +19,6 @@ module.exports = function(devices) {
     process.env.TELEGRAM_TOKEN = "6125458886:AAFe6vpSlr5QAqO3z2LKWKe0RLht9TKd6cI"
     process.env.TELEGRAM_CHANNEL = "-1001827446396"
 
-    function sendMessageToDevice(deviceId, message) {
-        const socket = devices[deviceId];
-        if (socket) {
-            socket.emit('yourMessageEvent', message);
-        } else {
-            console.log(`Dispositivo ${deviceId} no encontrado.`);
-        }
-    }
 
 //Queries de Usuarios
     function login(req, res, next) {
@@ -877,6 +870,9 @@ function humidityEquation(humidity, box, sensor) {
         // Messaged Received
         socket.on('Result', function (msg) {
             console.log(msg);
+            const timestamp = new Date().toISOString();
+            const jsonStr = {timestamp, message: `Solicitud de flujo  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice], socketId: socket.id };
+            writeToJsonFile(jsonStr);
             res.status(200)
                 .json({
                     status: 'success',
@@ -895,6 +891,9 @@ function humidityEquation(humidity, box, sensor) {
         socket.emit("Command", send);
         socket.on('RelayResult', function (msg) {
             console.log(msg);
+            const timestamp = new Date().toISOString();
+            const jsonStr = {timestamp, message: `Comando ${command} enviado al relay ${id} `, deviceId: devices[idDevice], socketId: socket.id };
+            writeToJsonFile(jsonStr);
             res.status(200)
                 .json({
                     status: 'success',
@@ -913,6 +912,9 @@ function humidityEquation(humidity, box, sensor) {
         socket.on('HumidityResult', function (msg) {
             console.log(msg);
             if (msg !== "Error") {
+                const timestamp = new Date().toISOString();
+                const jsonStr = {timestamp, message: `Solicitud de humedad  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice], socketId: socket.id };
+                writeToJsonFile(jsonStr);
                 res.status(200)
                     .json({
                         status: 'success',
@@ -927,6 +929,14 @@ function humidityEquation(humidity, box, sensor) {
             socket.removeAllListeners("HumidityResult")
         });
     }
+
+    function writeToJsonFile(data) {
+        data = JSON.stringify(data) + ',\n';
+        fs.appendFile('sockets.txt', data, 'utf8', function (err){
+            if (err) throw err;
+        });
+    }
+
     //Call function every hour
     setInterval(latestHumReport, 3600000);
     //setInterval(latestHumReport, 10000);

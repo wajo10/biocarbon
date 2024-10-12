@@ -5,10 +5,16 @@ const port = 3031;
 var path = require('path');
 var cookieParser = require('cookie-parser');
 const http = require('http').createServer(router);
+var fs = require('fs');
+
 
 let server = http.listen(port, () => {
     console.log("El servidor está inicializado en el puerto: ", port);
-
+    fs.writeFile('sockets.txt', "", 'utf8', function (err){
+        if(err){
+            console.log(err);
+        }
+    });
 });
 
 let devices = {};
@@ -31,17 +37,23 @@ router.get('/', (req, res) => {
 
 //Whenever someone connects this gets executed
 io.on('connection', (socket) => {
-    console.log('An user conectado');
+    console.log('An user connected');
 
     socket.on('register', (data) => {
         const deviceId = data.deviceId;
         devices[deviceId] = socket;
         socket.deviceId = deviceId; // Almacena el deviceId en el socket
+        const timestamp = new Date().toISOString()
+        const jsonStr = {timestamp: timestamp, message: "Socket registrado", deviceId: deviceId, socketId: socket.id};
+        writeToJsonFile(jsonStr);
         console.log(`Dispositivo ${deviceId} registrado`);
     });
 
     socket.on('disconnect', () => {
         if (socket.deviceId) {
+            const timestamp = new Date().toISOString()
+            const jsonStr = {timestamp: timestamp, message: "Socket desconectado", deviceId: socket.deviceId, socketId: socket.id};
+            writeToJsonFile(jsonStr);
             delete devices[socket.deviceId];
             console.log(`Dispositivo ${socket.deviceId} desconectado y eliminado`);
         }
@@ -50,6 +62,15 @@ io.on('connection', (socket) => {
         socket.removeAllListeners("HumidityResult");
     });
 });
+
+function writeToJsonFile(data) {
+    data = JSON.stringify(data) + ',\n';
+    fs.appendFile('sockets.txt', data, 'utf8', function (err){
+        if(err) {
+            console.log(err);
+        }
+    });
+}
 
 
 router.set('views', path.join(__dirname, 'views'));
