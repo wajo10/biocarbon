@@ -871,7 +871,7 @@ function humidityEquation(humidity, box, sensor) {
         socket.on('Result', function (msg) {
             console.log(msg);
             const timestamp = new Date().toISOString();
-            const jsonStr = {timestamp, message: `Solicitud de flujo  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice], socketId: socket.id };
+            const jsonStr = {timestamp, message: `Solicitud de flujo  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
             writeToJsonFile(jsonStr);
             res.status(200)
                 .json({
@@ -892,7 +892,7 @@ function humidityEquation(humidity, box, sensor) {
         socket.on('RelayResult', function (msg) {
             console.log(msg);
             const timestamp = new Date().toISOString();
-            const jsonStr = {timestamp, message: `Comando ${command} enviado al relay ${id} `, deviceId: devices[idDevice], socketId: socket.id };
+            const jsonStr = {timestamp, message: `Comando ${command} enviado al relay ${id} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
             writeToJsonFile(jsonStr);
             res.status(200)
                 .json({
@@ -913,7 +913,7 @@ function humidityEquation(humidity, box, sensor) {
             console.log(msg);
             if (msg !== "Error") {
                 const timestamp = new Date().toISOString();
-                const jsonStr = {timestamp, message: `Solicitud de humedad  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice], socketId: socket.id };
+                const jsonStr = {timestamp, message: `Solicitud de humedad  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
                 writeToJsonFile(jsonStr);
                 res.status(200)
                     .json({
@@ -931,6 +931,7 @@ function humidityEquation(humidity, box, sensor) {
     }
 
     function writeToJsonFile(data) {
+        console.log(data);
         data = JSON.stringify(data) + ',\n';
         fs.appendFile('sockets.txt', data, 'utf8', function (err){
             if (err) throw err;
