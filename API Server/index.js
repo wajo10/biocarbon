@@ -50,8 +50,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
+        const timestamp = new Date().toISOString();
         if (socket.deviceId && devices[socket.deviceId] && devices[socket.deviceId].id === socket.id) {
-            const timestamp = new Date().toISOString();
             const jsonStr = { timestamp: timestamp, message: "Socket desconectado", deviceId: socket.deviceId, socketId: socket.id };
             writeToJsonFile(jsonStr);
             delete devices[socket.deviceId];
