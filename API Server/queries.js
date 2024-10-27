@@ -883,18 +883,29 @@ function humidityEquation(humidity, box, sensor) {
         const socket = devices[idDevice];
         socket.emit('Command', "Flow");
         // Messaged Received
-        socket.on('Result', function (msg) {
-            console.log(msg);
-            const timestamp = new Date().toISOString();
-            const jsonStr = {timestamp, message: `Solicitud de flujo  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
-            writeToJsonFile(jsonStr);
-            res.status(200)
+        if (devices[idDevice]){
+            socket.on('Result', function (msg) {
+                console.log(msg);
+                const timestamp = new Date().toISOString();
+                const jsonStr = {timestamp, message: `Solicitud de flujo  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
+                writeToJsonFile(jsonStr);
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        data: msg
+                    });
+                socket.removeAllListeners("Result")
+            });
+        }
+        else{
+            const jsonStr = {timestamp, message: `Error enviando solicitud de flujo. Socket no existe. ` };
+                    writeToJsonFile(jsonStr);
+            res.status(504)
                 .json({
-                    status: 'success',
-                    data: msg
-                });
-            socket.removeAllListeners("Result")
-        });
+                    status: 'Error, no se pudo comunicar con la caja'
+                })
+        }
+        
     }
 
     function setRelays(req, res, next) {
@@ -904,18 +915,28 @@ function humidityEquation(humidity, box, sensor) {
         let id = req.params.id;
         let send = `relay,${command},${id}`;
         socket.emit("Command", send);
-        socket.on('RelayResult', function (msg) {
-            console.log(msg);
-            const timestamp = new Date().toISOString();
-            const jsonStr = {timestamp, message: `Comando ${command} enviado al relay ${id} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
-            writeToJsonFile(jsonStr);
-            res.status(200)
+        if(devices[idDevice]){
+            socket.on('RelayResult', function (msg) {
+                console.log(msg);
+                const timestamp = new Date().toISOString();
+                const jsonStr = {timestamp, message: `Comando ${command} enviado al relay ${id} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
+                writeToJsonFile(jsonStr);
+                res.status(200)
+                    .json({
+                        status: 'success',
+                        data: msg
+                    });
+                socket.removeAllListeners("RelayResult")
+            });
+        }
+        else{
+            const jsonStr = {timestamp, message: `Error enviando comando al relay. Socket no existe. ` };
+                    writeToJsonFile(jsonStr);
+            res.status(504)
                 .json({
-                    status: 'success',
-                    data: msg
-                });
-            socket.removeAllListeners("RelayResult")
-        })
+                    status: 'Error, no se pudo comunicar con la caja'
+                })
+        }
     }
 
     function getHumiditySockets(req, res, next) {
@@ -924,25 +945,35 @@ function humidityEquation(humidity, box, sensor) {
         let idBox = req.params.idBox;
         let send = `humidity,${idBox}`;
         socket.emit("Command", send);
-        socket.on('HumidityResult', function (msg) {
-            console.log(msg);
-            if (msg !== "Error") {
-                const timestamp = new Date().toISOString();
-                const jsonStr = {timestamp, message: `Solicitud de humedad  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
-                writeToJsonFile(jsonStr);
-                res.status(200)
-                    .json({
-                        status: 'success',
-                        data: msg
-                    });
-            } else {
-                res.status(504)
-                    .json({
-                        status: 'Error, no se pudo comunicar con la caja'
-                    })
-            }
-            socket.removeAllListeners("HumidityResult")
-        });
+        if(devices[idDevice]){
+            socket.on('HumidityResult', function (msg) {
+                console.log(msg);
+                if (msg !== "Error") {
+                    const timestamp = new Date().toISOString();
+                    const jsonStr = {timestamp, message: `Solicitud de humedad  enviado al dispositivo: ${idDevice} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
+                    writeToJsonFile(jsonStr);
+                    res.status(200)
+                        .json({
+                            status: 'success',
+                            data: msg
+                        });
+                } else {
+                    res.status(504)
+                        .json({
+                            status: 'Error, no se pudo comunicar con la caja'
+                        })
+                }
+                socket.removeAllListeners("HumidityResult")
+            });
+        }
+        else{
+            const jsonStr = {timestamp, message: `Error enviando solicitud de humedad. Socket no existe. ` };
+                    writeToJsonFile(jsonStr);
+            res.status(504)
+                .json({
+                    status: 'Error, no se pudo comunicar con la caja'
+                })
+        }
     }
 
     function writeToJsonFile(data) {
