@@ -934,7 +934,7 @@ function humidityEquation(humidity, box, sensor) {
                     writeToJsonFile(jsonStr);
             res.status(504)
                 .json({
-                    status: 'Error, no se pudo comunicar con la caja'
+                    status: 'Error, no se pudo comunicar con la electrovalvula'
                 })
         }
     }
