@@ -910,33 +910,69 @@ function humidityEquation(humidity, box, sensor) {
 
     function setRelays(req, res, next) {
         const idDevice = req.params.idDevice;
-        const socket = devices[idDevice];
         let command = req.params.command;
         let id = req.params.id;
         let send = `relay,${command},${id}`;
-        socket.emit("Command", send);
-        if(devices[idDevice]){
-            socket.on('RelayResult', function (msg) {
-                console.log(msg);
-                const timestamp = new Date().toISOString();
-                const jsonStr = {timestamp, message: `Comando ${command} enviado al relay ${id} `, deviceId: devices[idDevice].deviceId, socketId: socket.id };
-                writeToJsonFile(jsonStr);
-                res.status(200)
-                    .json({
+        let maxRetries = 5; // Número máximo de intentos
+        let retryDelay = 1000; // Tiempo en milisegundos entre intentos
+        let attempt = 0;
+    
+        function sendCommand() {
+            // Actualiza el socket en cada intento para verificar que sea el correcto
+            const socket = devices[idDevice];
+    
+            if (socket) {
+                try {
+                    socket.emit("Command", send);
+                    console.log(`Intentando enviar comando al dispositivo ${idDevice}, intento #${attempt + 1}`);
+                } catch (error) {
+                    console.error("Error al intentar enviar el comando:", error);
+                }
+    
+                // Establece un temporizador para escuchar la respuesta del socket
+                const timeout = setTimeout(() => {
+                    attempt++;
+                    if (attempt < maxRetries) {
+                        console.log(`No se recibió respuesta. Reintentando... (${attempt + 1}/${maxRetries})`);
+                        sendCommand(); // Reintenta enviando el comando
+                    } else {
+                        console.log("No se pudo obtener respuesta del dispositivo después de varios intentos.");
+                        res.status(504).json({
+                            status: 'Error, no se pudo comunicar con la electrovalvula después de varios intentos'
+                        });
+                    }
+                }, retryDelay);
+    
+                // Escucha la respuesta del socket
+                socket.on('RelayResult', function (msg) {
+                    clearTimeout(timeout); // Cancela el temporizador si se recibe respuesta
+                    console.log(msg);
+                    const timestamp = new Date().toISOString();
+                    const jsonStr = {
+                        timestamp,
+                        message: `Comando ${command} enviado al relay ${id}`,
+                        deviceId: idDevice,
+                        socketId: socket.id
+                    };
+                    writeToJsonFile(jsonStr);
+    
+                    res.status(200).json({
                         status: 'success',
                         data: msg
                     });
-                socket.removeAllListeners("RelayResult")
-            });
-        }
-        else{
-            const jsonStr = {timestamp, message: `Error enviando comando al relay. Socket no existe. ` };
-                    writeToJsonFile(jsonStr);
-            res.status(504)
-                .json({
+    
+                    socket.removeAllListeners("RelayResult"); // Limpia los listeners después de obtener la respuesta
+                });
+            } else {
+                const jsonStr = { timestamp: new Date().toISOString(), message: `Error enviando comando al relay. Socket no existe.` };
+                writeToJsonFile(jsonStr);
+                res.status(504).json({
                     status: 'Error, no se pudo comunicar con la electrovalvula'
-                })
+                });
+            }
         }
+    
+        sendCommand(); // Inicia el envío del comando con la lógica de reintento
     }
 
     function getHumiditySockets(req, res, next) {
