@@ -914,7 +914,7 @@ function humidityEquation(humidity, box, sensor) {
         let id = req.params.id;
         let send = `relay,${command},${id}`;
         let maxRetries = 5; // Número máximo de intentos
-        let retryDelay = 1000; // Tiempo en milisegundos entre intentos
+        let retryDelay = 5000; // Tiempo en milisegundos entre intentos
         let attempt = 0;
         let responded = false; // Bandera para evitar múltiples respuestas
     
