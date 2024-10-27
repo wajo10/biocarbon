@@ -916,6 +916,7 @@ function humidityEquation(humidity, box, sensor) {
         let maxRetries = 5; // Número máximo de intentos
         let retryDelay = 1000; // Tiempo en milisegundos entre intentos
         let attempt = 0;
+        let responded = false; // Bandera para evitar múltiples respuestas
     
         function sendCommand() {
             // Actualiza el socket en cada intento para verificar que sea el correcto
@@ -932,40 +933,49 @@ function humidityEquation(humidity, box, sensor) {
                 // Establece un temporizador para escuchar la respuesta del socket
                 const timeout = setTimeout(() => {
                     attempt++;
-                    if (attempt < maxRetries) {
+                    if (attempt < maxRetries && !responded) {
                         console.log(`No se recibió respuesta. Reintentando... (${attempt + 1}/${maxRetries})`);
                         sendCommand(); // Reintenta enviando el comando
-                    } else {
+                    } else if (!responded) {
                         console.log("No se pudo obtener respuesta del dispositivo después de varios intentos.");
+                        responded = true; // Marcar como respondido
                         res.status(504).json({
                             status: 'Error, no se pudo comunicar con la electrovalvula después de varios intentos'
                         });
                     }
                 }, retryDelay);
     
+                // Elimina el listener previo antes de agregar uno nuevo para evitar duplicados
+                socket.removeAllListeners("RelayResult");
+    
                 // Escucha la respuesta del socket
                 socket.on('RelayResult', function (msg) {
-                    clearTimeout(timeout); // Cancela el temporizador si se recibe respuesta
-                    console.log(msg);
-                    const timestamp = new Date().toISOString();
-                    const jsonStr = {
-                        timestamp,
-                        message: `Comando ${command} enviado al relay ${id}`,
-                        deviceId: idDevice,
-                        socketId: socket.id
-                    };
-                    writeToJsonFile(jsonStr);
+                    if (!responded) {
+                        clearTimeout(timeout); // Cancela el temporizador si se recibe respuesta
+                        responded = true; // Marcar como respondido
+                        console.log(msg);
+                        const timestamp = new Date().toISOString();
+                        const jsonStr = {
+                            timestamp,
+                            message: `Comando ${command} enviado al relay ${id}`,
+                            deviceId: idDevice,
+                            socketId: socket.id
+                        };
+                        writeToJsonFile(jsonStr);
     
-                    res.status(200).json({
-                        status: 'success',
-                        data: msg
-                    });
+                        res.status(200).json({
+                            status: 'success',
+                            data: msg
+                        });
     
-                    socket.removeAllListeners("RelayResult"); // Limpia los listeners después de obtener la respuesta
+                        // Limpia el listener después de obtener la respuesta para evitar duplicación
+                        socket.removeAllListeners("RelayResult");
+                    }
                 });
-            } else {
+            } else if (!responded) {
                 const jsonStr = { timestamp: new Date().toISOString(), message: `Error enviando comando al relay. Socket no existe.` };
                 writeToJsonFile(jsonStr);
+                responded = true; // Marcar como respondido
                 res.status(504).json({
                     status: 'Error, no se pudo comunicar con la electrovalvula'
                 });
