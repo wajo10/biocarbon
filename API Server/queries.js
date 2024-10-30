@@ -344,7 +344,8 @@ function humidityEquation(humidity, box, sensor) {
                 case "sensor1":
                     return (humidity * -1.46 * 10 ** -5 + 0.609739931) * 100
                 case "sensor2":
-                    return (3 * 10 ** 24 * humidity ** -5.243)
+                    return (humidity * -1.46 * 10 ** -5 + 0.609739931) * 100
+                    //return (3 * 10 ** 24 * humidity ** -5.243)
                 case "sensor3":
                     return (humidity ** 2 * 4 * 10 ** -8 + humidity * -0.0039 + 98.049)
                     //return (-52.93*Math.log(humidity) + 560.91)
